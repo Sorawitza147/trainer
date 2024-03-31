@@ -97,8 +97,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$username = $_SESSION['username'];
-$sql = "SELECT * FROM accepted_trainers WHERE username = '$username'";
+$trainerusername = $_SESSION['trainerusername'];
+$sql = "SELECT * FROM accepted_trainers WHERE trainerusername = '$trainerusername'";
 
 $result = $conn->query($sql);
 

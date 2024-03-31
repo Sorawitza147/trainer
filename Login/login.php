@@ -15,7 +15,6 @@ if (isset($_POST['login'])) {
             // Verify password
             if (password_verify($password, $row['password'])) {
                 // Password is correct
-                session_start();
                 $_SESSION["logged_in"] = true;
                 $_SESSION["username"] = $row['username'];
 
