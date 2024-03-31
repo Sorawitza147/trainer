@@ -120,9 +120,12 @@ if (isset($_POST['signup'])) {
             </script>";
         } else {
     // Insert into database
-    $sql = "INSERT INTO user (Firstname, Lastname, username, password, Email, gender, Age, Height, Weight, Phone, Image) 
-            VALUES ('$firstname', '$lastname', '$username','$password', '$email', '$gender', '$age', '$height', '$weight', '$phone', '$targetFile')";
-    
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // เตรียมคำสั่ง SQL สำหรับการเพิ่มข้อมูล
+    $sql = "INSERT INTO user (Firstname, Lastname, username, Password, Email, Gender, Age, Height, Weight, Phone) 
+            VALUES ('$firstname', '$lastname', '$username','$hashedPassword', '$email', '$gender', '$age', '$height', '$weight', '$phone')";
+
     if ($conn->query($sql) === TRUE) {
         echo "<script>function showRegisterSuccess() {
             Swal.fire({
