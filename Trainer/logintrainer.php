@@ -24,39 +24,66 @@ if (isset($_POST['login'])) {
         if ($result) {
             if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
-                $_SESSION["logged_in"] = true;
-                $_SESSION["trainerusername"] = $row['trainerusername'];
+                // ตรวจสอบรหัสผ่านที่ถูกเข้ารหัส
+                if (password_verify($password, $row['password'])) {
+                    $_SESSION["logged_in"] = true;
+                    $_SESSION["trainerusername"] = $row['trainerusername'];
+                    // เข้าสู่ระบบสำเร็จ
+                    echo "<script>
+                        window.onload = function() {
+                            var welcomeMessage = 'ยินดีต้อนรับคุณเทรนเนอร์ " . $_SESSION["trainerusername"] . "';
+                            var popup = document.createElement('div');
+                            popup.innerHTML = welcomeMessage;
+                            popup.style.backgroundColor = '#ffffff';
+                            popup.style.border = '1px solid #cccccc';
+                            popup.style.padding = '40px';
+                            popup.style.width = '600px';
+                            popup.style.height = '500px';
+                            popup.style.textAlign = 'center';
+                            popup.style.lineHeight = '1.5';
+                            popup.style.borderRadius = '20px';
+                            popup.style.boxShadow = '0px 0px 20px rgba(0, 0, 0, 0.3)';
+                            popup.style.position = 'fixed';
+                            popup.style.top = '50%';
+                            popup.style.left = '50%';
+                            popup.style.transform = 'translate(-50%, -50%)';
+                            popup.style.zIndex = '9999';
+                            popup.style.fontSize = '54px';
+                            document.body.appendChild(popup);
 
-                echo "<script>
-                    window.onload = function() {
-                        var welcomeMessage = 'ยินดีต้อนรับคุณเทรนเนอร์ " . $_SESSION["trainerusername"] . "';
-                        var popup = document.createElement('div');
-                        popup.innerHTML = welcomeMessage;
-                        popup.style.backgroundColor = '#ffffff';
-                        popup.style.border = '1px solid #cccccc';
-                        popup.style.padding = '40px'; /* เพิ่ม padding เพื่อขยายขนาดของ pop-up */
-                        popup.style.width = '600px'; /* เพิ่มความกว้างของ pop-up */
-                        popup.style.height = '500px'; /* เพิ่มความสูงของ pop-up */
-                        popup.style.textAlign = 'center'; /* จัดข้อความให้อยู่กึ่งกลาง */
-                        popup.style.lineHeight = '1.5'; /* เพิ่มระยะห่างระหว่างบรรทัด */
-                        popup.style.borderRadius = '20px'; /* เพิ่มมุมของ pop-up */
-                        popup.style.boxShadow = '0px 0px 20px rgba(0, 0, 0, 0.3)'; /* เพิ่มเงาใน pop-up */
-                        popup.style.position = 'fixed';
-                        popup.style.top = '50%';
-                        popup.style.left = '50%';
-                        popup.style.transform = 'translate(-50%, -50%)';
-                        popup.style.zIndex = '9999';
-                        popup.style.fontSize = '54px'; /* เพิ่มขนาดตัวอักษร */
-                        document.body.appendChild(popup);
+                            setTimeout(function() {
+                                popup.remove();
+                                window.location.href = '../indextrainer.php';
+                            }, 3000);
+                        };
+                    </script>";
+                } else {
+                    // รหัสผ่านไม่ถูกต้อง
+                    echo "<script>
+                        window.onload = function() {
+                            var popup = document.createElement('div');
+                            popup.innerHTML = 'ชื่อผู้ใช้หรือรหัสผ่านผิด';
+                            popup.style.backgroundColor = '#ffffff';
+                            popup.style.border = '1px solid #cccccc';
+                            popup.style.padding = '20px';
+                            popup.style.borderRadius = '10px';
+                            popup.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.1)';
+                            popup.style.position = 'fixed';
+                            popup.style.top = '50%';
+                            popup.style.left = '50%';
+                            popup.style.transform = 'translate(-50%, -50%)';
+                            popup.style.zIndex = '9999';
+                            document.body.appendChild(popup);
 
-                        setTimeout(function() {
-                            popup.remove();
-                            window.location.href = '../indextrainer.php';
-                        }, 3000);
-                    };
-                </script>";
+                            setTimeout(function() {
+                                popup.remove();
+                            }, 5000);
+                        };
+                    </script>";
+                }
 
             } else {
+                // ไม่พบชื่อผู้ใช้
                 echo "<script>
                     window.onload = function() {
                         var popup = document.createElement('div');
@@ -90,6 +117,7 @@ if (isset($_POST['login'])) {
 
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

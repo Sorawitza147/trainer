@@ -28,9 +28,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-
-    $trainerusername = isset($_POST['trainerusername']) ? $_POST['trainerusername'] : "";
     $password = isset($_POST['password']) ? $_POST['password'] : "";
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $trainerusername = isset($_POST['trainerusername']) ? $_POST['trainerusername'] : "";
 
     $stmt_check_trainerusername = $conn->prepare("SELECT * FROM usertrainer WHERE trainerusername = ?");
     $stmt_check_trainerusername->bind_param("s", $trainerusername);
@@ -53,13 +53,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt_check_trainerusername->close();
 
     $stmt2 = $conn->prepare("INSERT INTO usertrainer (trainerusername, password) VALUES (?, ?)");
-    $stmt2->bind_param("ss", $trainerusername, $password);
+    $stmt2->bind_param("ss", $trainerusername, $hashedPassword);
 
     if ($stmt2->execute()) {
         $first_name = isset($_POST['first_name']) ? $_POST['first_name'] : "";
         $last_name = isset($_POST['last_name']) ? $_POST['last_name'] : "";
         $emailtrainer = isset($_POST['emailtrainer']) ? $_POST['emailtrainer'] : "";
         $age = isset($_POST['age']) ? $_POST['age'] : "";
+        $password = isset($_POST['password']) ? $_POST['password'] : "";
         $phone_number = isset($_POST['phone_number']) ? $_POST['phone_number'] : "";
         $gender = isset($_POST['gender']) ? $_POST['gender'] : "";
         $level_2 = isset($_POST['level_2']) ? $_POST['level_2'] : "";
@@ -114,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Error preparing statement: " . $conn->error);
     }
 
-    if (!$stmt1->bind_param("sssssssssiisiisiisiisiissss", $trainerusername, $password, $first_name, $last_name, $emailtrainer, $age, $gender, $phone_number, $level_2, $start_year_2, $end_year_2, $level_3, $start_year_3, $end_year_3, $level_4, $start_year_4, $end_year_4, $level_5, $start_year_5, $end_year_5, $level_6, $start_year_6, $end_year_6, $district, $subdistrict, $target_file_profile, $target_file)) {
+    if (!$stmt1->bind_param("sssssssssiisiisiisiisiissss", $trainerusername, $hashedPassword, $first_name, $last_name, $emailtrainer, $age, $gender, $phone_number, $level_2, $start_year_2, $end_year_2, $level_3, $start_year_3, $end_year_3, $level_4, $start_year_4, $end_year_4, $level_5, $start_year_5, $end_year_5, $level_6, $start_year_6, $end_year_6, $district, $subdistrict, $target_file_profile, $target_file)) {
         die("Error binding parameters: " . $stmt1->error);
     }
 
