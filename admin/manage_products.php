@@ -89,11 +89,11 @@
 
         while ($row_course = $result_course->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>" . $row_course["id"] . "</td>";
+            echo "<td>" . $row_course["course_id"] . "</td>";
             echo "<td>" . $row_course["title"] . "</td>";
             echo "<td>" . $row_course["description"] . "</td>";
             echo "<td>" . $row_course["price"] . "</td>";
-            echo "<td><a href='edit_course.php?id=" . $row_course["id"] . "'>แก้ไข</a> | <a href='manage_products.php?delete_course_id=" . $row_course["id"] . "'>ลบ</a></td>";
+            echo "<td><a href='edit_course.php?id=" . $row_course["course_id"] . "'>แก้ไข</a> | <a href='manage_products.php?delete_course_id=" . $row_course["course_id"] . "'>ลบ</a></td>";
             echo "</tr>";
         }
         echo "</table>";
