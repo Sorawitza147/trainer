@@ -321,6 +321,7 @@ session_start();
     <nav class="navigation">
       <a href="indexuser.php" class="active">หน้าหลัก</a>
       <a href="Cash/paymentuser.php">เติมเงิน</a>
+      <a href="Course/histortuser.php">ประวัติ</a>
       <a href="Course/userhire.php">Hiretrainer</a>
       <a href="Course/usercourse.php">Course</a>
       <a href="Login/user.php">ประวัติส่วนตัว</a>

@@ -91,18 +91,27 @@ if (isset($_GET['accept_course_id'])) {
 
           if (mysqli_query($conn, $delete_hired_trainers_sql)) {
               // ทำสิ่งที่คุณต้องการให้เป็นไปตามกระบวนการ
+              // อัปเดตสถานะในตาราง course_history_trainer
+              $update_course_history_sql = "UPDATE course_history_trainer SET status = 'ยอมรับ' WHERE course_id = $course_id";
+
+              if (mysqli_query($conn, $update_course_history_sql)) {
+                // ทำสิ่งที่ต้องการเพิ่มเติมหลังจากอัปเดตสถานะในตาราง course_history_trainer
+                // ตัวอย่างเช่น redirect หรือแสดงข้อความสำเร็จ
+              } else {
+                echo "เกิดข้อผิดพลาดในการอัปเดตสถานะในตาราง course_history_trainer: " . mysqli_error($conn);
+              }
           } else {
               echo "เกิดข้อผิดพลาดในการลบข้อมูลจากตาราง hired_trainers: " . mysqli_error($conn);
           }
         } else {
           echo "เกิดข้อผิดพลาดในการเพิ่มข้อมูลใหม่ในตาราง accepted_course: " . mysqli_error($conn);
         }
-
-        mysqli_close($conn);
       }
     }
   } else {
     echo "เกิดข้อผิดพลาดในการอัปเดตสถานะในตาราง hired_trainers: " . mysqli_error($conn);
   }
+
+  mysqli_close($conn);
 }
 ?>
