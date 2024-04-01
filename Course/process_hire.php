@@ -1,28 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ข้อมูลการจ้างเทรนเนอร์</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Mitr", sans-serif;
-    }
-    </style>
-    <body>
-    <?php
+<?php
 session_name("user_session");
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
-        if (isset($_POST["username"]) && isset($_POST["course_id"]) && isset($_POST["trainerusername"]) && isset($_POST["trainer_id"]) && isset($_POST["status"])) {
+        if (isset($_POST["username"]) && isset($_POST["course_id"]) && isset($_POST["trainerusername"]) && isset($_POST["trainer_id"]) && isset($_POST["status"]) && isset($_POST["start_date"]) && isset($_POST["end_date"])) {
             $servername = "localhost";
             $username = "root";
             $password = "";
@@ -39,17 +21,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $trainerusername = $_POST["trainerusername"];
             $trainer_id = $_POST["trainer_id"];
             $status = $_POST["status"];
-            
+
             // เพิ่มข้อมูลลงในตาราง hired_trainers
             $hired_trainers_sql = "INSERT INTO hired_trainers (username, trainerusername, course_id, trainer_id, status) 
-                    VALUES ('$username', '$trainerusername', '$course_id', '$trainer_id', '$status')";
+                    VALUES (?, ?, ?, ?, ?)";
+            $stmt1 = $conn->prepare($hired_trainers_sql);
+            $stmt1->bind_param("sssss", $username, $trainerusername, $course_id, $trainer_id, $status);
 
-            if ($conn->query($hired_trainers_sql) === TRUE) {
+            if ($stmt1->execute()) {
                 // เพิ่มข้อมูลลงในตาราง course_history_trainer
-                $course_history_sql = "INSERT INTO course_history_trainer (username, trainerusername, course_id, trainer_id, status) 
-                VALUES ('$username', '$trainerusername', '$course_id', '$trainer_id', '$status')";
+                $course_history_sql = "INSERT INTO course_history_trainer (username, trainerusername, course_id, trainer_id, status, title, cover_image, name, email, gender, age, phone_number, description, price, difficulty, start_date, end_date, start_time, end_time) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                if ($conn->query($course_history_sql) === TRUE) {
+                $stmt2 = $conn->prepare($course_history_sql);
+                $stmt2->bind_param("sssssssssssssssssss", $username, $trainerusername, $course_id, $trainer_id, $status, $_POST["title"], $_POST["cover_image"], $_POST["name"], $_POST["email"], $_POST["gender"], $_POST["age"], $_POST["phone_number"], $_POST["description"], $_POST["price"], $_POST["difficulty"], $_POST["start_date"], $_POST["end_date"], $_POST["start_time"], $_POST["end_time"]);
+
+                if ($stmt2->execute()) {
                     // แสดงข้อความแจ้งเตือน
                     echo "<script>
                         window.onload = function() {
@@ -80,11 +67,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         };
                     </script>";
                 } else {
-                    echo "Error: " . $course_history_sql . "<br>" . $conn->error;
+                    echo "Error: " . $stmt2->error;
                 }
+                $stmt2->close();
             } else {
-                echo "Error: " . $hired_trainers_sql . "<br>" . $conn->error;
+                echo "Error: " . $stmt1->error;
             }
+            $stmt1->close();
 
             $conn->close();
         } else {
@@ -97,6 +86,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "ไม่มีการส่งข้อมูลแบบ POST";
 }
 ?>
-
-</body>
-</html>
