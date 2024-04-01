@@ -132,7 +132,13 @@ if ($result === false) {
         echo "<td>" . $row['name'] . "</td>";
         echo "<td>" . $row['email'] . "</td>";
         echo "<td>" . $row['age'] . "</td>";
-        echo "<td>" . $row['gender'] . "</td>";
+        if ($row['gender'] == 'Male') {
+          echo "<td>ชาย</td>";
+        } elseif ($row['gender'] == 'Female') {
+            echo "<td>หญิง</td>";
+        } else {
+            echo "<td>ไม่ระบุเพศ</td>";
+        }
         echo "<td>" . $row['phone_number'] . "</td>";
         echo "<td>" . $row['trainer_id'] . "</td>";
         echo "<td>" . $row['title'] . "</td>";

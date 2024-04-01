@@ -46,7 +46,7 @@ if (!$stmt) {
     exit();
 }
 
-$stmt->bind_param('sssiisssissssssss', $name, $email, $gender, $age, $phone_number, $trainer_id, $trainerusername, $title, $price, $duration, $difficulty, $description, $start_date, $end_date, $start_time, $end_time, $cover_image);
+$stmt->bind_param('sssissssissssssss', $name, $email, $gender, $age, $phone_number, $trainer_id, $trainerusername, $title, $price, $duration, $difficulty, $description, $start_date, $end_date, $start_time, $end_time, $cover_image);
 $stmt->execute();
 
 $course_id = $stmt->insert_id;

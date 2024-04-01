@@ -240,7 +240,7 @@ input[readonly], textarea[readonly], select[readonly] {
     </div>
     <div class="form-group">
     <label for="phone">เบอร์:</label>
-    <input type="none" name="phone_number" placeholder="เบอร์โทรศัพท์" value="<?php echo $row['phone_number']; ?>" required readonly>
+    <input type="tel" name="phone_number" placeholder="เบอร์โทรศัพท์" value="<?php echo $row['phone_number']; ?>" required readonly>
     </div>
     <input type="hidden" name="trainer_id" value="<?php echo $row['trainer_id']; ?>" required readonly >
     <input type="hidden" name="trainerusername" value="<?php echo $row['trainerusername']; ?>" required readonly >

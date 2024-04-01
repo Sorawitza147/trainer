@@ -183,7 +183,6 @@ if ($result->num_rows > 0) {
        echo "<input type='hidden' name='name' value='" . $row["name"] . "'>";
        echo "<input type='hidden' name='cover_image' value='" . $row["cover_image"] . "'>";
        echo "<input type='hidden' name='email' value='" . $row["email"] . "'>";
-       echo "<input type='hidden' name='gender' value='" . $row["gender"] . "'>";
        echo "<input type='hidden' name='age' value='" . $row["age"] . "'>";
        echo "<input type='hidden' name='phone_number' value='" . $row["phone_number"] . "'>";
        echo "<input type='hidden' name='description' value='" . $row["description"] . "'>";

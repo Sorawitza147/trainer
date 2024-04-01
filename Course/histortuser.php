@@ -6,50 +6,60 @@
     <title>ประวัติการใช้บริการของผู้ใช้</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+        @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+        .table {
+            width: 100%;
+            margin-bottom: 40px;
+            background-color: #00CCFF;
         }
 
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table tbody + tbody {
+            border-top: 2px solid #dee2e6;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        /* ปรับสไตล์ของ container เพื่อให้มีกรอบ */
         .container {
-            background-color: #ffffff;
+            border: 1px solid #ddd; /* เปลี่ยนสีเส้นขอบตามต้องการ */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
+            background-color: #00CCFF;
         }
 
-        h2, h3 {
-            color: #333333;
-        }
-
-        table {
-            width: 100%;
+        /* เพิ่มสไตล์สำหรับตารางที่มีกรอบ */
+        .table-bordered {
+            border: 1px solid #dee2e6;
             border-collapse: collapse;
-            margin-top: 20px;
         }
 
-        th, td {
-            border: 1px solid #dddddd;
-            padding: 8px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .error-message {
-            color: red;
-            margin-top: 20px;
-        }
-
-        .table-container {
-            overflow-x: auto;
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            vertical-align: top;
         }
     </style>
 </head>
@@ -70,12 +80,12 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // ตรวจสอบว่ามีการเข้าสู่ระบบหรือไม่
+   
     if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
-        // ดึงชื่อผู้ใช้ของเจ้าของ (owner) จาก session
+    
         $username = $_SESSION["username"];
 
-        // คำสั่ง SQL เพื่อดึงข้อมูลจากตาราง course_history_trainer โดยแสดงเฉพาะข้อมูลของเจ้าของ (owner)
+        
         $sql_trainer = "SELECT * FROM course_history_trainer WHERE username = '$username'";
         $result_trainer = $conn->query($sql_trainer);
 
@@ -83,7 +93,7 @@
             echo "<div class='error-message'>Error: " . $conn->error . "</div>";
         }
     } else {
-        // ถ้าไม่มีการเข้าสู่ระบบให้แสดงข้อความ
+   
         echo "<div class='error-message'>คุณต้องเข้าสู่ระบบก่อนที่จะดูประวัติการใช้บริการ</div>";
     }
     $conn->close();
@@ -91,67 +101,98 @@
 
     <div class="container">
         <h2>ประวัติการใช้บริการของผู้ใช้</h2>
-        <h3>Course History Trainer</h3>
-        <div class="table-container">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Course ID</th>
-                        <th>Username</th>
-                        <th>Trainer Username</th>
-                        <th>Trainer ID</th>
-                        <th>Status</th>
-                        <th>Title</th>
-                        <th>Cover Image</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Gender</th>
-                        <th>Age</th>
-                        <th>Phone Number</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Difficulty</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    if (isset($result_trainer) && $result_trainer->num_rows > 0) {
-                        while($row = $result_trainer->fetch_assoc()) {
-                            echo "<tr>
-                                <td>".$row["id"]."</td>
-                                <td>".$row["course_id"]."</td>
-                                <td>".$row["username"]."</td>
-                                <td>".$row["trainerusername"]."</td>
-                                <td>".$row["trainer_id"]."</td>
-                                <td>".$row["status"]."</td>
-                                <td>".$row["title"]."</td>
-                                <td>".$row["cover_image"]."</td>
-                                <td>".$row["name"]."</td>
-                                <td>".$row["email"]."</td>
-                                <td>".$row["gender"]."</td>
-                                <td>".$row["age"]."</td>
-                                <td>".$row["phone_number"]."</td>
-                                <td>".$row["description"]."</td>
-                                <td>".$row["price"]."</td>
-                                <td>".$row["difficulty"]."</td>
-                                <td>".$row["start_date"]."</td>
-                                <td>".$row["end_date"]."</td>
-                                <td>".$row["start_time"]."</td>
-                                <td>".$row["end_time"]."</td>
-                            </tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='21'>ไม่พบข้อมูล</td></tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
+        <a href="../indexuser.php" class="btn btn-primary mb-3">ย้อนกลับ</a>
+        <?php
+        if (isset($result_trainer) && $result_trainer->num_rows > 0) {
+
+
+            while($row = $result_trainer->fetch_assoc()) {
+                echo "<table class='table table-bordered'>"; 
+                echo "<tr>";
+                echo "<th>รูปปก</th>";
+                echo "<td><img src='uploadscourse/" . $row["cover_image"] . "'></td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>รหัสบันทึก</th>";
+                echo "<td>".$row["id"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>รหัสคอร์ส</th>";
+                echo "<td>".$row["course_id"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>ชื่อผู้ใช้</th>";
+                echo "<td>".$row["username"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>รหัสผู้ฝึก</th>";
+                echo "<td>".$row["trainer_id"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>ชื่อคอร์ส</th>";
+                echo "<td>".$row["title"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>ชื่อ-สกุล</th>";
+                echo "<td>".$row["name"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>อีเมล</th>";
+                echo "<td>".$row["email"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>เพศเทรนเนอร์</th>";
+                echo "<td>".$row["gender"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>อายุ</th>";
+                echo "<td>".$row["age"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>เบอร์โทร</th>";
+                echo "<td>".$row["phone_number"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>รายละเอียด</th>";
+                echo "<td>".$row["description"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>ราคา</th>";
+                echo "<td>".$row["price"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>ความยาก</th>";
+                echo "<td>".$row["difficulty"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>วันที่เริ่ม</th>";
+                echo "<td>".$row["start_date"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>วันที่สิ้นสุด</th>";
+                echo "<td>".$row["end_date"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>เวลาเริ่ม</th>";
+                echo "<td>".$row["start_time"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>เวลาสิ้นสุด</th>";
+                echo "<td>".$row["end_time"]."</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<th>สถานะ</th>";
+                echo "<td>".$row["status"]."</td>";
+                echo "</tr>";
+            }
+            
+            echo "</table>";
+            echo "</div>"; 
+        } else {
+            echo "<div class='error-message'>ไม่พบข้อมูล</div>";
+        }
+        ?>
+    </div>
     </div>
 </body>
 </html>
