@@ -193,6 +193,7 @@ if ($result->num_rows > 0) {
        echo "<input type='hidden' name='start_time' value='" . $row["start_time"] . "'>";
        echo "<input type='hidden' name='end_time' value='" . $row["end_time"] . "'>";
        echo "<input type='hidden' name='status' value='รอเทรนเนอร์ตอบรับ'>";
+       echo "<input type='hidden' name='payment_status' value='ยังไม่ชำระเงิน'>";
        echo "<button type='submit' class='button'>จ้างเทรนเนอร์</button>";
        echo "</form>";
      } else {

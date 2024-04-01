@@ -5,7 +5,9 @@ CREATE TABLE hired_trainers (
     trainerusername VARCHAR(100) NOT NULL,
     trainer_id INT,
     hired_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) DEFAULT NULL
+    status VARCHAR(50) DEFAULT NULL,
+    image_payment VARCHAR(255) NOT NULL,
+    payment_status VARCHAR(50) DEFAULT NULL
 );
 
 CREATE TABLE course_history_trainer (
@@ -30,5 +32,7 @@ CREATE TABLE course_history_trainer (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     activities TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    image_payment VARCHAR(255) NOT NULL,
+    payment_status VARCHAR(50) DEFAULT NULL
 );

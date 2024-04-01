@@ -22,21 +22,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $trainerusername = $_POST["trainerusername"];
             $trainer_id = $_POST["trainer_id"];
             $status = $_POST["status"];
+            $payment_status = $_POST["payment_status"];
             
 
             // เพิ่มข้อมูลลงในตาราง hired_trainers
-            $hired_trainers_sql = "INSERT INTO hired_trainers (username, trainerusername, course_id, trainer_id, status) 
-                    VALUES (?, ?, ?, ?, ?)";
+            $hired_trainers_sql = "INSERT INTO hired_trainers (username, trainerusername, course_id, trainer_id, status, payment_status) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
             $stmt1 = $conn->prepare($hired_trainers_sql);
-            $stmt1->bind_param("sssss", $username, $trainerusername, $course_id, $trainer_id, $status);
+            $stmt1->bind_param("ssssss", $username, $trainerusername, $course_id, $trainer_id, $status, $payment_status);
 
             if ($stmt1->execute()) {
                 // เพิ่มข้อมูลลงในตาราง course_history_trainer
-                $course_history_sql = "INSERT INTO course_history_trainer (username, trainerusername, course_id, trainer_id, status, title, cover_image, name, email, age, phone_number, description, price, difficulty, start_date, end_date, start_time, end_time) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $course_history_sql = "INSERT INTO course_history_trainer (username, trainerusername, course_id, trainer_id, status, payment_status, title, cover_image, name, email, age, phone_number, description, price, difficulty, start_date, end_date, start_time, end_time) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 $stmt2 = $conn->prepare($course_history_sql);
-                $stmt2->bind_param("ssssssssssssssssss", $username, $trainerusername, $course_id, $trainer_id, $status, $_POST["title"], $_POST["cover_image"], $_POST["name"], $_POST["email"], $_POST["age"], $_POST["phone_number"], $_POST["description"], $_POST["price"], $_POST["difficulty"], $_POST["start_date"], $_POST["end_date"], $_POST["start_time"], $_POST["end_time"]);
+                $stmt2->bind_param("sssssssssssssssssss", $username, $trainerusername, $course_id, $trainer_id, $status, $payment_status, $_POST["title"], $_POST["cover_image"], $_POST["name"], $_POST["email"], $_POST["age"], $_POST["phone_number"], $_POST["description"], $_POST["price"], $_POST["difficulty"], $_POST["start_date"], $_POST["end_date"], $_POST["start_time"], $_POST["end_time"]);
 
                 if ($stmt2->execute()) {
                     // แสดงข้อความแจ้งเตือน

@@ -184,6 +184,10 @@
                 echo "<th>สถานะ</th>";
                 echo "<td>".$row["status"]."</td>";
                 echo "</tr>";
+                echo "<tr>";
+                echo "<th>สถานะการชำระเงิน</th>";
+                echo "<td>".$row["payment_status"]."</td>";
+                echo "</tr>";
             }
             
             echo "</table>";

@@ -103,7 +103,7 @@ if ($conn->connect_error) {
 if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
     $username = $_SESSION["username"];
 
-    $sql = "SELECT hired_trainers.username, hired_trainers.status, courses.course_id AS course_id, courses.title AS title, courses.cover_image, courses.description, courses.price, courses.difficulty, courses.name, courses.email, courses.age, courses.gender, courses.phone_number, courses.start_date, courses.end_date, courses.start_time, courses.end_time
+    $sql = "SELECT hired_trainers.username, hired_trainers.status, hired_trainers.course_id, courses.title, courses.cover_image, courses.description, courses.price, courses.difficulty, courses.name, courses.email, courses.age, courses.gender, courses.phone_number, courses.start_date, courses.end_date, courses.start_time, courses.end_time, hired_trainers.payment_status
             FROM hired_trainers 
             INNER JOIN courses ON hired_trainers.course_id = courses.course_id
             WHERE hired_trainers.username = '$username'";
@@ -132,6 +132,8 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
             echo "<p>ถึง: $end_date_thai</p>";
             echo "<p>เวลา: " . $row["start_time"] . "</p>";
             echo "<p>ถึง: " . $row["end_time"] . "</p>";
+            echo "<p>สถานะการชำระเงิน: " . $row["payment_status"] . "</p>";
+            echo "<a href='payment.php?course_id=" . $row["course_id"] . "'>ชำระเงิน</a>";
             $start_date = strtotime($row["start_date"]);
             $today = strtotime(date("Y-m-d"));
 
@@ -191,6 +193,8 @@ $result = $conn->query($sql);
             echo "<p>ถึง: " . date("j F Y", strtotime($row["end_date"])) . "</p>";
             echo "<p>เวลา: " . $row["start_time"] . "</p>";
             echo "<p>ถึง: " . $row["end_time"] . "</p>";
+            echo "<p>สถานะการชำระเงิน: " . $row["payment_status"] . "</p>";
+            echo "<a href='payment.php?course_id=" . $row["course_id"] . "'>ชำระเงิน</a>";
             echo "<p>สถานะ: ได้รับการยืนยัน</p>";
             echo "</div>";
             }
