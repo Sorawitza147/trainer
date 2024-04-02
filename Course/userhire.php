@@ -110,68 +110,56 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            echo "<div class='course-card booked-course'>";
-            echo "<h2>" . $row["title"] . "</h2>";
-            echo "<img src='uploadscourse/" . $row["cover_image"] . "'>";
-            echo "<p>ชื่อเทรนเนอร์: " . $row["name"] . "</p>";
-            echo "<p>อีเมล์: " . $row["email"] . "</p>";
-            echo "<p>เพศของเทรนเนอร์: " . $row["gender"] . "</p>";
-            echo "<p>อายุของเทรนเนอร์: " . $row["age"] . "</p>";
-            echo "<p>เบอร์โทร: " . $row["phone_number"] . "</p>";
-            echo "<p>รายละเอียด: " . $row["description"] . "</p>";
-            echo "<p>฿: " . $row["price"] . "</p>";
-            echo "<p>ระดับ: " . $row["difficulty"] . "</p>";
-            
-            // แปลงรูปแบบวันที่จากฐานข้อมูลเป็นภาษาไทย
-            $start_date_thai = date("j F Y", strtotime($row["start_date"]));
-            $end_date_thai = date("j F Y", strtotime($row["end_date"]));
-            
-            // แสดงข้อความในภาษาไทย
-            echo "<p>วันเริ่ม: $start_date_thai</p>";
-            echo "<p>ถึง: $end_date_thai</p>";
-            echo "<p>เวลา: " . $row["start_time"] . "</p>";
-            echo "<p>ถึง: " . $row["end_time"] . "</p>";
-            echo "<p>สถานะการชำระเงิน: " . $row["payment_status"] . "</p>";
-            echo "<a href='payment.php?course_id=" . $row["course_id"] . "'>ชำระเงิน</a>";
-            $start_date = strtotime($row["start_date"]);
-            $today = strtotime(date("Y-m-d"));
-
-            // ตรวจสอบจำนวนวัน
-            $days_difference = ($start_date - $today) / (60 * 60 * 24);
-
-            // กำหนดค่า "ระยะเวลาการยกเลิก"
-            $cancellation_period = 1; // ระยะเวลาในวันที่ยกเลิกได้ (จำนวนวันก่อนวันเริ่ม)
-            
-            // แสดงปุ่มยกเลิกหรือข้อความแจ้งเตือน
-            if ($days_difference <= $cancellation_period) {
-                echo "<button type='button' disabled>ยกเลิกการจ้าง</button>";
-                echo "<p>ไม่สามารถยกเลิกการจ้างได้เนื่องจากภายใน {$cancellation_period} วันก่อนวันเริ่ม</p>";
-            } else {
-                echo "<form action='cancel_hiring.php' method='post'>";
-                if (isset($row["course_id"])) {
-                    echo "<input type='hidden' name='course_id' value='" . $row["course_id"] . "'>";
-                }
-                echo "<button type='submit'>ยกเลิกการจ้าง</button>";
-                echo "</form>";
-            }
-
-            echo "<p>สถานะ: " . $row["status"] . "</p>";
-
-            echo "</div>";
-        }
-    } else {
-        echo "<li>คุณยังไม่มีข้อมูลรอตอบรับจากเทรนเนอร์</li>";
-    }
+      while ($row = $result->fetch_assoc()) {
+          echo "<div class='course-card booked-course'>";
+          echo "<h2>" . $row["title"] . "</h2>";
+          echo "<img src='uploadscourse/" . $row["cover_image"] . "'>";
+          echo "<p>ชื่อเทรนเนอร์: " . $row["name"] . "</p>";
+          echo "<p>อีเมล์: " . $row["email"] . "</p>";
+          echo "<p>เพศของเทรนเนอร์: " . $row["gender"] . "</p>";
+          echo "<p>อายุของเทรนเนอร์: " . $row["age"] . "</p>";
+          echo "<p>เบอร์โทร: " . $row["phone_number"] . "</p>";
+          echo "<p>รายละเอียด: " . $row["description"] . "</p>";
+          echo "<p>฿: " . $row["price"] . "</p>";
+          echo "<p>ระดับ: " . $row["difficulty"] . "</p>";
+          
+          $start_date_thai = date("j F Y", strtotime($row["start_date"]));
+          $end_date_thai = date("j F Y", strtotime($row["end_date"]));
+          
+          echo "<p>วันเริ่ม: $start_date_thai</p>";
+          echo "<p>ถึง: $end_date_thai</p>";
+          echo "<p>เวลา: " . $row["start_time"] . "</p>";
+          echo "<p>ถึง: " . $row["end_time"] . "</p>";
+          echo "<p>สถานะการชำระเงิน: " . $row["payment_status"] . "</p>";
+          echo "<p><a href='payment.php?course_id=" . $row["course_id"] . "'>ชำระเงิน</a></p>";
+          
+          $start_date = strtotime($row["start_date"]);
+          $today = strtotime(date("Y-m-d"));
+          $days_difference = ($start_date - $today) / (60 * 60 * 24);
+          $cancellation_period = 1; 
+  
+          if ($days_difference <= $cancellation_period) {
+              echo "<button type='button' disabled>ยกเลิกการจ้าง</button>";
+              echo "<p>ไม่สามารถยกเลิกการจ้างได้เนื่องจากภายใน {$cancellation_period} วันก่อนวันเริ่ม</p>";
+          } else {
+              echo "<form action='cancel_hiring.php' method='post'>";
+              if (isset($row["course_id"])) {
+                  echo "<input type='hidden' name='course_id' value='" . $row["course_id"] . "'>";
+              }
+              echo "<button type='submit'>ยกเลิกการจ้าง</button>";
+              echo "</form>";
+          }
+  
+          echo "<p>สถานะ: " . $row["status"] . "</p>";
+          echo "</div>";
+      }
+  } else {
+      echo "<li>คุณยังไม่มีข้อมูลรอตอบรับจากเทรนเนอร์</li>";
+  }
+  
   echo "----------------------------------------------------------------------------------------------------";
   echo "----------------------------------------------------------------------------------------------------";
-    $sql = "SELECT username, status, course_id, title, cover_image, description, price, difficulty, name, email, age, gender, phone_number, start_date, end_date, start_time, end_time
-            FROM accepted_course
-            WHERE username = '$username'";
-$result = $conn->query($sql);
-
-
-            $sql = "SELECT username, status, course_id, title, cover_image, description, price, difficulty, name, email, age, gender, phone_number, start_date, end_date, start_time, end_time
+    $sql = "SELECT username, status, course_id, title, cover_image, description, price, difficulty, name, email, age, gender, phone_number, start_date, end_date, start_time, end_time, payment_status
             FROM accepted_course
             WHERE username = '$username'";
             $result = $conn->query($sql);

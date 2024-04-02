@@ -26,6 +26,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 <li><a href="#" onclick="displayData('manage_users.php')">manage users</a></li>
                 <li><a href="#" onclick="displayData('manage_trainer.php')">manage trainer</a></li>
                 <li><a href="#" onclick="displayData('manage_products.php')">Manage Products</a></li>
+                <li><a href="#" onclick="displayData('accept_payment.php')">payment</a></li>
                 <li><a href="#" onclick="displayData('generate_reports.php')">Generate Reports</a></li>
                 <li><a href="admin_logout.php">Logout</a></li>
             </ul>
