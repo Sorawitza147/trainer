@@ -322,8 +322,8 @@ session_start();
     <nav class="navigation">
       <a href="index.php" class="active">Home</a>
       <?php
-        echo "<a button type='button' href='Login/login.php' class='btn btn-outline-light me-2'>Login</a></button>";
-        echo "<a button type='button' href='Login/signup.php' class='btn btn-warning'>Sign up</a></button>";
+        echo "<a button type='button' href='Login/login.php' class='btn btn-outline-light me-2'>ล๊อคอิน</a></button>";
+        echo "<a button type='button' href='Login/signup.php' class='btn btn-warning'>สมัคร</a></button>";
       ?>
     </nav>
   </header>

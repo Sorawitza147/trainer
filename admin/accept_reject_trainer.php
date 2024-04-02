@@ -32,13 +32,13 @@ if(isset($_POST['accept'])) {
         if ($result_select->num_rows > 0) {
             $row = $result_select->fetch_assoc();
 
-            $stmt_insert = $conn->prepare("INSERT INTO accepted_trainers (trainerusername, password, first_name, last_name, emailtrainer, age, gender, phone_number, level_2, start_year_2, end_year_2, level_3, start_year_3, end_year_3, level_4, start_year_4, end_year_4, level_5, start_year_5, end_year_5, level_6, start_year_6, end_year_6, district, subdistrict, image_profile, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt_insert = $conn->prepare("INSERT INTO accepted_trainers (trainerusername, password, first_name, last_name, emailtrainer, age, gender, phone_number, level_2, start_year_2, end_year_2, level_3, start_year_3, end_year_3, level_4, start_year_4, end_year_4, level_5, start_year_5, end_year_5, level_6, start_year_6, end_year_6, district, subdistrict, image_profile, image, bank, account_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             if ($stmt_insert === false) {
                 die("Error preparing statement: " . $conn->error);
             }
 
-            if (!$stmt_insert->bind_param("sssssssssiisiisiisiisiissss", $row['trainerusername'], $row['password'], $row['first_name'], $row['last_name'], $row['emailtrainer'], $row['age'], $row['gender'], $row['phone_number'], $row['level_2'], $row['start_year_2'], $row['end_year_2'], $row['level_3'], $row['start_year_3'], $row['end_year_3'], $row['level_4'], $row['start_year_4'], $row['end_year_4'], $row['level_5'], $row['start_year_5'], $row['end_year_5'], $row['level_6'], $row['start_year_6'], $row['end_year_6'], $row['district'], $row['subdistrict'], $row['image_profile'], $row['image'])) {
+            if (!$stmt_insert->bind_param("sssssssssiisiisiisiisiisssssi", $row['trainerusername'], $row['password'], $row['first_name'], $row['last_name'], $row['emailtrainer'], $row['age'], $row['gender'], $row['phone_number'], $row['level_2'], $row['start_year_2'], $row['end_year_2'], $row['level_3'], $row['start_year_3'], $row['end_year_3'], $row['level_4'], $row['start_year_4'], $row['end_year_4'], $row['level_5'], $row['start_year_5'], $row['end_year_5'], $row['level_6'], $row['start_year_6'], $row['end_year_6'], $row['district'], $row['subdistrict'], $row['image_profile'], $row['image'], $row['bank'], $row['account_number'])) {
                 die("Error binding parameters: " . $stmt_insert->error);
             }
             

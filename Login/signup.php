@@ -30,7 +30,10 @@ if (isset($_POST['signup'])) {
     $age = $_POST['age'];
     $height = $_POST['height'];
     $weight = $_POST['weight'];
-    $phone = $_POST['phone']; // เปลี่ยน $phone_number เป็น $phone
+    $phone = $_POST['phone']; 
+    $bank = $_POST['bank'];
+    $account_number = $_POST['account_number']; 
+    
     
     // File upload handling
     $targetDir = "uppic/";
@@ -123,8 +126,8 @@ if (isset($_POST['signup'])) {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // เตรียมคำสั่ง SQL สำหรับการเพิ่มข้อมูล
-    $sql = "INSERT INTO user (Firstname, Lastname, username, Password, Email, Gender, Age, Height, Weight, Phone) 
-            VALUES ('$firstname', '$lastname', '$username','$hashedPassword', '$email', '$gender', '$age', '$height', '$weight', '$phone')";
+    $sql = "INSERT INTO user (Firstname, Lastname, username, Password, Email, Gender, Age, Height, Weight, Phone, bank, account_number, image) 
+            VALUES ('$firstname', '$lastname', '$username','$hashedPassword', '$email', '$gender', '$age', '$height', '$weight', '$phone', '$bank', '$account_number', '$targetFile')";
 
     if ($conn->query($sql) === TRUE) {
         echo "<script>function showRegisterSuccess() {
@@ -390,6 +393,40 @@ if (isset($_POST['signup'])) {
                     อื่นๆ
                 </label>
             </div>
+        </div>
+        <div class="input-box">
+            <label for="bank">ธนาคาร <span style="color: red;">*</span></label>
+            <select id="bank" name="bank" required>
+                    <option value="" disabled selected>กรุณาเลือกธนาคาร</option>
+                    <option value="ธนาคารกรุงเทพ">ธนาคารกรุงเทพ</option>
+                    <option value="ธนาคารกสิกรไทย">ธนาคารกสิกรไทย</option>
+                    <option value="ธนาคารกรุงไทย">ธนาคารกรุงไทย</option>
+                    <option value="ธนาคารทหารไทย">ธนาคารทหารไทย</option>
+                    <option value="ธนาคารไทยพาณิชย์">ธนาคารไทยพาณิชย์</option>
+                    <option value="ธนาคารกรุงศรีอยุธยา">ธนาคารกรุงศรีอยุธยา</option>
+                    <option value="ธนาคารเกียรตินาคิน">ธนาคารเกียรตินาคิน</option>
+                    <option value="ธนาคารซีไอเอ็มบีไทย">ธนาคารซีไอเอ็มบีไทย</option>
+                    <option value="ธนาคารทิสโก้">ธนาคารทิสโก้</option>
+                    <option value="ธนาคารธนชาต">ธนาคารธนชาต</option>
+                    <option value="ธนาคารยูโอบี">ธนาคารยูโอบี</option>
+                    <option value="ธนาคารสแตนดาร์ดชาร์เตอร์ด (ไทย)">ธนาคารสแตนดาร์ดชาร์เตอร์ด (ไทย)</option>
+                    <option value="ธนาคารไทยเครดิตเพื่อรายย่อย">ธนาคารไทยเครดิตเพื่อรายย่อย</option>
+                    <option value="ธนาคารแลนด์ แอนด์ เฮาส์">ธนาคารแลนด์ แอนด์ เฮาส์</option>
+                    <option value="ธนาคารไอซีบีซี (ไทย)">ธนาคารไอซีบีซี (ไทย)</option>
+                    <option value="ธนาคารพัฒนาวิสาหกิจขนาดกลางและขนาดย่อมแห่งประเทศไทย">ธนาคารพัฒนาวิสาหกิจขนาดกลางและขนาดย่อมแห่งประเทศไทย</option>
+                    <option value="ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร">ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร</option>
+                    <option value="ธนาคารเพื่อการส่งออกและนำเข้าแห่งประเทศไทย">ธนาคารเพื่อการส่งออกและนำเข้าแห่งประเทศไทย</option>
+                    <option value="ธนาคารออมสิน">ธนาคารออมสิน</option>
+                    <option value="ธนาคารอาคารสงเคราะห์">ธนาคารอาคารสงเคราะห์</option>
+                    <option value="ธนาคารอิสลามแห่งประเทศไทย">ธนาคารอิสลามแห่งประเทศไทย</option>
+                    <option value="ธนาคารแห่งประเทศจีน">ธนาคารแห่งประเทศจีน</option>
+                    <option value="ธนาคารซูมิโตโม มิตซุย ทรัสต์ (ไทย)">ธนาคารซูมิโตโม มิตซุย ทรัสต์ (ไทย)</option>
+                    <option value="ธนาคารฮ่องกงและเซี้ยงไฮ้แบงกิ้งคอร์ปอเรชั่น จำกัด">ธนาคารฮ่องกงและเซี้ยงไฮ้แบงกิ้งคอร์ปอเรชั่น จำกัด</option>
+                </select>
+           </div> 
+            <div class="input-box">
+            <input type="number" name="account_number" placeholder=" " required>
+            <label class="placeholder">เลขที่บัญชี <span style="color: red;">*</span></label>
         </div>
         <div class="input-box">
             <input type="number" name="age" placeholder=" " min="15" max="90" required>

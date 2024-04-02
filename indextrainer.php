@@ -317,14 +317,14 @@ session_start();
   <section id="left"></section>
   <section id="right"></section>
   <header>
-    <h2 class="logo">Logo</h2>
+    <h2 class="logo"></h2>
     <nav class="navigation">
-      <a href="indextrainer.php" class="active">Home</a>
-      <a href="Course/Hire.php">Hire</a>
-      <a href="Course/course.php">Course</a>
+      <a href="indextrainer.php" class="active">หน้าหลัก</a>
+      <a href="Course/Hire.php">คนจ้าง</a>
+      <a href="Course/course.php">สร้างคอร์ส</a>
       <a href="Course/course_history.php">ประวัติ</a>
       <a href="Course/course_status.php">สถานะ</a>
-      <a href="Trainer/trainer.php">Personal Training</a>
+      <a href="Trainer/trainer.php">ประวัติส่วน</a>
       <a href="Trainer/viewcourse.php">ดูคอร์ส</a> 
       <?php
       if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
@@ -333,8 +333,8 @@ session_start();
         echo "<span class='text-white'>ยินดีต้อนรับเทรนเนอร์: " . $_SESSION["trainerusername"] . "</span>";
         echo "<a button type='button' href='Login/logout.php' class='btn btn-outline-light me-2'>Logout</a></button>";
       } else {
-        echo "<a button type='button' href='Login/login.php' class='btn btn-outline-light me-2'>Login</a></button>";
-        echo "<a button type='button' href='Login/signup.php' class='btn btn-warning'>Sign up</a></button>";
+        echo "<a button type='button' href='Login/login.php' class='btn btn-outline-light me-2'>ล๊อคอิน</a></button>";
+        echo "<a button type='button' href='Login/signuptrainer.php' class='btn btn-warning'>สมัคร</a></button>";
       }
       ?>
     </nav>

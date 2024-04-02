@@ -317,13 +317,13 @@ session_start();
   <section id="left"></section>
   <section id="right"></section>
   <header>
-    <h2 class="logo">Logo</h2>
+    <h2 class="logo">/h2>
     <nav class="navigation">
       <a href="indexuser.php" class="active">หน้าหลัก</a>
       <a href="Cash/paymentuser.php">เติมเงิน</a>
       <a href="Course/histortuser.php">ประวัติ</a>
-      <a href="Course/userhire.php">Hiretrainer</a>
-      <a href="Course/usercourse.php">Course</a>
+      <a href="Course/userhire.php">จ้างเทรนเนอร์</a>
+      <a href="Course/usercourse.php">คอร์ส</a>
       <a href="Login/user.php">ประวัติส่วนตัว</a>
       <?php
       if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
@@ -332,8 +332,8 @@ session_start();
         echo "<span class='text-white'>ยินดีต้อนรับคุณ: " . $_SESSION["username"] . "</span>";
         echo "<a button type='button' href='Login/logout.php' class='btn btn-outline-light me-2'>Logout</a></button>";
       } else {
-        echo "<a button type='button' href='Login/login.php' class='btn btn-outline-light me-2'>Login</a></button>";
-        echo "<a button type='button' href='Login/signup.php' class='btn btn-warning'>Sign up</a></button>";
+        echo "<a button type='button' href='Login/login.php' class='btn btn-outline-light me-2'>ล๊อคอิน</a></button>";
+        echo "<a button type='button' href='Login/signup.php' class='btn btn-warning'>สมัคร</a></button>";
       }
       ?>
     </nav>

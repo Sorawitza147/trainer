@@ -27,22 +27,30 @@
             background-color: #f2f2f2;
         }
         .edit-button {
-            background-color: #4CAF50;
+            background-color: #33CCFF	;
             color: white;
             padding: 6px 12px;
             text-align: center;
             text-decoration: none;
-            display: inline-block;
+            display: inline-block;  
             border-radius: 4px;
         }
         .edit-button:hover {
             background-color: #45a049;
         }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>Course Status</h1>
-
+    <div class="container">
+        <h1>Course Status</h1>
+        <a href="../indextrainer.php" class="edit-button">ย้อนกลับ</a>
+    </div>
     <table>
     <tr>
       <th>ID</th>
