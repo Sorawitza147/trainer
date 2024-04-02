@@ -73,25 +73,26 @@ if(isset($_GET["course_id"])) {
     // อัปเดตค่า payment_status ใน hired_trainers เป็น "รอตรวจสอบ"
     $sql_update_hired_trainers = "UPDATE hired_trainers SET payment_status = 'รอตรวจสอบการชำระเงิน' WHERE course_id = '$course_id'";
     if ($conn->query($sql_update_hired_trainers) === TRUE) {
-        echo "Payment status updated successfully in hired_trainers.";
+        echo "";
     } else {
-        echo "Error updating payment status in hired_trainers: " . $conn->error;
+        echo "" . $conn->error;
     }
 
     // อัปเดตค่า payment_status ใน course_history_trainer เป็น "รอตรวจสอบ"
     $sql_update_course_history = "UPDATE course_history_trainer SET payment_status = 'รอตรวจสอบการชำระเงิน' WHERE course_id = '$course_id'";
     if ($conn->query($sql_update_course_history) === TRUE) {
-        echo "Payment status updated successfully in course_history_trainer.";
+        header("Location: successpayment.php");
+        exit; // อย่าลืมใส่ exit เพื่อหยุดการทำงานของสคริปต์หลังจาก header
     } else {
-        echo "Error updating payment status in course_history_trainer: " . $conn->error;
+        echo "" . $conn->error;
     }
 
     // เพิ่มรายการในตาราง accepted_course
     $sql_insert_accepted_course = "INSERT INTO accepted_course (course_id, payment_status) VALUES ('$course_id', 'รอตรวจสอบการชำระเงิน')";
     if ($conn->query($sql_insert_accepted_course) === TRUE) {
-        echo "Record created successfully in accepted_course.";
+        echo ".";
     } else {
-        echo "Error creating record in accepted_course: " . $conn->error;
+        echo "" . $conn->error;
     }
 } else {
     echo "No course_id provided in the URL.";

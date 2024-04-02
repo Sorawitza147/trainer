@@ -35,7 +35,7 @@ if (isset($_GET['delete_course_id'])) {
     }
 
     // ลบคอร์ส
-    $sql_delete_course = "DELETE FROM courses WHERE id = ?";
+    $sql_delete_course = "DELETE FROM courses WHERE course_id = ?";
     if ($stmt_delete_course = $conn->prepare($sql_delete_course)) {
       $stmt_delete_course->bind_param("i", $delete_course_id);
       if ($stmt_delete_course->execute()) {

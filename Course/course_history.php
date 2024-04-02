@@ -5,8 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>คอร์สที่สร้าง</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Mitr", sans-serif;
+}
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       background-color: #f2f2f2; /* สีพื้นหลังของหน้าเว็บ */
@@ -101,7 +108,6 @@ $sql = "SELECT
   c.trainer_id,
   c.title,
   c.price,
-  c.duration,
   c.difficulty,
   c.description,
   c.start_date,
@@ -110,9 +116,8 @@ $sql = "SELECT
   c.end_time,
   c.cover_image,
   c.created_at,
-  c.updated_at,
   c.status
-FROM course_history_user AS c
+FROM course_history_trainer AS c
 INNER JOIN accepted_trainers AS at ON c.trainer_id = at.trainer_id
 WHERE at.trainerusername = '$trainerusername'";
 
@@ -132,18 +137,11 @@ if ($result === false) {
         echo "<td>" . $row['name'] . "</td>";
         echo "<td>" . $row['email'] . "</td>";
         echo "<td>" . $row['age'] . "</td>";
-        if ($row['gender'] == 'Male') {
-          echo "<td>ชาย</td>";
-        } elseif ($row['gender'] == 'Female') {
-            echo "<td>หญิง</td>";
-        } else {
-            echo "<td>ไม่ระบุเพศ</td>";
-        }
+        echo "<td>" . $row['gender'] . "</td>";
         echo "<td>" . $row['phone_number'] . "</td>";
         echo "<td>" . $row['trainer_id'] . "</td>";
         echo "<td>" . $row['title'] . "</td>";
         echo "<td>" . $row['price'] . "</td>";
-        echo "<td>" . $row['duration'] . "</td>";
         echo "<td>" . $row['difficulty'] . "</td>";
         echo "<td>" . $row['description'] . "</td>";
         echo "<td>" . $row['start_date'] . "</td>";
@@ -157,7 +155,7 @@ if ($result === false) {
       echo "</tr>";
     }
   } else {
-    echo "<tr><td colspan='8'>ไม่พบข้อมูลคอร์ส</td></tr>";
+    echo "<tr><td colspan='13'>ไม่พบข้อมูลคอร์ส</td></tr>";
   }
 }
 
@@ -165,8 +163,7 @@ if ($result === false) {
 $conn->close();
 ?>
 
-
-  </table>
 </div>
+</table>
 </body>
 </html>

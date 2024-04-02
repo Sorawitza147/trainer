@@ -317,7 +317,7 @@ session_start();
   <section id="left"></section>
   <section id="right"></section>
   <header>
-    <h2 class="logo">/h2>
+    <h2 class="logo"></h2>
     <nav class="navigation">
       <a href="indexuser.php" class="active">หน้าหลัก</a>
       <a href="Cash/paymentuser.php">เติมเงิน</a>
@@ -333,7 +333,7 @@ session_start();
         echo "<a button type='button' href='Login/logout.php' class='btn btn-outline-light me-2'>Logout</a></button>";
       } else {
         echo "<a button type='button' href='Login/login.php' class='btn btn-outline-light me-2'>ล๊อคอิน</a></button>";
-        echo "<a button type='button' href='Login/signup.php' class='btn btn-warning'>สมัคร</a></button>";
+        echo "<a button type='button' href='Login/signup.php' class='btn btn-warning'>lสมัคร</a></button>";
       }
       ?>
     </nav>

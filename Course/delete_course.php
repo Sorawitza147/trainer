@@ -9,7 +9,7 @@ if (!$conn) {
 if(isset($_GET['delete_course_id'])) {
 
     $course_id = $_GET['delete_course_id'];
-    $sql = "DELETE FROM courses WHERE id = $course_id";
+    $sql = "DELETE FROM courses WHERE course_id = $course_id";
 
     if (mysqli_query($conn, $sql)) {
         echo "ลบคอร์สเรียบร้อยแล้ว";

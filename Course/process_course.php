@@ -51,19 +51,6 @@ $stmt->execute();
 
 $course_id = $stmt->insert_id;
 
-// Insert data into 'course_history' table
-$sql2 = "INSERT INTO course_history_user (name, email, gender, age, phone_number, trainer_id, trainerusername, title, price, duration, difficulty, description, start_date, end_date, start_time, end_time, cover_image)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-$stmt2 = $conn->prepare($sql2);
-
-if (!$stmt2) {
-    echo "Error2: " . $conn->error;
-    exit();
-}
-
-$stmt2->bind_param('sssiisssissssssss', $name, $email, $gender, $age, $phone_number, $trainer_id, $trainerusername, $title, $price, $duration, $difficulty, $description, $start_date, $end_date, $start_time, $end_time, $cover_image);
-$stmt2->execute();
-
 // Check if any activities are selected
 if (isset($_POST['activity']) && is_array($_POST['activity'])) {
     foreach ($_POST['activity'] as $activity_id) {
