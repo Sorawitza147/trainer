@@ -146,6 +146,8 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
               if (isset($row["course_id"])) {
                   echo "<input type='hidden' name='course_id' value='" . $row["course_id"] . "'>";
               }
+              echo "<input type='hidden' name='title' value='" . $row["title"] . "'>";
+              echo "<input type='hidden' name='price' value='" . $row["price"] . "'>";
               echo "<button type='submit'>ยกเลิกการจ้าง</button>";
               echo "</form>";
           }
