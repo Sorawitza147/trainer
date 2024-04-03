@@ -333,7 +333,7 @@ session_start();
         echo "<a button type='button' href='Login/logout.php' class='btn btn-outline-light me-2'>Logout</a></button>";
       } else {
         echo "<a button type='button' href='Login/login.php' class='btn btn-outline-light me-2'>ล๊อคอิน</a></button>";
-        echo "<a button type='button' href='Login/signup.php' class='btn btn-warning'>lสมัคร</a></button>";
+        echo "<a button type='button' href='Login/signup.php' class='btn btn-warning'>สมัคร</a></button>";
       }
       ?>
     </nav>

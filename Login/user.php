@@ -147,6 +147,8 @@ if ($result === false || $result->num_rows === 0) {
         echo "<p>ส่วนสูง: " . $row["height"] . "</p>";
         echo "<p>น้ำหนัก: " . $row["weight"] . "</p>";
         echo "<p>เบอร์โทรศัพท์: " . $row["phone"] . "</p>";
+        echo "<p>ธนาคาร: " . $row["bank"] . "</p>";
+        echo "<p>เลชที่บัญชี: " . $row["account_number"] . "</p>";
         
 
         echo "<button class='edit-profile-btn' onclick=\"window.location.href='edit_profileuser.php'\">แก้ไขโปรไฟล์</button>";

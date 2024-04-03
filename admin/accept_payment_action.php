@@ -30,7 +30,14 @@ if (isset($_POST['payment_id'])) {
     if (!mysqli_query($conn, $update_accepted_course_sql)) {
         echo "Error updating record in accepted_course: " . mysqli_error($conn);
     }
-    echo "Payment accepted successfully.";
+
+    // เริ่มลบข้อมูลจากตาราง payment หลังจากยอมรับการชำระเงินเรียบร้อย
+    $delete_payment_sql = "DELETE FROM payment WHERE id = $payment_id";
+    if (!mysqli_query($conn, $delete_payment_sql)) {
+        echo "Error deleting record in payment: " . mysqli_error($conn);
+    }
+
+    echo "<script>window.location.href = 'admin_dashboard.php';</script>";
   } else {
     echo "Payment not found.";
   }

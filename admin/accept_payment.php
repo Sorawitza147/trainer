@@ -62,17 +62,17 @@
     <h2>Accepted Payments</h2>
     <div class="container">
         <?php
-        // เชื่อมต่อฐานข้อมูล
+        // Connect to the database
         $conn = mysqli_connect('localhost', 'root', '', 'trainer');
         if (!$conn) {
             die("Connection failed: " . mysqli_connect_error());
         }
 
-        // สร้างคำสั่ง SQL เพื่อเลือกข้อมูลจากตาราง payment
+        // Retrieve data from the payment table
         $sql = "SELECT * FROM payment";
         $result = mysqli_query($conn, $sql);
 
-        // ตรวจสอบว่ามีข้อมูลในตารางหรือไม่
+        // Check if there are any payments
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<div class='trainer-info'>";
@@ -86,7 +86,7 @@
                 echo "<p>ราคา: " . $row["price"] . "</p>";
                 echo "<p>สร้างเมื่อ: " . $row["created_at"] . "</p>";
                 echo "<div class='button-container'>";
-                echo "<form action='accept_payment_action.php' method='post'>";
+                echo "<form id='acceptForm' action='accept_payment_action.php' method='post' onsubmit='return confirmAccept()'>";
                 echo "<input type='hidden' name='payment_id' value='" . $row["id"] . "'>";
                 echo "<button type='submit'>ยอมรับ</button>"; 
                 echo "</form>";
@@ -97,7 +97,7 @@
             echo "<p>No accepted payments</p>";
         }
 
-        // ปิดการเชื่อมต่อฐานข้อมูล
+        // Close the database connection
         mysqli_close($conn);
         ?>
     </div>

@@ -22,13 +22,14 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <h1>Welcome, <?php echo $_SESSION['username']; ?>!</h1>
         <div class="sidebar">
             <ul>
-                 <li><a href="#" onclick="displayData('view_trainer.php')">View Trainer</a></li>
-                <li><a href="#" onclick="displayData('manage_users.php')">manage users</a></li>
-                <li><a href="#" onclick="displayData('manage_trainer.php')">manage trainer</a></li>
-                <li><a href="#" onclick="displayData('manage_products.php')">Manage Products</a></li>
-                <li><a href="#" onclick="displayData('accept_payment.php')">payment</a></li>
-                <li><a href="#" onclick="displayData('generate_reports.php')">Generate Reports</a></li>
-                <li><a href="admin_logout.php">Logout</a></li>
+                 <li><a href="#" onclick="displayData('view_trainer.php')">ดูข้อมูลเทรนเนอร์</a></li>
+                <li><a href="#" onclick="displayData('manage_users.php')">จัดการผู้ออกกำลังกาย</a></li>
+                <li><a href="#" onclick="displayData('manage_trainer.php')">จัดการเทรนเนอร์</a></li>
+                <li><a href="#" onclick="displayData('manage_products.php')">จัดการคอร์ส</a></li>
+                <li><a href="#" onclick="displayData('accept_payment.php')">จ่ายเงิน</a></li>
+                <li><a href="#" onclick="displayData('generate_reports.php')">รีพอต</a></li>
+                <li><a href="#" onclick="displayData('refund.php')">คืนเงิน</a></li>
+                <li><a href="admin_logout.php">ออกจากระบบ</a></li>
             </ul>
         </div>
         <div class="main-content" id="mainContent">
