@@ -43,6 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $height = $_POST['height'];
     $weight = $_POST['weight'];
     $phone = $_POST['phone'];
+    $bank = $_POST['bank'];
+    $account_number = $_POST['account_number'];
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
         $image = $_FILES['image'];
@@ -60,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    $update_sql = "UPDATE user SET firstname='$firstname', lastname='$lastname', email='$email', gender='$gender', age=$age, height=$height, weight=$weight, phone='$phone' WHERE username='$username'";
+    $update_sql = "UPDATE user SET firstname='$firstname', lastname='$lastname', email='$email', gender='$gender', age=$age, height=$height, weight=$weight, phone='$phone', bank='$bank', account_number='$account_number' WHERE username='$username'";
 
     if ($conn->query($update_sql) === TRUE) {
         echo "<script>
@@ -220,6 +222,37 @@ $conn->close();
             <input type="number" name="height" placeholder="ส่วนสูง" value="<?php echo $row['height']; ?>" required>
             <input type="number" name="weight" placeholder="น้ำหนัก" value="<?php echo $row['weight']; ?>" required>
             <input type="text" name="phone" placeholder="เบอร์โทรศัพท์" value="<?php echo $row['phone']; ?>" required>
+            <div class="input-box">
+            <label for="bank">ธนาคาร <span style="color: red;">*</span></label>
+            <select id="bank" name="bank" required>
+                    <option value="" disabled selected>กรุณาเลือกธนาคาร</option>
+                    <option value="ธนาคารกรุงเทพ">ธนาคารกรุงเทพ</option>
+                    <option value="ธนาคารกสิกรไทย">ธนาคารกสิกรไทย</option>
+                    <option value="ธนาคารกรุงไทย">ธนาคารกรุงไทย</option>
+                    <option value="ธนาคารทหารไทย">ธนาคารทหารไทย</option>
+                    <option value="ธนาคารไทยพาณิชย์">ธนาคารไทยพาณิชย์</option>
+                    <option value="ธนาคารกรุงศรีอยุธยา">ธนาคารกรุงศรีอยุธยา</option>
+                    <option value="ธนาคารเกียรตินาคิน">ธนาคารเกียรตินาคิน</option>
+                    <option value="ธนาคารซีไอเอ็มบีไทย">ธนาคารซีไอเอ็มบีไทย</option>
+                    <option value="ธนาคารทิสโก้">ธนาคารทิสโก้</option>
+                    <option value="ธนาคารธนชาต">ธนาคารธนชาต</option>
+                    <option value="ธนาคารยูโอบี">ธนาคารยูโอบี</option>
+                    <option value="ธนาคารสแตนดาร์ดชาร์เตอร์ด (ไทย)">ธนาคารสแตนดาร์ดชาร์เตอร์ด (ไทย)</option>
+                    <option value="ธนาคารไทยเครดิตเพื่อรายย่อย">ธนาคารไทยเครดิตเพื่อรายย่อย</option>
+                    <option value="ธนาคารแลนด์ แอนด์ เฮาส์">ธนาคารแลนด์ แอนด์ เฮาส์</option>
+                    <option value="ธนาคารไอซีบีซี (ไทย)">ธนาคารไอซีบีซี (ไทย)</option>
+                    <option value="ธนาคารพัฒนาวิสาหกิจขนาดกลางและขนาดย่อมแห่งประเทศไทย">ธนาคารพัฒนาวิสาหกิจขนาดกลางและขนาดย่อมแห่งประเทศไทย</option>
+                    <option value="ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร">ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร</option>
+                    <option value="ธนาคารเพื่อการส่งออกและนำเข้าแห่งประเทศไทย">ธนาคารเพื่อการส่งออกและนำเข้าแห่งประเทศไทย</option>
+                    <option value="ธนาคารออมสิน">ธนาคารออมสิน</option>
+                    <option value="ธนาคารอาคารสงเคราะห์">ธนาคารอาคารสงเคราะห์</option>
+                    <option value="ธนาคารอิสลามแห่งประเทศไทย">ธนาคารอิสลามแห่งประเทศไทย</option>
+                    <option value="ธนาคารแห่งประเทศจีน">ธนาคารแห่งประเทศจีน</option>
+                    <option value="ธนาคารซูมิโตโม มิตซุย ทรัสต์ (ไทย)">ธนาคารซูมิโตโม มิตซุย ทรัสต์ (ไทย)</option>
+                    <option value="ธนาคารฮ่องกงและเซี้ยงไฮ้แบงกิ้งคอร์ปอเรชั่น จำกัด">ธนาคารฮ่องกงและเซี้ยงไฮ้แบงกิ้งคอร์ปอเรชั่น จำกัด</option>
+                </select>
+           </div> 
+           <input type="number" name="account_number" placeholder="เลขบัญชีธนาคาร" value="<?php echo $row['account_number']; ?>" required>
             <button class="btn-submit" type="submit">บันทึกการเปลี่ยนแปลง</button>
         </form>
         <a href="user.php" class="back-button">ย้อนกลับ</a>
