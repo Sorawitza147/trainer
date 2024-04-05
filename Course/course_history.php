@@ -150,7 +150,6 @@ if ($result === false) {
         echo "<td>" . $row['end_time'] . "</td>";
         echo "<td>" . $row['cover_image'] . "</td>";
         echo "<td>" . $row['created_at'] . "</td>";
-        echo "<td>" . $row['updated_at'] . "</td>";
         echo "<td>" . $row['status'] . "</td>";
       echo "</tr>";
     }

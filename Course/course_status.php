@@ -54,6 +54,8 @@
     <table>
     <tr>
       <th>ID</th>
+      <th>ชื่อเทรนเนอร์</th>
+      <th>ชื่อผู้ออกกำลังกาย</th>
       <th>ชื่อคอร์ส</th>
       <th>รายละเอียด</th>
       <th>ราคา</th>
@@ -78,6 +80,8 @@ $conn = new mysqli("localhost", "root", "", "trainer");
 // ดึงข้อมูลคอร์ส
 $sql = "SELECT
   c.course_id,
+  c.name,
+  c.username,
   c.title,
   c.description,
   c.price,
@@ -96,20 +100,22 @@ if ($result->num_rows > 0) {
   while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row['course_id'] . "</td>";
-    echo "<td>" . $row['title'] . "</td>";
+    echo "<td>" . $row['name'] . "</td>"; 
+    echo "<td>" . $row['username'] . "</td>"; 
+    echo "<td>" . $row['title'] . "</td>"; 
     echo "<td>" . $row['description'] . "</td>";
-    echo "<td>" . $row['price'] . "</td>";
+    echo "<td>" . $row['price'] . "</td>"; 
     $start_date_thai = date("j F Y", strtotime($row["start_date"]));
     $end_date_thai = date("j F Y", strtotime($row["end_date"]));
     
     // แสดงข้อความในภาษาไทย
-    echo "<td> $start_date_thai</td>";
-    echo "<td> $end_date_thai</td>";
-    echo "<td> " . $row["start_time"] . "</td>";
-    echo "<td> " . $row["end_time"] . "</td>";
+    echo "<td>" . $start_date_thai . "</td>";
+    echo "<td>" . $end_date_thai . "</td>";
+    echo "<td>" . $row["start_time"] . "</td>";
+    echo "<td>" . $row["end_time"] . "</td>";
     echo "<td>" . $row['status'] . "</td>";
     echo "<td>";
-    echo "<a href='edit_course.php?id=" . $row['course_id'] . "' class='edit-button'>เสร็จสิ้น </a>";
+    echo "<a href='finish_course.php?id=" . $row['course_id'] . "&name=" . $row['name'] ."&username=" . $row['username'] ."&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] . "' class='edit-button'>เสร็จสิ้น </a>";
     echo "</td>";
     echo "</tr>";
   }
