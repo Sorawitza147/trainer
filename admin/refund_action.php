@@ -7,17 +7,23 @@ $conn = mysqli_connect('localhost', 'root', '', 'trainer');
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
+
 // ดึงข้อมูลคอร์สเรียน
-$sql = "SELECT * FROM courses WHERE course_id = $course_id";
-$result = mysqli_query($conn, $sql);
-$row = mysqli_fetch_assoc($result);
+$sql_course = "SELECT * FROM courses WHERE course_id = $course_id";
+$result_course = mysqli_query($conn, $sql_course);
+$row_course = mysqli_fetch_assoc($result_course);
+
+// ดึงข้อมูล username จากตาราง payment_refund โดยใช้ course_id
+$sql_refund = "SELECT username FROM payment_refund WHERE course_id = $course_id";
+$result_refund = mysqli_query($conn, $sql_refund);
+$row_refund = mysqli_fetch_assoc($result_refund);
 
 // ตั้งค่าตัวแปร
-$course_title = $row['title'];
-$course_price = $row['price'];
+$course_title = $row_course['title'];
+$course_price = $row_course['price'];
 $timestamp = date('Y-m-d H:i:s');
+$username = $row_refund['username'];
 
-// ตรวจสอบว่ามีการ submit form หรือไม่
 if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
   // อัปโหลดรูปภาพ
   $filename = $_FILES['image']['name'];
@@ -26,12 +32,11 @@ if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
   move_uploaded_file($tmp_name, $upload_dir . $filename);
 
   // บันทึกข้อมูลการคืนเงิน
-  $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path) VALUES ('$course_title', '$course_price', '$course_id', '$timestamp', '$filename')";
+  $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username) VALUES ('$course_title', '$course_price', '$course_id', '$timestamp', '$filename', '$username')";
   mysqli_query($conn, $sql);
 
-
-  $sql = "DELETE FROM payment_refund WHERE course_id = $course_id";
-  mysqli_query($conn, $sql);
+  $sql_delete = "DELETE FROM payment_refund WHERE course_id = $course_id";
+  mysqli_query($conn, $sql_delete);
 
   // แสดงข้อความแจ้งเตือน
   echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
