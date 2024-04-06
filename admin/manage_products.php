@@ -6,7 +6,7 @@
     <title>จัดการคอร์ส</title>
     <style>
         table {
-            width: 100%;
+            width: 65%;
             border-collapse: collapse;
         }
         table, th, td {

@@ -63,6 +63,7 @@
       <th>วันที่สิ้นสุด</th>
       <th>เวลาที่เริ่ม</th>
       <th>เวลาที่สิ้นสุด</th>
+      <th>สถานะการชำระเงิน</th>
       <th>สถานะ</th>
       <th>การจัดการ</th>
     </tr>
@@ -87,6 +88,7 @@ $sql = "SELECT
   c.price,
   c.start_date,
   c.end_date,
+  c.payment_status,
   c.status,
   c.start_time,
   c.end_time
@@ -113,6 +115,7 @@ if ($result->num_rows > 0) {
     echo "<td>" . $end_date_thai . "</td>";
     echo "<td>" . $row["start_time"] . "</td>";
     echo "<td>" . $row["end_time"] . "</td>";
+    echo "<td>" . $row['payment_status'] . "</td>";
     echo "<td>" . $row['status'] . "</td>";
     echo "<td>";
     echo "<a href='finish_course.php?id=" . $row['course_id'] . "&name=" . $row['name'] ."&username=" . $row['username'] ."&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] . "' class='edit-button'>เสร็จสิ้น </a>";

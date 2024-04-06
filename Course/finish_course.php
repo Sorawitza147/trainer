@@ -1,4 +1,6 @@
 <?php
+session_name("trainer_session");
+session_start();
 // เชื่อมต่อฐานข้อมูล
 $conn = new mysqli("localhost", "root", "", "trainer");
 
@@ -33,7 +35,7 @@ if (isset($_GET['id'])) {
         if ($conn->query($delete_sql) === TRUE) {
             echo "<script>
             window.onload = function() {
-                var welcomeMessage = 'ยินดีต้อนรับคุณ " . $_SESSION["username"] . "';
+                var welcomeMessage = 'สำเร็จ " . "';
                 var popup = document.createElement('div');
                 popup.innerHTML = welcomeMessage;
                 popup.style.backgroundColor = '#ffffff';

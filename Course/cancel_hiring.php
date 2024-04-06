@@ -53,45 +53,50 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
     }
 
     // ตรวจสอบว่ามีข้อมูลของคอร์สที่ต้องการบันทึก
-    $sql_course = "SELECT courses.title, courses.price, courses.course_id, hired_trainers.payment_status 
+    $sql_course = "SELECT courses.title, courses.price, courses.course_id, hired_trainers.payment_status, user.bank, user.account_number 
     FROM hired_trainers 
     INNER JOIN courses ON hired_trainers.course_id = courses.course_id 
+    INNER JOIN user ON hired_trainers.username = user.username
     WHERE hired_trainers.course_id = '$course_id'";
     $result_course = $conn->query($sql_course);
     if ($result_course->num_rows > 0) {
-    $row_course = $result_course->fetch_assoc();
-    if ($row_course["payment_status"] === "ชำระเงินสำเร็จ") {
-        // ตรวจสอบว่าคีย์ 'title' และ 'price' มีอยู่ใน $row_course หรือไม่
-        if (isset($row_course["title"]) && isset($row_course["price"])) {
-            // บันทึกข้อมูลลงในตาราง payment_refund
-            $username = $_SESSION["username"];
-            $course_id = $row_course["course_id"];
-            $course_title = $row_course["title"];
-            $course_price = $row_course["price"];
+        $row_course = $result_course->fetch_assoc();
+        if ($row_course["payment_status"] === "ชำระเงินสำเร็จ") {
+            // ตรวจสอบว่าคีย์ 'title' และ 'price' มีอยู่ใน $row_course หรือไม่
+            if (isset($row_course["title"]) && isset($row_course["price"])) {
+                // บันทึกข้อมูลลงในตาราง payment_refund
+                $username = $_SESSION["username"];
+                $course_id = $row_course["course_id"];
+                $course_title = $row_course["title"];
+                $course_price = $row_course["price"];
+                $bank = $row_course["bank"];
+                $account_number = $row_course["account_number"];
 
-            // สร้างคำสั่ง SQL สำหรับการเพิ่มข้อมูล
-            $sql_insert_refund = "INSERT INTO payment_refund (course_id, username, title, price) VALUES ('$course_id', '$username', '$course_title', '$course_price')";
+                // สร้างคำสั่ง SQL สำหรับการเพิ่มข้อมูล
+                $sql_insert_refund = "INSERT INTO payment_refund (course_id, username, title, price, bank, account_number) 
+                VALUES ('$course_id', '$username', '$course_title', '$course_price', '$bank', '$account_number')";
 
-            // Execute คำสั่ง SQL เพื่อบันทึกข้อมูล
-            if (mysqli_query($conn, $sql_insert_refund)) {
-                echo "";
-            } else {
-                echo "Error: " . $sql_insert_refund . "<br>" . mysqli_error($conn);
+                // Execute คำสั่ง SQL เพื่อบันทึกข้อมูล
+                if (mysqli_query($conn, $sql_insert_refund)) {
+                    echo "";
+                } else {
+                    echo "Error: " . $sql_insert_refund . "<br>" . mysqli_error($conn);
+                }
             }
         }
     }
-}
+
     // รับข้อมูลจากแบบฟอร์มโดยใช้ HTTP POST
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["course_id"])) {
             $course_id = $_POST["course_id"];
             $username = $_SESSION["username"];
-    
+
             // กำหนดคำสั่ง SQL ใน $sql_update_status ก่อนที่จะใช้
             $sql_update_status = "UPDATE course_history_trainer SET status = 'ยกเลิกจ้าง' WHERE course_id = '$course_id'";
-    
+
             $sql_delete = "DELETE FROM hired_trainers WHERE username = '$username' AND course_id = '$course_id'";
-    
+
             if ($conn->query($sql_delete) === TRUE) {
                 // อัพเดตสถานะในตาราง hired_trainers เป็น 'ยกเลิก'
                 // เพิ่มเข้าตาราง course_history_trainer
@@ -117,7 +122,7 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
                             popup.style.zIndex = '9999';
                             popup.style.fontSize = '54px'; /* เพิ่มขนาดตัวอักษร */
                             document.body.appendChild(popup);
-    
+
                             setTimeout(function() {
                                 popup.remove();
                                 window.location.href = 'userhire.php';

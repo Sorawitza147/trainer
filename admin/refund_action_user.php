@@ -1,48 +1,69 @@
 <?php
-// ดึงข้อมูลจาก URL
-$course_id = $_GET['course_id'];
+// ตรวจสอบว่ามีการส่งค่า course_id มาหรือไม่
+if(isset($_GET['course_id'])) {
+    // ดึงข้อมูลจาก URL
+    $course_id = $_GET['course_id'];
 
-// เชื่อมต่อฐานข้อมูล
-$conn = mysqli_connect('localhost', 'root', '', 'trainer');
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+    // เชื่อมต่อฐานข้อมูล
+    $conn = mysqli_connect('localhost', 'root', '', 'trainer');
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
 
-// ดึงข้อมูลคอร์สเรียน
-$sql_course = "SELECT * FROM courses WHERE course_id = $course_id";
-$result_course = mysqli_query($conn, $sql_course);
-$row_course = mysqli_fetch_assoc($result_course);
+    // ดึงข้อมูลคอร์สเรียน
+    $sql_course = "SELECT * FROM courses WHERE course_id = ?";
+    $stmt_course = mysqli_prepare($conn, $sql_course);
+    mysqli_stmt_bind_param($stmt_course, "s", $course_id);
+    mysqli_stmt_execute($stmt_course);
+    $result_course = mysqli_stmt_get_result($stmt_course);
+    $row_course = mysqli_fetch_assoc($result_course);
 
-// ดึงข้อมูล username จากตาราง payment_refund โดยใช้ course_id
-$sql_refund = "SELECT username FROM payment_refund WHERE course_id = $course_id";
-$result_refund = mysqli_query($conn, $sql_refund);
-$row_refund = mysqli_fetch_assoc($result_refund);
+    // ดึงข้อมูล username, bank, และ account_number จากตาราง payment_refund โดยใช้ course_id
+    $sql_refund = "SELECT username, bank, account_number FROM payment_refund WHERE course_id = ?";
+    $stmt_refund = mysqli_prepare($conn, $sql_refund);
+    mysqli_stmt_bind_param($stmt_refund, "s", $course_id);
+    mysqli_stmt_execute($stmt_refund);
+    $result_refund = mysqli_stmt_get_result($stmt_refund);
+    $row_refund = mysqli_fetch_assoc($result_refund);
 
-// ตั้งค่าตัวแปร
-$course_title = $row_course['title'];
-$course_price = $row_course['price'];
-$timestamp = date('Y-m-d H:i:s');
-$username = $row_refund['username'];
+    // ตั้งค่าตัวแปร
+    $course_title = $row_course['title'];
+    $course_price = $row_course['price'];
+    $timestamp = date('Y-m-d H:i:s');
+    $username = $row_refund['username'];
+    $bank = $row_refund['bank'];
+    $account_number = $row_refund['account_number'];
 
-if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
-  // อัปโหลดรูปภาพ
-  $filename = $_FILES['image']['name'];
-  $tmp_name = $_FILES['image']['tmp_name'];
-  $upload_dir = 'picrefund/';
-  move_uploaded_file($tmp_name, $upload_dir . $filename);
+    if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
+        // อัปโหลดรูปภาพ
+        $filename = $_FILES['image']['name'];
+        $tmp_name = $_FILES['image']['tmp_name'];
+        $upload_dir = 'picrefund/';
+        move_uploaded_file($tmp_name, $upload_dir . $filename);
 
-  // บันทึกข้อมูลการคืนเงิน
-  $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username) VALUES ('$course_title', '$course_price', '$course_id', '$timestamp', '$filename', '$username')";
-  mysqli_query($conn, $sql);
-
-  $sql_delete = "DELETE FROM payment_refund WHERE course_id = $course_id";
-  mysqli_query($conn, $sql_delete);
-
-  // แสดงข้อความแจ้งเตือน
-  echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
+        // บันทึกข้อมูลการคืนเงิน
+        $sql_refund = "SELECT username, bank, account_number FROM payment_refund WHERE id = ?";
+        $stmt_refund = mysqli_prepare($conn, $sql_refund);
+        mysqli_stmt_bind_param($stmt_refund, "s", $course_id); // ใช้ $course_id ในการ bind
+        mysqli_stmt_execute($stmt_refund);
+        $result_refund = mysqli_stmt_get_result($stmt_refund);
+        $row_refund = mysqli_fetch_assoc($result_refund);
+        
+        // ...
+        
+        // ลบข้อมูล payment_refund โดยใช้ id
+        $sql_delete = "DELETE FROM payment_refund WHERE id = ?";
+        $stmt_delete = mysqli_prepare($conn, $sql_delete);
+        mysqli_stmt_bind_param($stmt_delete, "s", $course_id); // ใช้ $course_id ในการ bind
+        mysqli_stmt_execute($stmt_delete);
+        // แสดงข้อความแจ้งเตือน
+        echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
+    }
+} else {
+    // ถ้าไม่มีการส่งค่า course_id มา
+    echo "ไม่พบค่า Course ID ที่ถูกส่งมา";
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -91,12 +112,6 @@ if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
     input[type="submit"]:hover {
       background-color: #45a049;
     }
-    input[type="text"] {
-        border: none; /* ลบเส้นกรอบออก */
-        background-color: transparent; /* ทำให้พื้นหลังเป็นโปร่งใส */
-        font-size: 16px; /* ขนาดตัวอักษร */
-        padding: 5px; /* ระยะห่างขอบ */
-    }
   </style>
 </head>
 <body>
@@ -104,20 +119,29 @@ if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
     <h1>Refund - <?php echo $course_title; ?></h1>
 
     <form method="post" enctype="multipart/form-data">
+
         
         <!-- แสดงข้อมูล title และ price -->
         <label for="title">ชื่อคอร์ส:</label>
         <input type="text" id="title" name="title" value="<?php echo $course_title; ?>" readonly>
         <br>
-        <label for="price">จำนวนที่ต้องโอนคืน:</label>
-        <input type="text" id="price" name="price" value="<?php echo $course_price - ($course_price * 0.05); ?>" readonly>
+        <label for="price">ราคา:</label>
+        <input type="text" id="price" name="price" value="<?php echo $course_price; ?>" readonly>
         <br>
 
+        <!-- แสดงข้อมูล username, bank, และ account_number -->
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="<?php echo $username; ?>" readonly>
+        <br>
+        <label for="bank">Bank:</label>
+        <input type="text" id="bank" name="bank" value="<?php echo $bank; ?>" readonly>
+        <br>
+        <label for="account_number">Account Number:</label>
+        <input type="text" id="account_number" name="account_number" value="<?php echo $account_number; ?>" readonly>
+        <br>
 
-        <label for="image">รูปภาพใบเสร็จ:</label>
         <input type="file" name="image" id="image">
         <br>
-
         <input type="submit" name="submit" value="ยืนยันการคืนเงิน">
     </form>
 </div>

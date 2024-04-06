@@ -29,6 +29,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 <li><a href="#" onclick="displayData('accept_payment.php')">ตรวจสอบการโอนเงิน</a></li>
                 <li><a href="#" onclick="displayData('refundtrainer.php')">คืนเงินเทรนเนอร์กดยกเลิก</a></li>
                 <li><a href="#" onclick="displayData('refund.php')">คืนเงินผู้ออกกำลังกายกดยกเลิก</a></li>
+                <li><a href="#" onclick="displayData('Finish_course.php')">โอนเงินให้เทรนเนอร์</a></li>
                 <li><a href="admin_logout.php">ออกจากระบบ</a></li>
             </ul>
         </div>

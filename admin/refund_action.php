@@ -1,6 +1,6 @@
 <?php
 // ดึงข้อมูลจาก URL
-$course_id = $_GET['course_id'];
+$id = $_GET['id'];
 
 // เชื่อมต่อฐานข้อมูล
 $conn = mysqli_connect('localhost', 'root', '', 'trainer');
@@ -91,12 +91,6 @@ if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
     input[type="submit"]:hover {
       background-color: #45a049;
     }
-    input[type="text"] {
-        border: none; /* ลบเส้นกรอบออก */
-        background-color: transparent; /* ทำให้พื้นหลังเป็นโปร่งใส */
-        font-size: 16px; /* ขนาดตัวอักษร */
-        padding: 5px; /* ระยะห่างขอบ */
-    }
   </style>
 </head>
 <body>
@@ -104,17 +98,14 @@ if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
     <h1>Refund - <?php echo $course_title; ?></h1>
 
     <form method="post" enctype="multipart/form-data">
+
         
         <!-- แสดงข้อมูล title และ price -->
         <label for="title">ชื่อคอร์ส:</label>
         <input type="text" id="title" name="title" value="<?php echo $course_title; ?>" readonly>
         <br>
-        <label for="price">จำนวนที่ต้องโอนคืน:</label>
+        <label for="price">ราคา:</label>
         <input type="text" id="price" name="price" value="<?php echo $course_price; ?>" readonly>
-        <br>
-
-        <label for="image">รูปภาพใบเสร็จ:</label>
-        <input type="file" name="image" id="image">
         <br>
 
         <input type="submit" name="submit" value="ยืนยันการคืนเงิน">
