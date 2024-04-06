@@ -26,9 +26,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 <li><a href="#" onclick="displayData('manage_users.php')">จัดการผู้ออกกำลังกาย</a></li>
                 <li><a href="#" onclick="displayData('manage_trainer.php')">จัดการเทรนเนอร์</a></li>
                 <li><a href="#" onclick="displayData('manage_products.php')">จัดการคอร์ส</a></li>
-                <li><a href="#" onclick="displayData('accept_payment.php')">จ่ายเงิน</a></li>
-                <li><a href="#" onclick="displayData('generate_reports.php')">รีพอต</a></li>
-                <li><a href="#" onclick="displayData('refund.php')">คืนเงิน</a></li>
+                <li><a href="#" onclick="displayData('accept_payment.php')">ตรวจสอบการโอนเงิน</a></li>
+                <li><a href="#" onclick="displayData('refundtrainer.php')">คืนเงินเทรนเนอร์กดยกเลิก</a></li>
+                <li><a href="#" onclick="displayData('refund.php')">คืนเงินผู้ออกกำลังกายกดยกเลิก</a></li>
                 <li><a href="admin_logout.php">ออกจากระบบ</a></li>
             </ul>
         </div>

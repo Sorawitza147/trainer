@@ -110,8 +110,9 @@ if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
         <input type="text" id="title" name="title" value="<?php echo $course_title; ?>" readonly>
         <br>
         <label for="price">จำนวนที่ต้องโอนคืน:</label>
-        <input type="text" id="price" name="price" value="<?php echo $course_price; ?>" readonly>
+        <input type="text" id="price" name="price" value="<?php echo $course_price - ($course_price * 0.05); ?>" readonly>
         <br>
+
 
         <label for="image">รูปภาพใบเสร็จ:</label>
         <input type="file" name="image" id="image">

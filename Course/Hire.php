@@ -176,7 +176,12 @@ if ($result) {
         echo "<td><a href='display_course.php?course_id=" . $row['course_id'] . "' onclick=\"showPopup('" . $row['course_id'] . "', '" . $row['title'] . "', '" . $row['course_name'] . "', '" . $row['price'] . "')\">ดูรายละเอียด</a></td>";
         echo "<td>" . $row['status'] . "</td>";
         echo "<td>" . $row['payment_status'] . "</td>";
-        echo "<td><div class='action-links'><a href='Hire.php?reject_course_id=" . $row['course_id'] . "' class='action-link cancel-link'>ลบ</a> <a href='accept_course.php?accept_course_id=" . $row['course_id'] . "' class='action-link accept-link'>ยอมรับ</a></div></td>";
+        echo "<td>
+        <div class='action-links'>
+            <a href='reject_course_trainer.php?reject_course_id=" . $row['course_id'] . "' class='action-link cancel-link'>ลบ</a>
+            <a href='accept_course.php?accept_course_id=" . $row['course_id'] . "' class='action-link accept-link'>ยอมรับ</a>
+        </div>
+          </td>";
         echo "</tr>";
     }
     echo "</table>";
