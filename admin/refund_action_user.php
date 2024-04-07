@@ -10,36 +10,23 @@ if(isset($_GET['id'])) {
         die("Connection failed: " . mysqli_connect_error());
     }
 
-    // ดึงข้อมูลคอร์สเรียน
-    $sql_course = "SELECT * FROM course_history_trainer WHERE course_id = ?";
-    $stmt_course = mysqli_prepare($conn, $sql_course);
-    mysqli_stmt_bind_param($stmt_course, "i", $id);
-    mysqli_stmt_execute($stmt_course);
-    $result_course = mysqli_stmt_get_result($stmt_course);
-    $row_course = mysqli_fetch_assoc($result_course);
-
     // ดึงข้อมูล username, bank, และ account_number จากตาราง payment_refund โดยใช้ id
-    $sql_refund = "SELECT username, bank, account_number FROM payment_refund WHERE id = ?";
+    $sql_refund = "SELECT username, title, price, bank, account_number FROM payment_refund WHERE id = ?";
     $stmt_refund = mysqli_prepare($conn, $sql_refund);
     mysqli_stmt_bind_param($stmt_refund, "i", $id); // แก้ "s" เป็น "i"
     mysqli_stmt_execute($stmt_refund);
     $result_refund = mysqli_stmt_get_result($stmt_refund);
     $row_refund = mysqli_fetch_assoc($result_refund);
 
-    // ตั้งค่าตัวแปร
-    if ($row_course !== null) {
-      // ดึงข้อมูลจากตาราง courses
-      $course_title = $row_course['title'];
-      $course_price = $row_course['price'];
-  }
-  
-  // ตรวจสอบว่ามีข้อมูลที่คาดหวังอยู่หรือไม่ก่อนที่จะใช้งาน
-  if ($row_refund !== null) {
-      // ดึงข้อมูลจากตาราง payment_refund
-      $username = $row_refund['username'];
-      $bank = $row_refund['bank'];
-      $account_number = $row_refund['account_number'];
-  }
+    // ตรวจสอบว่ามีข้อมูลที่คาดหวังอยู่หรือไม่ก่อนที่จะใช้งาน
+    if ($row_refund !== null) {   
+        // ดึงข้อมูลจากตาราง payment_refund
+        $username = $row_refund['username'];
+        $title = $row_refund['title'];
+        $price = $row_refund['price'];
+        $bank = $row_refund['bank'];
+        $account_number = $row_refund['account_number'];
+    }
 
     if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
         // อัปโหลดรูปภาพ
@@ -51,7 +38,7 @@ if(isset($_GET['id'])) {
         // บันทึกข้อมูลการคืนเงิน
         $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username, bank, account_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ssisssss", $course_title, $course_price, $id, $timestamp, $filename, $username, $bank, $account_number);
+        mysqli_stmt_bind_param($stmt, "ssisssss", $title, $price, $id, $timestamp, $filename, $username, $bank, $account_number);
         mysqli_stmt_execute($stmt);
 
         // ลบข้อมูล payment_refund โดยใช้ id
@@ -72,7 +59,7 @@ if(isset($_GET['id'])) {
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Refund - <?php echo $course_title; ?></title>
+  <title>Refund - <?php echo isset($title) ? $title : 'ไม่พบข้อมูล'; ?></title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
 
@@ -116,21 +103,28 @@ if(isset($_GET['id'])) {
     input[type="submit"]:hover {
       background-color: #45a049;
     }
+    input[type="text"],
+    input[type="file"] {
+      border: none;
+      border-bottom: 1px solid #ddd;
+      outline: none;
+    }
   </style>
 </head>
 <body>
 <div class="container">
-    <h1>Refund - <?php echo $course_title; ?></h1>
+<h1>Refund - <?php echo isset($title) ? $title : 'ไม่พบข้อมูล'; ?></h1>
+
 
     <form method="post" enctype="multipart/form-data">
 
         
         <!-- แสดงข้อมูล title และ price -->
         <label for="title">ชื่อคอร์ส:</label>
-        <input type="text" id="title" name="title" value="<?php echo $course_title; ?>" readonly>
+        <input type="text" id="title" name="title" value="<?php echo isset($title) ? $title : ''; ?>" readonly>
         <br>
         <label for="price">ราคา:</label>
-        <input type="text" id="price" name="price" value="<?php echo $course_price; ?>" readonly>
+        <input type="text" id="price" name="price" value="<?php echo isset($price) ? $price * 0.95 : ''; ?>" readonly>
         <br>
 
         <!-- แสดงข้อมูล username, bank, และ account_number -->

@@ -1,53 +1,65 @@
 <?php
-// ดึงข้อมูลจาก URL
-$id = $_GET['id'];
+// ตรวจสอบว่ามีการส่งค่า id มาหรือไม่
+if(isset($_GET['id'])) {
+    // ดึงข้อมูลจาก URL
+    $id = $_GET['id'];
 
-// เชื่อมต่อฐานข้อมูล
-$conn = mysqli_connect('localhost', 'root', '', 'trainer');
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+    // เชื่อมต่อฐานข้อมูล
+    $conn = mysqli_connect('localhost', 'root', '', 'trainer');
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
 
-// ดึงข้อมูลคอร์สเรียน
-$sql_course = "SELECT * FROM courses WHERE course_id = $course_id";
-$result_course = mysqli_query($conn, $sql_course);
-$row_course = mysqli_fetch_assoc($result_course);
+    // ดึงข้อมูล username, bank, และ account_number จากตาราง payment_refund โดยใช้ id
+    $sql_refund = "SELECT username, title, price, bank, account_number FROM payment_refund_trainer WHERE id = ?";
+    $stmt_refund = mysqli_prepare($conn, $sql_refund);
+    mysqli_stmt_bind_param($stmt_refund, "i", $id); // แก้ "s" เป็น "i"
+    mysqli_stmt_execute($stmt_refund);
+    $result_refund = mysqli_stmt_get_result($stmt_refund);
+    $row_refund = mysqli_fetch_assoc($result_refund);
 
-// ดึงข้อมูล username จากตาราง payment_refund โดยใช้ course_id
-$sql_refund = "SELECT username FROM payment_refund WHERE course_id = $course_id";
-$result_refund = mysqli_query($conn, $sql_refund);
-$row_refund = mysqli_fetch_assoc($result_refund);
+    // ตรวจสอบว่ามีข้อมูลที่คาดหวังอยู่หรือไม่ก่อนที่จะใช้งาน
+    if ($row_refund !== null) {   
+        // ดึงข้อมูลจากตาราง payment_refund
+        $username = $row_refund['username'];
+        $title = $row_refund['title'];
+        $price = $row_refund['price'];
+        $bank = $row_refund['bank'];
+        $account_number = $row_refund['account_number'];
+    }
 
-// ตั้งค่าตัวแปร
-$course_title = $row_course['title'];
-$course_price = $row_course['price'];
-$timestamp = date('Y-m-d H:i:s');
-$username = $row_refund['username'];
+    if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
+        // อัปโหลดรูปภาพ
+        $filename = $_FILES['image']['name'];
+        $tmp_name = $_FILES['image']['tmp_name'];
+        $upload_dir = 'picrefund/';
+        move_uploaded_file($tmp_name, $upload_dir . $filename);
 
-if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
-  // อัปโหลดรูปภาพ
-  $filename = $_FILES['image']['name'];
-  $tmp_name = $_FILES['image']['tmp_name'];
-  $upload_dir = 'picrefund/';
-  move_uploaded_file($tmp_name, $upload_dir . $filename);
+        // บันทึกข้อมูลการคืนเงิน
+        $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username, bank, account_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ssisssss", $title, $price, $id, $timestamp, $filename, $username, $bank, $account_number);
+        mysqli_stmt_execute($stmt);
 
-  // บันทึกข้อมูลการคืนเงิน
-  $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username) VALUES ('$course_title', '$course_price', '$course_id', '$timestamp', '$filename', '$username')";
-  mysqli_query($conn, $sql);
+        // ลบข้อมูล payment_refund โดยใช้ id
+        $sql_delete = "DELETE FROM payment_refund WHERE id = ?";
+        $stmt_delete = mysqli_prepare($conn, $sql_delete);
+        mysqli_stmt_bind_param($stmt_delete, "i", $id);
+        mysqli_stmt_execute($stmt_delete);
 
-  $sql_delete = "DELETE FROM payment_refund WHERE course_id = $course_id";
-  mysqli_query($conn, $sql_delete);
-
-  // แสดงข้อความแจ้งเตือน
-  echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
+        // แสดงข้อความแจ้งเตือน
+        echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
+    }
+} else {
+    // ถ้าไม่มีการส่งค่า id มา
+    echo "ไม่พบค่า ID ที่ถูกส่งมา";
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Refund - <?php echo $course_title; ?></title>
+  <title>Refund - <?php echo isset($title) ? $title : 'ไม่พบข้อมูล'; ?></title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
 
@@ -91,23 +103,43 @@ if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
     input[type="submit"]:hover {
       background-color: #45a049;
     }
+    input[type="text"],
+    input[type="file"] {
+      border: none;
+      border-bottom: 1px solid #ddd;
+      outline: none;
+    }
   </style>
 </head>
 <body>
 <div class="container">
-    <h1>Refund - <?php echo $course_title; ?></h1>
+<h1>Refund - <?php echo isset($title) ? $title : 'ไม่พบข้อมูล'; ?></h1>
+
 
     <form method="post" enctype="multipart/form-data">
 
         
         <!-- แสดงข้อมูล title และ price -->
         <label for="title">ชื่อคอร์ส:</label>
-        <input type="text" id="title" name="title" value="<?php echo $course_title; ?>" readonly>
+        <input type="text" id="title" name="title" value="<?php echo isset($title) ? $title : ''; ?>" readonly>
         <br>
         <label for="price">ราคา:</label>
-        <input type="text" id="price" name="price" value="<?php echo $course_price; ?>" readonly>
+        <input type="text" id="price" name="price" value="<?php echo isset($price) ? $price : ''; ?>" readonly>
         <br>
 
+        <!-- แสดงข้อมูล username, bank, และ account_number -->
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="<?php echo $username; ?>" readonly>
+        <br>
+        <label for="bank">Bank:</label>
+        <input type="text" id="bank" name="bank" value="<?php echo $bank; ?>" readonly>
+        <br>
+        <label for="account_number">Account Number:</label>
+        <input type="text" id="account_number" name="account_number" value="<?php echo $account_number; ?>" readonly>
+        <br>
+
+        <input type="file" name="image" id="image">
+        <br>
         <input type="submit" name="submit" value="ยืนยันการคืนเงิน">
     </form>
 </div>

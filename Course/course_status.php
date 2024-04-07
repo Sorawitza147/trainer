@@ -91,7 +91,9 @@ $sql = "SELECT
   c.payment_status,
   c.status,
   c.start_time,
-  c.end_time
+  c.end_time,
+  at.bank,
+  at.account_number
 FROM accepted_course AS c
 INNER JOIN accepted_trainers AS at ON c.trainer_id = at.trainer_id
 WHERE at.trainerusername = '$trainerusername'";
@@ -118,7 +120,7 @@ if ($result->num_rows > 0) {
     echo "<td>" . $row['payment_status'] . "</td>";
     echo "<td>" . $row['status'] . "</td>";
     echo "<td>";
-    echo "<a href='finish_course.php?id=" . $row['course_id'] . "&name=" . $row['name'] ."&username=" . $row['username'] ."&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] . "' class='edit-button'>เสร็จสิ้น </a>";
+    echo "<a href='finish_course.php?id=" . $row['course_id'] . "&name=" . $row['name'] ."&username=" . $row['username'] ."&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] ."&bank=" . urlencode($row['bank']) ."&account_number=" . $row['account_number'] . "' class='edit-button'>เสร็จสิ้น </a>";
     echo "</td>";
     echo "</tr>";
   }
@@ -129,6 +131,7 @@ if ($result->num_rows > 0) {
 // ปิดการเชื่อมต่อฐานข้อมูล
 $conn->close();
 ?>
+
 </table>
 </body>
 </html>

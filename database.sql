@@ -226,7 +226,45 @@ CREATE TABLE IF NOT EXISTS payment (
     );
 
  CREATE TABLE payment_refund (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  course_id VARCHAR(255) NOT NULL,
   username VARCHAR(255) NOT NULL,
   title VARCHAR(255) NOT NULL,
-  price DECIMAL(10,2) NOT NULL
+  price DECIMAL(10,2) NOT NULL,
+  bank VARCHAR(100) NOT NULL,
+  account_number INT NOT NULL
   );
+
+ CREATE TABLE payment_refund_trainer (
+  id INT AUTO_INCREMENT PRIMARY KEY, 
+  course_id VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  bank VARCHAR(100) NOT NULL,
+  account_number INT NOT NULL
+  );
+
+
+  CREATE TABLE payment_refund_admin (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  course_id VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  timestamp DATETIME NOT NULL,
+  image_path VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE finish_course (
+    course_id INT,
+    name VARCHAR(255),
+    username VARCHAR(255),
+    title VARCHAR(255),
+    description TEXT,
+    price DECIMAL(10, 2),
+    end_date  VARCHAR(20) NOT NULL,
+    start_date  VARCHAR(20) NOT NULL,
+    start_time TIME,
+    end_time TIME
+);

@@ -12,26 +12,26 @@ if (isset($_GET['reject_course_id'])) {
     // รับค่าจาก URL parameters
     $course_id = $_GET['reject_course_id'];
 
-    // ดึงข้อมูลของคอร์สที่จะถูก reject และ username จากฐานข้อมูล courses และ hired_trainers
-    $sql = "SELECT courses.*, hired_trainers.username, hired_trainers.payment_status
-        FROM courses
-        INNER JOIN hired_trainers ON courses.course_id = hired_trainers.course_id
-        WHERE courses.course_id = '$course_id'";
+    // ตรวจสอบว่ามีค่า 'bank' และ 'account_number' ที่ส่งมาหรือไม่
+    if (isset($_GET['bank']) && isset($_GET['account_number'])) {
+        // รับค่า 'bank' และ 'account_number'
+        $bank = $_GET['bank'];
+        $account_number = $_GET['account_number'];
 
-    $result_course = $conn->query($sql);
+        // ดึงข้อมูลของคอร์สที่จะถูก reject และ username จากฐานข้อมูล courses และ hired_trainers
+        $sql = "SELECT courses.*, hired_trainers.username, hired_trainers.payment_status
+            FROM courses
+            INNER JOIN hired_trainers ON courses.course_id = hired_trainers.course_id
+            WHERE courses.course_id = '$course_id'";
 
-    if ($result_course->num_rows > 0) {
-        $row_course = $result_course->fetch_assoc();
+        $result_course = $conn->query($sql);
 
-        // ตรวจสอบ payment_status ว่าเป็น "ชำระเงินสำเร็จ" หรือไม่
-        if ($row_course["payment_status"] === "ชำระเงินสำเร็จ") {
-            // ดึงข้อมูลที่ต้องการจากคอร์สที่ถูก reject
-            $title = $row_course['title'];
-            $username = $row_course['username']; // ดึงข้อมูล username จาก hired_trainers
-            $price = $row_course['price'];
+        if ($result_course->num_rows > 0) {
+            $row_course = $result_course->fetch_assoc();
 
             // เพิ่มข้อมูลลงในตาราง payment_refund_trainer
-            $insert_sql = "INSERT INTO payment_refund_trainer (course_id, username, title, price) VALUES ('$course_id', '$username', '$title', '$price')";
+            $insert_sql = "INSERT INTO payment_refund_trainer (course_id, username, title, price, bank, account_number) 
+                           VALUES ('$course_id', '{$row_course['username']}', '{$row_course['title']}', '{$row_course['price']}', '$bank', '$account_number')";
             
             if ($conn->query($insert_sql) === TRUE) {
                 // ลบข้อมูลจากตาราง hired_trainers
@@ -45,16 +45,10 @@ if (isset($_GET['reject_course_id'])) {
                 echo "มีข้อผิดพลาดในการบันทึกข้อมูลการคืนเงิน: " . $conn->error;
             }
         } else {
-            // ไม่ต้องแจ้งเตือนอะไร ทำการลบข้อมูลเลย
-            $delete_sql = "DELETE FROM hired_trainers WHERE course_id='$course_id'";
-            if ($conn->query($delete_sql) === TRUE) {
-                echo "ลบข้อมูลเรียบร้อยแล้ว";
-            } else {
-                echo "มีข้อผิดพลาดในการลบข้อมูล: " . $conn->error;
-            }
+            echo "ไม่พบข้อมูลคอร์สที่ต้องการ reject";
         }
     } else {
-        echo "ไม่พบข้อมูลคอร์สที่ต้องการ reject";
+        echo "ข้อมูล 'bank' หรือ 'account_number' ไม่ถูกส่งมา";
     }
 } else {
     echo "ไม่พบข้อมูลที่ต้องการ";

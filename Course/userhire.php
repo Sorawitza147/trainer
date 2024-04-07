@@ -184,7 +184,7 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
             echo "<p>เวลา: " . $row["start_time"] . "</p>";
             echo "<p>ถึง: " . $row["end_time"] . "</p>";
             echo "<p>สถานะการชำระเงิน: " . $row["payment_status"] . "</p>";
-            echo "<a href='payment.php?course_id=" . $row["course_id"] . "'>ชำระเงิน</a>";
+            echo "<a href='payment_accepted.php?course_id=" . $row["course_id"] . "'>ชำระเงิน</a>";
             echo "<p>สถานะ: ได้รับการยืนยัน</p>";
             echo "</div>";
             }

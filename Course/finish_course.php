@@ -22,9 +22,11 @@ if (isset($_GET['id'])) {
     $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
     $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : '';
     $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : '';
+    $bank = isset($_GET['bank']) ? $_GET['bank'] : ''; // เพิ่มการรับค่า "bank" จาก URL parameters
+    $account_number = isset($_GET['account_number']) ? $_GET['account_number'] : ''; // เพิ่มการรับค่า "account_number" จาก URL parameters
     
     // จัดเตรียมคำสั่ง SQL เพื่อเพิ่มข้อมูลลงในตาราง finish_course
-    $insert_sql = "INSERT INTO finish_course (course_id, name, username, title, description, price, end_date, start_date, start_time, end_time) VALUES ('$course_id', '$name', '$username', '$title', '$description', '$price', '$end_date', '$start_date', '$start_time', '$end_time')";
+    $insert_sql = "INSERT INTO finish_course (course_id, name, username, title, description, price, end_date, start_date, start_time, end_time, bank, account_number) VALUES ('$course_id', '$name', '$username', '$title', '$description', '$price', '$end_date', '$start_date', '$start_time', '$end_time', '$bank', '$account_number')";
 
     // เพิ่มข้อมูลลงในตาราง finish_course
     if ($conn->query($insert_sql) === TRUE) {

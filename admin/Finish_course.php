@@ -73,7 +73,7 @@
             echo "<td>" . $row["start_date"] . "</td>";
             echo "<td>" . $row["start_time"] . "</td>";
             echo "<td>" . $row["end_time"] . "</td>";
-            echo "<td><a href='payment_trainer.php' class='transfer-btn'>โอนเงิน</a></td>";
+            echo "<td><a href='payment_trainer.php?id=" . $row['id'] . "' class='transfer-btn'>โอนเงิน</a></td>";
             echo "</tr>";
         }
         echo "</table>";
