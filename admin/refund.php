@@ -64,7 +64,7 @@ $result = mysqli_query($conn, $sql);
                 echo "<td>" . $row["username"] . "</td>";
                 echo "<td>" . $row["title"] . "</td>";
                 echo "<td>" . number_format($row["price"], 2) . "</td>"; // แสดงราคาในรูปแบบทศนิยม 2 ตำแหน่ง
-                echo "<td><a href='refund_action_user.php?course_id=" . $row["course_id"] . "'>Refund</a></td>";
+                echo "<td><a href='refund_action_user.php?id=" . $row["id"] . "'>Refund</a></td>";
                 echo "</tr>";
             }
         } else {

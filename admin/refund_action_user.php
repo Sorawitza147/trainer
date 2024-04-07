@@ -1,8 +1,8 @@
 <?php
-// ตรวจสอบว่ามีการส่งค่า course_id มาหรือไม่
-if(isset($_GET['course_id'])) {
+// ตรวจสอบว่ามีการส่งค่า id มาหรือไม่
+if(isset($_GET['id'])) {
     // ดึงข้อมูลจาก URL
-    $course_id = $_GET['course_id'];
+    $id = $_GET['id'];
 
     // เชื่อมต่อฐานข้อมูล
     $conn = mysqli_connect('localhost', 'root', '', 'trainer');
@@ -11,28 +11,35 @@ if(isset($_GET['course_id'])) {
     }
 
     // ดึงข้อมูลคอร์สเรียน
-    $sql_course = "SELECT * FROM courses WHERE course_id = ?";
+    $sql_course = "SELECT * FROM course_history_trainer WHERE course_id = ?";
     $stmt_course = mysqli_prepare($conn, $sql_course);
-    mysqli_stmt_bind_param($stmt_course, "s", $course_id);
+    mysqli_stmt_bind_param($stmt_course, "i", $id);
     mysqli_stmt_execute($stmt_course);
     $result_course = mysqli_stmt_get_result($stmt_course);
     $row_course = mysqli_fetch_assoc($result_course);
 
-    // ดึงข้อมูล username, bank, และ account_number จากตาราง payment_refund โดยใช้ course_id
-    $sql_refund = "SELECT username, bank, account_number FROM payment_refund WHERE course_id = ?";
+    // ดึงข้อมูล username, bank, และ account_number จากตาราง payment_refund โดยใช้ id
+    $sql_refund = "SELECT username, bank, account_number FROM payment_refund WHERE id = ?";
     $stmt_refund = mysqli_prepare($conn, $sql_refund);
-    mysqli_stmt_bind_param($stmt_refund, "s", $course_id);
+    mysqli_stmt_bind_param($stmt_refund, "i", $id); // แก้ "s" เป็น "i"
     mysqli_stmt_execute($stmt_refund);
     $result_refund = mysqli_stmt_get_result($stmt_refund);
     $row_refund = mysqli_fetch_assoc($result_refund);
 
     // ตั้งค่าตัวแปร
-    $course_title = $row_course['title'];
-    $course_price = $row_course['price'];
-    $timestamp = date('Y-m-d H:i:s');
-    $username = $row_refund['username'];
-    $bank = $row_refund['bank'];
-    $account_number = $row_refund['account_number'];
+    if ($row_course !== null) {
+      // ดึงข้อมูลจากตาราง courses
+      $course_title = $row_course['title'];
+      $course_price = $row_course['price'];
+  }
+  
+  // ตรวจสอบว่ามีข้อมูลที่คาดหวังอยู่หรือไม่ก่อนที่จะใช้งาน
+  if ($row_refund !== null) {
+      // ดึงข้อมูลจากตาราง payment_refund
+      $username = $row_refund['username'];
+      $bank = $row_refund['bank'];
+      $account_number = $row_refund['account_number'];
+  }
 
     if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
         // อัปโหลดรูปภาพ
@@ -42,26 +49,23 @@ if(isset($_GET['course_id'])) {
         move_uploaded_file($tmp_name, $upload_dir . $filename);
 
         // บันทึกข้อมูลการคืนเงิน
-        $sql_refund = "SELECT username, bank, account_number FROM payment_refund WHERE id = ?";
-        $stmt_refund = mysqli_prepare($conn, $sql_refund);
-        mysqli_stmt_bind_param($stmt_refund, "s", $course_id); // ใช้ $course_id ในการ bind
-        mysqli_stmt_execute($stmt_refund);
-        $result_refund = mysqli_stmt_get_result($stmt_refund);
-        $row_refund = mysqli_fetch_assoc($result_refund);
-        
-        // ...
-        
+        $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username, bank, account_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ssisssss", $course_title, $course_price, $id, $timestamp, $filename, $username, $bank, $account_number);
+        mysqli_stmt_execute($stmt);
+
         // ลบข้อมูล payment_refund โดยใช้ id
         $sql_delete = "DELETE FROM payment_refund WHERE id = ?";
         $stmt_delete = mysqli_prepare($conn, $sql_delete);
-        mysqli_stmt_bind_param($stmt_delete, "s", $course_id); // ใช้ $course_id ในการ bind
+        mysqli_stmt_bind_param($stmt_delete, "i", $id);
         mysqli_stmt_execute($stmt_delete);
+
         // แสดงข้อความแจ้งเตือน
         echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
     }
 } else {
-    // ถ้าไม่มีการส่งค่า course_id มา
-    echo "ไม่พบค่า Course ID ที่ถูกส่งมา";
+    // ถ้าไม่มีการส่งค่า id มา
+    echo "ไม่พบค่า ID ที่ถูกส่งมา";
 }
 ?>
 <!DOCTYPE html>
