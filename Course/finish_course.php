@@ -12,17 +12,18 @@ if ($conn->connect_error) {
 // ตรวจสอบว่ามีการส่งค่า id มาหรือไม่
 if (isset($_GET['id'])) {
     // ใช้ prepared statements เพื่อป้องกัน SQL injection
-    $stmt = $conn->prepare("INSERT INTO finish_course (course_id, name, username, title, description, price, end_date, start_date, start_time, end_time, bank, account_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO finish_course (course_id, name, username, trainerusername, title, description, price, end_date, start_date, start_time, end_time, bank, account_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     // ตรวจสอบว่า prepared statement สามารถเตรียมได้หรือไม่
     if ($stmt) {
         // ผูกค่า parameter
-        $stmt->bind_param("isssssssssss", $course_id, $name, $username, $title, $description, $price, $end_date, $start_date, $start_time, $end_time, $bank, $account_number);
+        $stmt->bind_param("issssssssssss", $course_id, $name, $username, $trainerusername, $title, $description, $price, $end_date, $start_date, $start_time, $end_time, $bank, $account_number);
 
-        // รับค่าจาก URL parameters
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
         $course_id = isset($_GET['course_id']) ? $_GET['course_id'] : '';
         $name = isset($_GET['name']) ? $_GET['name'] : '';
         $username = isset($_GET['username']) ? $_GET['username'] : '';
+        $trainerusername = isset($_GET['trainerusername']) ? $_GET['trainerusername'] : '';
         $title = isset($_GET['title']) ? $_GET['title'] : '';
         $description = isset($_GET['description']) ? $_GET['description'] : '';
         $price = isset($_GET['price']) ? $_GET['price'] : '';
@@ -32,13 +33,11 @@ if (isset($_GET['id'])) {
         $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : '';
         $bank = isset($_GET['bank']) ? $_GET['bank'] : ''; // เพิ่มการรับค่า "bank" จาก URL parameters
         $account_number = isset($_GET['account_number']) ? $_GET['account_number'] : ''; // เพิ่มการรับค่า "account_number" จาก URL parameters
-
         // ประมวลผล prepared statement
         if ($stmt->execute()) {
             // ลบข้อมูลจากตาราง accepted_course โดยใช้คำสั่ง SQL
-            $delete_sql = "DELETE FROM accepted_course WHERE course_id='$course_id'";
+            $delete_sql = "DELETE FROM accepted_course WHERE id='$id'";
             
-            // ลบข้อมูลจากตาราง accepted_course
             if ($conn->query($delete_sql) === TRUE) {
                 // อัพเดต status ในตาราง course_history_trainer เป็น "เสร็จสิ้นแล้ว"
                 $update_sql = "UPDATE course_history_trainer SET status='เสร็จสิ้นแล้ว' WHERE course_id='$course_id'";
