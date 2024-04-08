@@ -51,7 +51,8 @@ $result = mysqli_query($conn, $sql);
             <th>Username</th>
             <th>Title</th>
             <th>Price</th>
-            <th>Action</th>         </tr>
+            <th>Action</th>         
+        </tr>
     </thead>
     <tbody>
         <?php

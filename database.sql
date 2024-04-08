@@ -48,7 +48,7 @@ CREATE TABLE trainer_signup(
     image_profile VARCHAR(255),  
     image VARCHAR(255),
     bank VARCHAR(100) NOT NULL,
-    account_number INT NOT NULL
+    account_number VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE accepted_trainers(
@@ -81,7 +81,7 @@ CREATE TABLE accepted_trainers(
     image_profile VARCHAR(255),  
     image VARCHAR(255),
     bank VARCHAR(100) NOT NULL,
-    account_number INT NOT NULL
+    account_number VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE usertrainer(
@@ -200,10 +200,12 @@ CREATE TABLE IF NOT EXISTS payment (
     image_path VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-    CREATE TABLE accepted_course (
+    
+CREATE TABLE accepted_course (
     course_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
+    trainerusername VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL,
     age DECIMAL(10) NOT NULL,
     gender VARCHAR(20) NOT NULL,
@@ -257,14 +259,27 @@ CREATE TABLE IF NOT EXISTS payment (
 );
 
 CREATE TABLE finish_course (
+    id INT AUTO_INCREMENT PRIMARY KEY, 
     course_id INT,
     name VARCHAR(255),
     username VARCHAR(255),
+    trainerusername VARCHAR(255) NOT NULL,
     title VARCHAR(255),
     description TEXT,
     price DECIMAL(10, 2),
     end_date  VARCHAR(20) NOT NULL,
     start_date  VARCHAR(20) NOT NULL,
     start_time TIME,
-    end_time TIME
+    end_time TIME,
+    bank VARCHAR(100) NOT NULL,
+    account_number INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS payment_info (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    trainerusername VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    image_path VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

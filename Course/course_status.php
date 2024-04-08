@@ -92,6 +92,7 @@ $sql = "SELECT
   c.status,
   c.start_time,
   c.end_time,
+  c.trainerusername,
   at.bank,
   at.account_number
 FROM accepted_course AS c
@@ -120,7 +121,7 @@ if ($result->num_rows > 0) {
     echo "<td>" . $row['payment_status'] . "</td>";
     echo "<td>" . $row['status'] . "</td>";
     echo "<td>";
-    echo "<a href='finish_course.php?id=" . $row['course_id'] . "&name=" . $row['name'] ."&username=" . $row['username'] ."&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] ."&bank=" . urlencode($row['bank']) ."&account_number=" . $row['account_number'] . "' class='edit-button'>เสร็จสิ้น </a>";
+    echo "<a href='finish_course.php?id=" . $row['course_id'] . "&name=" . $row['name'] . "&username=" . $row['username'] . "&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "&status=เสร็จสิ้นแล้ว&trainerusername=" . $trainerusername . "' class='edit-button'>เสร็จสิ้น</a>";
     echo "</td>";
     echo "</tr>";
   }

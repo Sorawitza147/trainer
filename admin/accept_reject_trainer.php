@@ -38,7 +38,7 @@ if(isset($_POST['accept'])) {
                 die("Error preparing statement: " . $conn->error);
             }
 
-            if (!$stmt_insert->bind_param("sssssssssiisiisiisiisiisssssi", $row['trainerusername'], $row['password'], $row['first_name'], $row['last_name'], $row['emailtrainer'], $row['age'], $row['gender'], $row['phone_number'], $row['level_2'], $row['start_year_2'], $row['end_year_2'], $row['level_3'], $row['start_year_3'], $row['end_year_3'], $row['level_4'], $row['start_year_4'], $row['end_year_4'], $row['level_5'], $row['start_year_5'], $row['end_year_5'], $row['level_6'], $row['start_year_6'], $row['end_year_6'], $row['district'], $row['subdistrict'], $row['image_profile'], $row['image'], $row['bank'], $row['account_number'])) {
+            if (!$stmt_insert->bind_param("sssssssssiisiisiisiisiissssss", $row['trainerusername'], $row['password'], $row['first_name'], $row['last_name'], $row['emailtrainer'], $row['age'], $row['gender'], $row['phone_number'], $row['level_2'], $row['start_year_2'], $row['end_year_2'], $row['level_3'], $row['start_year_3'], $row['end_year_3'], $row['level_4'], $row['start_year_4'], $row['end_year_4'], $row['level_5'], $row['start_year_5'], $row['end_year_5'], $row['level_6'], $row['start_year_6'], $row['end_year_6'], $row['district'], $row['subdistrict'], $row['image_profile'], $row['image'], $row['bank'], $row['account_number'])) {
                 die("Error binding parameters: " . $stmt_insert->error);
             }
             

@@ -152,7 +152,7 @@ if(isset($_GET['delete_course_id'])) {
 }
 
 $sql = "SELECT h.course_id, h.username, h.hired_at, c.title AS course_name, c.price, 
-        c.start_date, c.end_date, c.start_time, c.end_time, h.course_id, c.title, h.status, h.payment_status,
+        c.start_date, c.end_date, c.start_time, c.end_time, h.course_id, c.title, h.status, h.payment_status,h.trainerusername,
         u.bank, u.account_number
         FROM hired_trainers AS h
         INNER JOIN courses AS c ON h.course_id = c.course_id
@@ -164,7 +164,7 @@ $result = mysqli_query($conn, $sql);
 if ($result) {
     echo "<div class='topic'>รายละเอียดคนจ้าง</div>";
     echo "<table border='1'>";
-    echo "<tr><th>ID</th><th>ชื่อผู้ออกกำลังกาย</th><th>ชื่อคอร์ส</th><th>วันที่จอง</th><th>วันที่เริ่มคอร์ส</th><th>วันที่สิ้นสุดคอร์ส</th><th>เวลาเริ่มคอร์ส</th><th>เวลาสิ้นสุดคอร์ส</th><th>รายละเอียด</th><th>สถานะ</th><th>สถานะการชำระเงิน</th><th>ธนาคาร</th><th>หมายเลขบัญชี</th><th>ปุ่ม</th></tr>";
+    echo "<tr><th>ID</th><th>ชื่อผู้ออกกำลังกาย</th><th>ชื่อคอร์ส</th><th>วันที่จอง</th><th>วันที่เริ่มคอร์ส</th><th>วันที่สิ้นสุดคอร์ส</th><th>เวลาเริ่มคอร์ส</th><th>เวลาสิ้นสุดคอร์ส</th><th>รายละเอียด</th><th>สถานะ</th><th>สถานะการชำระเงิน</th><th>ปุ่ม</th></tr>";
     while ($row = mysqli_fetch_assoc($result)) {
         echo "<tr>";
         echo "<td>" . $row['course_id'] . "</td>";
@@ -178,8 +178,6 @@ if ($result) {
         echo "<td><a href='display_course.php?course_id=" . $row['course_id'] . "' onclick=\"showPopup('" . $row['course_id'] . "', '" . $row['title'] . "', '" . $row['course_name'] . "', '" . $row['price'] . "')\">ดูรายละเอียด</a></td>";
         echo "<td>" . $row['status'] . "</td>";
         echo "<td>" . $row['payment_status'] . "</td>";
-        echo "<td>" . $row['bank'] . "</td>";
-        echo "<td>" . $row['account_number'] . "</td>";
         echo "<td>
         <div class='action-links'>
         <a href='reject_course_trainer.php?reject_course_id=" . $row['course_id'] . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "' class='action-link cancel-link'>ลบ</a>

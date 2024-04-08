@@ -51,56 +51,64 @@
     <h2>จ่ายเงินเทรนเนอร์</h2>
     <div class="upload-form">
         <form action="upload_payment.php" method="post" enctype="multipart/form-data">
+            <!-- ฟิลด์อัพโหลดรูปภาพ -->
             <label for="payment_image">อัพโหลดรูปสลีป:</label>
             <input type="file" id="payment_image" name="payment_image" accept="image/*" required>
+
+            <?php
+            // เชื่อมต่อกับฐานข้อมูล
+            $servername = "localhost";
+            $username = "root";
+            $password = "";
+            $dbname = "trainer";
+
+            $conn = new mysqli($servername, $username, $password, $dbname);
+
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            // รับค่า id จาก URL
+            $id = $_GET['id'];
+
+            // สร้างคำสั่ง SQL เพื่อดึงข้อมูล
+            $sql = "SELECT name, price, title, bank, account_number,trainerusername FROM finish_course WHERE id = $id";
+            $result = $conn->query($sql);
+
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    // แสดงข้อมูลของคอร์ส
+                    echo "<table>";
+                    echo "<tr><td>ชื่อเทรนเนอร์:</td><td>". $row["name"]. "</td></tr>";
+                    echo "<tr><td>ราคา:</td><td>". $row["price"]. "</td></tr>";
+                    echo "<tr><td>ชื่อคอร์ส:</td><td>". $row["title"]. "</td></tr>";
+                    echo "<tr><td>ธนาคาร:</td><td>". $row["bank"]. "</td></tr>";
+                    echo "<tr><td>เลขบัญชี:</td><td>". $row["account_number"]. "</td></tr>";
+
+                    // ฟิลด์ title และ price
+                    echo "<input type='hidden' name='title' value='". $row["title"]. "'>";
+                    echo "<input type='hidden' name='price' value='". $row["price"]. "'>";
+
+                    // ส่ง trainerusername ไปยังหน้า upload_payment.php ผ่าน URL parameters
+                    echo "<input type='hidden' name='trainerusername' value='". $row["trainerusername"]. "'>";
+
+                    echo "</table>";
+                }
+            } else {
+                echo "0 results";
+            }
+
+            $conn->close();
+            ?>
+
+            <!-- ปุ่มสำหรับอัพโหลด -->
             <input type="submit" value="Upload" name="submit">
         </form>
     </div>
     <div class="course-info">
-    <?php
-// เชื่อมต่อกับฐานข้อมูล
-$servername = "localhost"; // เชื่อมต่อกับ localhost
-$username = "root"; // ชื่อผู้ใช้ของฐานข้อมูล
-$password = ""; // รหัสผ่านของฐานข้อมูล
-$dbname = "trainer"; // ชื่อฐานข้อมูล
-
-// สร้างการเชื่อมต่อ
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// ตรวจสอบการเชื่อมต่อ
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// รับค่า id จาก URL
-$id = $_GET['id'];
-
-// สร้างคำสั่ง SQL เพื่อดึงข้อมูล
-$sql = "SELECT name, price, title, bank, account_number FROM finish_course WHERE id = $id";
-$result = $conn->query($sql);
-
-// ตรวจสอบว่ามีข้อมูลหรือไม่
-if ($result->num_rows > 0) {
-    // แสดงข้อมูลทีละแถว
-    while($row = $result->fetch_assoc()) {
-        echo "<table>";
-        echo "<tr><td>ชื่อเทรนเนอร์:</td><td>". $row["name"]. "</td></tr>";
-        echo "<tr><td>ราคา:</td><td>". $row["price"]. "</td></tr>";
-        echo "<tr><td>ชื่อคอร์ส:</td><td>". $row["title"]. "</td></tr>";
-        echo "<tr><td>ธนาคาร:</td><td>". $row["bank"]. "</td></tr>";
-        echo "<tr><td>เลขบัญชี:</td><td>". $row["account_number"]. "</td></tr>";
-        echo "</table>";
-    }
-} else {
-    echo "0 results";
-}
-
-// ปิดการเชื่อมต่อกับฐานข้อมูล
-$conn->close();
-?>
-
+        <a href="../indextrainer.php" class="transfer-btn">ย้อนกลับ</a>
+    </div>
 </div>
-    <a href="../indextrainer.php" class="transfer-btn">ย้อนกลับ</a>
-</div>
+
 </body>
 </html>

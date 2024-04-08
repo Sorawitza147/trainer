@@ -19,6 +19,7 @@
 </style>
 <body>
 <?php
+session_name("trainer_session");
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -117,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Error preparing statement: " . $conn->error);
     }
 
-    if (!$stmt1->bind_param("sssssssssiisiisiisiisiisssssi", $trainerusername, $hashedPassword, $first_name, $last_name, $emailtrainer, $age, $gender, $phone_number, $level_2, $start_year_2, $end_year_2, $level_3, $start_year_3, $end_year_3, $level_4, $start_year_4, $end_year_4, $level_5, $start_year_5, $end_year_5, $level_6, $start_year_6, $end_year_6, $district, $subdistrict, $target_file_profile, $target_file, $bank, $account_number)) {
+    if (!$stmt1->bind_param("sssssssssiisiisiisiisiissssss", $trainerusername, $hashedPassword, $first_name, $last_name, $emailtrainer, $age, $gender, $phone_number, $level_2, $start_year_2, $end_year_2, $level_3, $start_year_3, $end_year_3, $level_4, $start_year_4, $end_year_4, $level_5, $start_year_5, $end_year_5, $level_6, $start_year_6, $end_year_6, $district, $subdistrict, $target_file_profile, $target_file, $bank, $account_number)) {
         die("Error binding parameters: " . $stmt1->error);
     }
 
@@ -128,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     function showRegisterSuccess() {
         Swal.fire({
             icon: 'success',
-            title: 'สมัครสำเร็จ',
+            title: 'สมัครสำเร็จรอตรวจสอบ',
             confirmButtonText: 'ตกลง'
         }).then(() => {
             window.location.href = '../index.php'; // หรือ URL ของหน้า Login

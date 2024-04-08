@@ -56,7 +56,8 @@ if (isset($_GET['accept_course_id'])) {
           created_at, 
           updated_at, 
           status,
-          payment_status
+          payment_status,
+          trainerusername
         ) 
         SELECT 
           h.course_id, 
@@ -80,7 +81,8 @@ if (isset($_GET['accept_course_id'])) {
           c.created_at, 
           c.updated_at,
           'ยอมรับ',
-          h.payment_status
+          h.payment_status,
+          h.trainerusername
         FROM 
           hired_trainers h 
           INNER JOIN courses c ON h.course_id = c.course_id 
