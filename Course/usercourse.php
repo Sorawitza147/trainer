@@ -123,30 +123,52 @@
 <body>
 <center><h1>คอร์สที่มี</h1></center>
 <a href='../indexuser.php' class='Backbtn'>ย้อนกลับ</a>
+<form method="GET" action="" style="margin-top: 20px;">
+    <label for="gender" style="font-weight: bold;">เลือกเพศของเทรนเนอร์:</label>
+    <select name="gender" id="gender" style="padding: 5px; border-radius: 5px; margin-right: 10px;">
+      <option value="">ทั้งหมด</option>
+      <option value="ชาย">ชาย</option>
+      <option value="หญิง">หญิง</option>
+    </select>
+    <button type="submit" style="padding: 8px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">ค้นหา</button>
+</form>
   <div class="course-wrapper">
     <div class="container">
 
     <?php
-    session_name("user_session");
-    session_start();
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $database = "trainer";
+      session_name("user_session");
+      session_start();
+      $servername = "localhost";
+      $username = "root";
+      $password = "";
+      $database = "trainer";
 
-    $conn = new mysqli($servername, $username, $password, $database);
+      $conn = new mysqli($servername, $username, $password, $database);
 
-    if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
+      if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+      }
+
+      // ตรวจสอบว่ามีการส่งข้อมูลผ่านเมธอด GET หรือไม่
+      if (isset($_GET['gender']) && $_GET['gender'] !== '') {
+        $gender = $_GET['gender']; // เพศที่ผู้ใช้เลือก
+        // SQL query เพื่อค้นหาคอร์สตามเพศที่ผู้ใช้เลือก
+        $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
+                FROM courses 
+                LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
+                LEFT JOIN activities ON course_activities.activity_id = activities.id
+                WHERE courses.gender = '$gender' 
+                GROUP BY courses.course_id";
+    } else {
+        // ถ้าไม่มีการเลือกเพศ หรือเลือกทั้งหมดให้แสดงคอร์สทั้งหมด
+        $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
+                FROM courses 
+                LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
+                LEFT JOIN activities ON course_activities.activity_id = activities.id
+                GROUP BY courses.course_id";
     }
 
-    $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
-    FROM courses 
-    LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
-    LEFT JOIN activities ON course_activities.activity_id = activities.id
-    GROUP BY courses.course_id";
-
-$result = $conn->query($sql);
+      $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
   while ($row = $result->fetch_assoc()) {
