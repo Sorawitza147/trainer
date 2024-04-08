@@ -202,7 +202,8 @@ CREATE TABLE IF NOT EXISTS payment (
 );
     
 CREATE TABLE accepted_course (
-    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT ,
     name VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     trainerusername VARCHAR(255) NOT NULL,
@@ -281,5 +282,16 @@ CREATE TABLE IF NOT EXISTS payment_info (
     title VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     image_path VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS course_reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    trainer_id INT NOT NULL,
+    history_id INT NOT NULL,
+    rating INT NOT NULL,
+    review TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

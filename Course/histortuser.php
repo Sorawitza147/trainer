@@ -96,7 +96,6 @@
    
         echo "<div class='error-message'>คุณต้องเข้าสู่ระบบก่อนที่จะดูประวัติการใช้บริการ</div>";
     }
-    $conn->close();
     ?>
 
     <div class="container">
@@ -104,8 +103,6 @@
         <a href="../indexuser.php" class="btn btn-primary mb-3">ย้อนกลับ</a>
         <?php
         if (isset($result_trainer) && $result_trainer->num_rows > 0) {
-
-
             while($row = $result_trainer->fetch_assoc()) {
                 echo "<table class='table table-bordered'>"; 
                 echo "<tr>";
@@ -180,16 +177,47 @@
                 echo "<th>เวลาสิ้นสุด</th>";
                 echo "<td>".$row["end_time"]."</td>";
                 echo "</tr>";
-                echo "<tr>";
-                echo "<th>สถานะ</th>";
-                echo "<td>".$row["status"]."</td>";
-                echo "</tr>";
-                echo "<tr>";
-                echo "<th>สถานะการชำระเงิน</th>";
-                echo "<td>".$row["payment_status"]."</td>";
-                echo "</tr>";
-            }
-            
+                    echo "<tr>";
+                    echo "<th>สถานะ</th>";
+                    echo "<td>" . $row["status"] . "</td>";
+                    echo "</tr>";
+                    echo "<tr>";
+                    echo "<th>สถานะการชำระเงิน</th>";
+                    echo "<td>" . $row["payment_status"] . "</td>";
+                    echo "</tr>"; 
+                    if ($row["status"] === "เสร็จสิ้นแล้ว") {
+                        echo "<tr>";
+                        echo "<th>สถานะ</th>";
+                        echo "<td>" . $row["status"] . "</td>";
+                        echo "</tr>";
+                        echo "<tr>";
+                        echo "<th>สถานะการชำระเงิน</th>";
+                        echo "<td>" . $row["payment_status"] . "</td>";
+                        echo "</tr>";
+                    
+                        // ตรวจสอบว่ามีรีวิวสำหรับประวัติการใช้บริการนี้หรือไม่
+                        $history_id = $row["id"];
+                        $sql_review_check = "SELECT * FROM reviews WHERE history_id = '$history_id'";
+                        $result_review_check = $conn->query($sql_review_check);
+                    
+                        if ($result_review_check->num_rows === 0) {
+                            echo "<tr>";
+                            echo "<th>รีวิว</th>";
+                            echo "<td><a href='review.php?id=" . $row["id"] . "' class='btn btn-primary'>รีวิว</a></td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        // ถ้า status ไม่ใช่ "เสร็จสิ้นแล้ว" แสดงสถานะและสถานะการชำระเงินอย่างเดียว
+                        echo "<tr>";
+                        echo "<th>สถานะ</th>";
+                        echo "<td>" . $row["status"] . "</td>";
+                        echo "</tr>";
+                        echo "<tr>";
+                        echo "<th>สถานะการชำระเงิน</th>";
+                        echo "<td>" . $row["payment_status"] . "</td>";
+                        echo "</tr>";
+                    }
+                }
             echo "</table>";
             echo "</div>"; 
         } else {

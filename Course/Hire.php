@@ -151,7 +151,7 @@ if(isset($_GET['delete_course_id'])) {
     }
 }
 
-$sql = "SELECT h.course_id, h.username, h.hired_at, c.title AS course_name, c.price, 
+$sql = "SELECT h.course_id, h.username, h.id, h.hired_at, c.title AS course_name, c.price, 
         c.start_date, c.end_date, c.start_time, c.end_time, h.course_id, c.title, h.status, h.payment_status,h.trainerusername,
         u.bank, u.account_number
         FROM hired_trainers AS h
@@ -181,7 +181,7 @@ if ($result) {
         echo "<td>
         <div class='action-links'>
         <a href='reject_course_trainer.php?reject_course_id=" . $row['course_id'] . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "' class='action-link cancel-link'>ลบ</a>
-            <a href='accept_course.php?accept_course_id=" . $row['course_id'] . "' class='action-link accept-link'>ยอมรับ</a>
+            <a href='accept_course.php?accept_course_id=" . $row['id'] . "' class='action-link accept-link'>ยอมรับ</a>
         </div>
           </td>";
         echo "</tr>";

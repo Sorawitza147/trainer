@@ -320,6 +320,7 @@ session_start();
     <h2 class="logo"></h2>
     <nav class="navigation">
       <a href="indexuser.php" class="active">หน้าหลัก</a>
+      <a href="Course/reviews.php">รีวิว</a>
       <a href="Cash/paymentuser.php">เงินคืน</a>
       <a href="Course/histortuser.php">ประวัติ</a>
       <a href="Course/userhire.php">จ้างเทรนเนอร์</a>

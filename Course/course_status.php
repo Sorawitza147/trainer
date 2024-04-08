@@ -81,6 +81,7 @@ $conn = new mysqli("localhost", "root", "", "trainer");
 // ดึงข้อมูลคอร์ส
 $sql = "SELECT
   c.course_id,
+  c.id,
   c.name,
   c.username,
   c.title,
@@ -121,7 +122,7 @@ if ($result->num_rows > 0) {
     echo "<td>" . $row['payment_status'] . "</td>";
     echo "<td>" . $row['status'] . "</td>";
     echo "<td>";
-    echo "<a href='finish_course.php?id=" . $row['course_id'] . "&name=" . $row['name'] . "&username=" . $row['username'] . "&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "&status=เสร็จสิ้นแล้ว&trainerusername=" . $trainerusername . "' class='edit-button'>เสร็จสิ้น</a>";
+    echo "<a href='finish_course.php?id=" . $row['id'] . "&name=" . $row['name']  . "&course_id=" . $row['course_id'] . "&username=" . $row['username'] . "&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "&status=เสร็จสิ้นแล้ว&trainerusername=" . $trainerusername . "' class='edit-button'>เสร็จสิ้น</a>";
     echo "</td>";
     echo "</tr>";
   }

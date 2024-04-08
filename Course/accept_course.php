@@ -10,34 +10,31 @@ if (!isset($_SESSION['trainerusername'])) {
 $trainerusername = $_SESSION['trainerusername'];
 
 if (isset($_GET['accept_course_id'])) {
-  $course_id = $_GET['accept_course_id'];
+  $id = $_GET['accept_course_id']; // เปลี่ยนตัวแปรจาก course_id เป็น id
 
   $conn = mysqli_connect('localhost', 'root', '', 'trainer');
   if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
   }
 
-  // สร้าง SQL เพื่ออัปเดตสถานะของคอร์สในตาราง hired_trainers เป็น "ยอมรับ"
-  $update_hired_trainers_sql = "UPDATE hired_trainers SET status = 'ยอมรับ' WHERE course_id = $course_id";
+  // ดึงข้อมูลคอร์สที่มี id เดียวกันจากตาราง hired_trainers
+  $select_hired_course_sql = "SELECT * FROM hired_trainers WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
 
-  if (mysqli_query($conn, $update_hired_trainers_sql)) {
-    // เมื่ออัปเดตสถานะสำเร็จใน hired_trainers ให้ดึงข้อมูลคอร์สจากตาราง hired_trainers
-    $select_hired_course_sql = "SELECT * FROM hired_trainers WHERE course_id = $course_id";
+  $result = mysqli_query($conn, $select_hired_course_sql);
+  if ($result && mysqli_num_rows($result) > 0) {
+    // ดึงข้อมูลคอร์ส
+    $row = mysqli_fetch_assoc($result);
 
-    $result = mysqli_query($conn, $select_hired_course_sql);
-    if ($result && mysqli_num_rows($result) > 0) {
-      // ดึงข้อมูลคอร์ส
-      $row = mysqli_fetch_assoc($result);
-      
-      // ลบข้อมูลในตาราง accepted_course ที่มีคอร์ส ID เดิม
-      $delete_accepted_course_sql = "DELETE FROM accepted_course WHERE course_id = $course_id";
+    // ลบข้อมูลในตาราง accepted_course ที่มีคอร์ส ID เดิม
+    $delete_accepted_course_sql = "DELETE FROM accepted_course WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
 
-      if (mysqli_query($conn, $delete_accepted_course_sql)) {
-        // เพิ่มข้อมูลใหม่ในตาราง accepted_course
-        $insert_accepted_course_sql = "INSERT INTO accepted_course (
+    if (mysqli_query($conn, $delete_accepted_course_sql)) {
+      // เพิ่มข้อมูลใหม่ในตาราง accepted_course
+      $insert_accepted_course_sql = "INSERT INTO accepted_course (
           course_id, 
           name,
           username, 
+          trainerusername, 
           email, 
           age, 
           gender, 
@@ -56,13 +53,13 @@ if (isset($_GET['accept_course_id'])) {
           created_at, 
           updated_at, 
           status,
-          payment_status,
-          trainerusername
+          payment_status
         ) 
         SELECT 
           h.course_id, 
           c.name,
           h.username, 
+          h.trainerusername,
           c.email, 
           c.age, 
           c.gender, 
@@ -81,39 +78,39 @@ if (isset($_GET['accept_course_id'])) {
           c.created_at, 
           c.updated_at,
           'ยอมรับ',
-          h.payment_status,
-          h.trainerusername
+          h.payment_status
         FROM 
           hired_trainers h 
           INNER JOIN courses c ON h.course_id = c.course_id 
         WHERE 
-          h.course_id = $course_id";                
+          h.id = $id"; // เปลี่ยนจาก course_id เป็น id
 
-        if (mysqli_query($conn, $insert_accepted_course_sql)) {
-          // เมื่อเพิ่มข้อมูลใหม่ใน accepted_course เรียบร้อยแล้ว ให้ลบข้อมูลใน hired_trainers
-          $delete_hired_trainers_sql = "DELETE FROM hired_trainers WHERE course_id = $course_id";
+      if (mysqli_query($conn, $insert_accepted_course_sql)) {
+        // เมื่อเพิ่มข้อมูลใหม่ใน accepted_course เรียบร้อยแล้ว ให้ลบข้อมูลใน hired_trainers
+        $delete_hired_trainers_sql = "DELETE FROM hired_trainers WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
 
-          if (mysqli_query($conn, $delete_hired_trainers_sql)) {
-              // ทำสิ่งที่คุณต้องการให้เป็นไปตามกระบวนการ
-              // อัปเดตสถานะในตาราง course_history_trainer
-              $update_course_history_sql = "UPDATE course_history_trainer SET status = 'ยอมรับ' WHERE course_id = $course_id";
+        if (mysqli_query($conn, $delete_hired_trainers_sql)) {
+          // ทำสิ่งที่คุณต้องการให้เป็นไปตามกระบวนการ
+          // อัปเดตสถานะในตาราง course_history_trainer
+          $update_course_history_sql = "UPDATE course_history_trainer SET status = 'ยอมรับ' WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
 
-              if (mysqli_query($conn, $update_course_history_sql)) {
-                header('Location: Hire.php');
-                exit();
-              } else {
-                echo "เกิดข้อผิดพลาดในการอัปเดตสถานะในตาราง course_history_trainer: " . mysqli_error($conn);
-              }
+          if (mysqli_query($conn, $update_course_history_sql)) {
+            header('Location: Hire.php');
+            exit();
           } else {
-              echo "เกิดข้อผิดพลาดในการลบข้อมูลจากตาราง hired_trainers: " . mysqli_error($conn);
+            echo "เกิดข้อผิดพลาดในการอัปเดตสถานะในตาราง course_history_trainer: " . mysqli_error($conn);
           }
         } else {
-          echo "เกิดข้อผิดพลาดในการเพิ่มข้อมูลใหม่ในตาราง accepted_course: " . mysqli_error($conn);
+          echo "เกิดข้อผิดพลาดในการลบข้อมูลจากตาราง hired_trainers: " . mysqli_error($conn);
         }
+      } else {
+        echo "เกิดข้อผิดพลาดในการเพิ่มข้อมูลใหม่ในตาราง accepted_course: " . mysqli_error($conn);
       }
+    } else {
+      echo "เกิดข้อผิดพลาดในการลบข้อมูลในตาราง accepted_course: " . mysqli_error($conn);
     }
   } else {
-    echo "เกิดข้อผิดพลาดในการอัปเดตสถานะในตาราง hired_trainers: " . mysqli_error($conn);
+    echo "ไม่พบข้อมูลคอร์สที่มี ID เดียวกันในตาราง hired_trainers";
   }
 
   mysqli_close($conn);
