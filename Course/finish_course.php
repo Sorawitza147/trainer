@@ -1,3 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+</style>
+</head>
+<body>
 <?php
 session_name("trainer_session");
 session_start();
@@ -45,33 +64,17 @@ if (isset($_GET['id'])) {
                 // อัพเดต status ในตาราง course_history_trainer
                 if ($conn->query($update_sql) === TRUE) {
                     echo "<script>
-                    window.onload = function() {
-                        var welcomeMessage = 'สำเร็จ " . "';
-                        var popup = document.createElement('div');
-                        popup.innerHTML = welcomeMessage;
-                        popup.style.backgroundColor = '#ffffff';
-                        popup.style.border = '1px solid #cccccc';
-                        popup.style.padding = '40px';
-                        popup.style.width = '600px';
-                        popup.style.height = '500px';
-                        popup.style.textAlign = 'center';
-                        popup.style.lineHeight = '1.5';
-                        popup.style.borderRadius = '20px';
-                        popup.style.boxShadow = '0px 0px 20px rgba(0, 0, 0, 0.3)';
-                        popup.style.position = 'fixed';
-                        popup.style.top = '50%';
-                        popup.style.left = '50%';
-                        popup.style.transform = 'translate(-50%, -50%)';
-                        popup.style.zIndex = '9999';
-                        popup.style.fontSize = '54px';
-                        document.body.appendChild(popup);
-        
-                        setTimeout(function() {
-                            popup.remove();
-                            window.location.href = '../indextrainer.php';
-                        }, 3000);
-                    };
-                </script>";
+              function showRegisterSuccess() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'สำเร็จ',
+                    confirmButtonText: 'ตกลง'
+                }).then(() => {
+                    window.location.href = 'course_status.php';
+                });
+              }
+              showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+            </script>";
                 } else {
                     echo "มีข้อผิดพลาดในการอัปเดตข้อมูล: " . $conn->error;
                 }
@@ -94,4 +97,5 @@ if (isset($_GET['id'])) {
 // ปิดการเชื่อมต่อฐานข้อมูล
 $conn->close();
 ?>
-
+</body>
+</html>

@@ -1,3 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+</style>
+</head>
+<body>
 <?php
 $conn = new mysqli("localhost", "root", "", "trainer");
 
@@ -42,7 +61,18 @@ if (isset($_GET['reject_course_id'])) {
             } else {
                 $delete_sql = "DELETE FROM hired_trainers WHERE id='$trainer_id'";
                 if ($conn->query($delete_sql) === TRUE) {
-                    echo "ลบข้อมูลเรียบร้อยแล้ว เนื่องจากไม่มีการชำระเงิน";
+                    echo "<script>
+              function showRegisterSuccess() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'ปฏิเสธสำเร็จ',
+                    confirmButtonText: 'ตกลง'
+                }).then(() => {
+                    window.location.href = 'Hire.php';
+                });
+              }
+              showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+            </script>";
                 } else {
                     echo "มีข้อผิดพลาดในการลบข้อมูล: " . $conn->error;
                 }
@@ -58,3 +88,5 @@ if (isset($_GET['reject_course_id'])) {
 }
 $conn->close();
 ?> 
+</body>
+</html>

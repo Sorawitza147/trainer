@@ -1,3 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+  </style>
+</head>
+<body>
 <?php
 session_name("trainer_session");
 session_start();
@@ -90,13 +109,21 @@ if (isset($_GET['accept_course_id'])) {
         $delete_hired_trainers_sql = "DELETE FROM hired_trainers WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
 
         if (mysqli_query($conn, $delete_hired_trainers_sql)) {
-          // ทำสิ่งที่คุณต้องการให้เป็นไปตามกระบวนการ
-          // อัปเดตสถานะในตาราง course_history_trainer
           $update_course_history_sql = "UPDATE course_history_trainer SET status = 'ยอมรับ' WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
 
           if (mysqli_query($conn, $update_course_history_sql)) {
-            header('Location: Hire.php');
-            exit();
+            echo "<script>
+              function showRegisterSuccess() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'ยอมรับสำเร็จ',
+                    confirmButtonText: 'ตกลง'
+                }).then(() => {
+                    window.location.href = 'Hire.php';
+                });
+              }
+              showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+            </script>";
           } else {
             echo "เกิดข้อผิดพลาดในการอัปเดตสถานะในตาราง course_history_trainer: " . mysqli_error($conn);
           }
@@ -116,3 +143,5 @@ if (isset($_GET['accept_course_id'])) {
   mysqli_close($conn);
 }
 ?>
+</body>
+</html>
