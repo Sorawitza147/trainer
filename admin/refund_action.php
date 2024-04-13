@@ -1,26 +1,20 @@
 <?php
-// ตรวจสอบว่ามีการส่งค่า id มาหรือไม่
 if(isset($_GET['id'])) {
-    // ดึงข้อมูลจาก URL
     $id = $_GET['id'];
 
-    // เชื่อมต่อฐานข้อมูล
     $conn = mysqli_connect('localhost', 'root', '', 'trainer');
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }
 
-    // ดึงข้อมูล username, bank, และ account_number จากตาราง payment_refund โดยใช้ id
     $sql_refund = "SELECT username, title, price, bank, account_number FROM payment_refund_trainer WHERE id = ?";
     $stmt_refund = mysqli_prepare($conn, $sql_refund);
-    mysqli_stmt_bind_param($stmt_refund, "i", $id); // แก้ "s" เป็น "i"
+    mysqli_stmt_bind_param($stmt_refund, "i", $id);
     mysqli_stmt_execute($stmt_refund);
     $result_refund = mysqli_stmt_get_result($stmt_refund);
     $row_refund = mysqli_fetch_assoc($result_refund);
 
-    // ตรวจสอบว่ามีข้อมูลที่คาดหวังอยู่หรือไม่ก่อนที่จะใช้งาน
     if ($row_refund !== null) {   
-        // ดึงข้อมูลจากตาราง payment_refund
         $username = $row_refund['username'];
         $title = $row_refund['title'];
         $price = $row_refund['price'];
@@ -29,29 +23,25 @@ if(isset($_GET['id'])) {
     }
 
     if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
-        // อัปโหลดรูปภาพ
         $filename = $_FILES['image']['name'];
         $tmp_name = $_FILES['image']['tmp_name'];
         $upload_dir = 'picrefund/';
         move_uploaded_file($tmp_name, $upload_dir . $filename);
 
-        // บันทึกข้อมูลการคืนเงิน
-        $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username, bank, account_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO payment_refund_admin (title, price, course_id, image_path, username) VALUES (?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ssisssss", $title, $price, $id, $timestamp, $filename, $username, $bank, $account_number);
+        $timestamp = time(); // Assuming you want to use the current timestamp
+        mysqli_stmt_bind_param($stmt, "siiss", $title, $price, $id, $filename, $username);
         mysqli_stmt_execute($stmt);
 
-        // ลบข้อมูล payment_refund โดยใช้ id
-        $sql_delete = "DELETE FROM payment_refund WHERE id = ?";
+        $sql_delete = "DELETE FROM payment_refund_trainer WHERE id = ?";
         $stmt_delete = mysqli_prepare($conn, $sql_delete);
         mysqli_stmt_bind_param($stmt_delete, "i", $id);
         mysqli_stmt_execute($stmt_delete);
 
-        // แสดงข้อความแจ้งเตือน
-        echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
+        echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว'); window.location.href = 'admin_dashboard.php';</script>";
     }
 } else {
-    // ถ้าไม่มีการส่งค่า id มา
     echo "ไม่พบค่า ID ที่ถูกส่งมา";
 }
 ?>

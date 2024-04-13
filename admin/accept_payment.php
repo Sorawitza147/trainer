@@ -51,10 +51,19 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        button.reject {
+            background-color: #f44336;
         }
 
         button:hover {
             background-color: #45a049;
+        }
+
+        button.reject:hover {
+            background-color: #e53935;
         }
     </style>
 </head>
@@ -90,6 +99,10 @@
                 echo "<input type='hidden' name='payment_id' value='" . $row["id"] . "'>";
                 echo "<button type='submit'>ยอมรับ</button>"; 
                 echo "</form>";
+                echo "<form id='rejectForm' action='reject_payment_action.php' method='post' onsubmit='return confirmReject()'>";
+                echo "<input type='hidden' name='payment_id' value='" . $row["id"] . "'>";
+                echo "<button type='submit' class='reject'>ปฏิเสธ</button>"; 
+                echo "</form>";
                 echo "</div>";
                 echo "</div>";
             }
@@ -100,6 +113,15 @@
         // Close the database connection
         mysqli_close($conn);
         ?>
+
+        <script>
+            function confirmAccept() {
+                return confirm("คุณแน่ใจหรือไม่ว่าต้องการยอมรับการชำระเงินนี้?");
+            }
+
+            function confirmReject() {
+                return confirm("คุณแน่ใจหรือไม่ว่าต้องการปฏิเสธการชำระเงินนี้?");
+            }
+        </script>
     </div>
-</body>
-</html>
+</body

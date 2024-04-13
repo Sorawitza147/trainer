@@ -21,7 +21,6 @@ $result = mysqli_query($conn, $sql);
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
         }
         table {
             width: 65%;

@@ -30,54 +30,54 @@
         }
     </style>
 </head>
-<body>
+<body onload="getReviews()">
     <div class="container">
         <h2>รีวิวทั้งหมด</h2>
-        <div class="row">
-            <?php
-            // เชื่อมต่อกับฐานข้อมูล
-            $servername = "localhost";
-            $username = "root";
-            $password = "";
-            $dbName = "trainer";
-
-            $conn = new mysqli($servername, $username, $password, $dbName);
-
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            }
-
-            // สร้างคำสั่ง SQL เพื่อดึงข้อมูล reviews
-            $sql = "SELECT r.*, t.first_name, t.last_name 
-            FROM reviews r
-            INNER JOIN accepted_trainers t ON r.trainer_id = t.trainer_id";
-    
-            $result = $conn->query($sql);
-            
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    echo "<div class='col-md-4'>";
-                    echo "<div class='card'>";
-                    echo "<div class='card-body'>";
-                    echo "<h5 class='card-title'>ไอดีคอร์ส: " . $row["course_id"] . "</h5>";
-                    echo "<p class='card-text'>คำรีวิว: " . $row["review"] . "</p>";
-                    echo "<p class='card-text'>คะแนน: " . $row["rating"] . "</p>";
-                    echo "<p class='card-text'>ชื่อเทรนเนอร์: " . $row["first_name"] . " " . $row["last_name"] . "</p>";
-                    echo "<p class='card-text'>ชื่อผู้ใช้ที่รีวิว: " . $row["username"] . "</p>";
-                    echo "</div>";
-                    echo "</div>";
-                    echo "</div>";
+        <div>
+            <label for="trainerSelect">เลือกเทรนเนอร์:</label>
+            <select id="trainerSelect">
+                <option value="">ทั้งหมด</option>
+                <?php
+                // Connect to the database
+                $servername = "localhost";
+                $username = "root";
+                $password = "";
+                $dbName = "trainer";
+                $conn = new mysqli($servername, $username, $password, $dbName);
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
                 }
-            }
-             else {
-                echo "No reviews available.";
-            }
 
-            // ปิดการเชื่อมต่อกับฐานข้อมูล
-            $conn->close();
-            ?>
+                // Populate dropdown with trainer names from the database
+                $sqlTrainers = "SELECT * FROM accepted_trainers";
+                $resultTrainers = $conn->query($sqlTrainers);
+                while($rowTrainer = $resultTrainers->fetch_assoc()) {
+                    echo "<option value='" . $rowTrainer['trainer_id'] . "'>" . $rowTrainer['first_name'] . " " . $rowTrainer['last_name'] . "</option>";
+                }
+                ?>
+            </select>
+            <button onclick="getReviews()">ค้นหา</button>
+        </div>
+        <div class="row" id="reviewContainer">
+            <!-- Reviews will be loaded here -->
         </div>
         <a href="../indexuser.php" class="btn btn-primary mt-3">ย้อนกลับ</a>
     </div>
+
+    <script>
+        function getReviews() {
+            var trainerId = document.getElementById("trainerSelect").value;
+            // Send AJAX request to fetch reviews for the selected trainer
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("reviewContainer").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "get_reviews.php?trainer_id=" + trainerId, true);
+            xhttp.send();
+        }
+    </script>
+
 </body>
 </html>

@@ -1,3 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+</style>
+</head>
+<body>
 <?php
 // เชื่อมต่อฐานข้อมูล
 $servername = "localhost";
@@ -29,7 +48,7 @@ if(isset($_FILES["fileToUpload"])) {
     // if everything is ok, try to upload file
     } else {
       if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
+        echo "";
 
         // ตรวจสอบว่ามีการส่งค่า course_id มาหรือไม่
         if(isset($_POST["course_id"])) {
@@ -48,7 +67,7 @@ if(isset($_FILES["fileToUpload"])) {
                 // บันทึกรูปภาพลงในฐานข้อมูล
                 $sql = "INSERT INTO payment (course_id, course_title, username, price, image_path) VALUES ('$course_id', '$course_title', '$username', '$course_price', '$target_file')";
                 if ($conn->query($sql) === TRUE) {
-                    echo "Record created successfully";
+                    echo "";
                 } else {
                     echo "Error: " . $sql . "<br>" . $conn->error;
                 }
@@ -81,8 +100,18 @@ if(isset($_GET["course_id"])) {
     // อัปเดตค่า payment_status ใน course_history_trainer เป็น "รอตรวจสอบ"
     $sql_update_course_history = "UPDATE course_history_trainer SET payment_status = 'รอตรวจสอบการชำระเงิน' WHERE course_id = '$course_id'";
     if ($conn->query($sql_update_course_history) === TRUE) {
-        header("Location: successpayment.php");
-        exit; // อย่าลืมใส่ exit เพื่อหยุดการทำงานของสคริปต์หลังจาก header
+        echo "<script>
+        function showRegisterSuccess() {
+          Swal.fire({
+              icon: 'success',
+              title: 'โอนเงินแล้วรอตัวสอบ',
+              confirmButtonText: 'ตกลง'
+          }).then(() => {
+              window.location.href = 'userhire.php';
+          });
+        }
+        showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+      </script>";
     } else {
         echo "" . $conn->error;
     }
@@ -101,3 +130,5 @@ if(isset($_GET["course_id"])) {
 // ปิดการเชื่อมต่อฐานข้อมูล
 $conn->close();
 ?>
+</body>
+</html>

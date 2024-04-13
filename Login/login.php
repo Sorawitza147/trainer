@@ -294,6 +294,9 @@ $conn->close();
         <div class="form-box">
             <div class="form-details">
                 <h2>Welcome</h2>
+                <div class="imgwel">
+                <img src="../user1.png" alt="waffle with fruits" width="100%" height="100%">
+                </div>
             </div>
             <div class="form-content">
                 <i class='bx bxs-x-square' style='color:rgba(216,13,49,0.93)' ></i>
