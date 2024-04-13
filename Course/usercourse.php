@@ -200,6 +200,8 @@ if ($result->num_rows > 0) {
        echo "<input type='hidden' name='username' value='" . $_SESSION["username"] . "'>";
        echo "<input type='hidden' name='trainerusername' value='" . $row["trainerusername"] . "'>";
        echo "<input type='hidden' name='course_id' value='" . $row["course_id"] . "'>";
+       $payment_id = uniqid('PAY');
+       echo "<input type='hidden' name='payment_id' value='" . $payment_id . "'>";
        echo "<input type='hidden' name='trainer_id' value='" . $row["trainer_id"] . "'>";
        echo "<input type='hidden' name='title' value='" . $row["title"] . "'>";
        echo "<input type='hidden' name='name' value='" . $row["name"] . "'>";

@@ -63,9 +63,10 @@ if(isset($_FILES["fileToUpload"])) {
                 $course_title = $row_course["title"];
                 $course_price = $row_course["price"];
                 $username = $_POST["username"];
+                $payment_id =  $_POST["payment_id"]; // Generate payment ID
 
                 // บันทึกรูปภาพลงในฐานข้อมูล
-                $sql = "INSERT INTO payment (course_id, course_title, username, price, image_path) VALUES ('$course_id', '$course_title', '$username', '$course_price', '$target_file')";
+                $sql = "INSERT INTO payment (course_id, course_title, username, payment_id, price, image_path) VALUES ('$course_id', '$course_title', '$username', '$payment_id', '$course_price', '$target_file')";
                 if ($conn->query($sql) === TRUE) {
                     echo "";
                 } else {

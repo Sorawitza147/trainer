@@ -100,7 +100,8 @@
                 echo "<button type='submit'>ยอมรับ</button>"; 
                 echo "</form>";
                 echo "<form id='rejectForm' action='reject_payment_action.php' method='post' onsubmit='return confirmReject()'>";
-                echo "<input type='hidden' name='payment_id' value='" . $row["id"] . "'>";
+                echo "<input type='hidden' name='payment_id' value='" . $row["payment_id"] . "'>";
+                echo "<input type='hidden' name='payment_status' value='ชำระเงินไม่สำเร็จโปรดชำระเงินใหม่'>";
                 echo "<button type='submit' class='reject'>ปฏิเสธ</button>"; 
                 echo "</form>";
                 echo "</div>";
