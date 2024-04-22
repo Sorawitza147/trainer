@@ -128,9 +128,12 @@
     // เรียกข้อมูลเฉพาะผู้ใช้ที่เข้าสู่ระบบ
     session_name("user_session");
     session_start();
-    $username = $_SESSION['username'];
-
-    $sql = "SELECT * FROM payment_refund_admin WHERE username='$username'";
+    if (!isset($_SESSION['username'])) {
+        // If not logged in, redirect to the login page or display a message
+        echo "ไม่ได้ล๊อคอิน"; // Display message indicating not logged in
+        exit; // Stop further execution
+    }
+    $sql = "SELECT * FROM payment_refund_admin WHERE username='{$_SESSION['username']}'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {

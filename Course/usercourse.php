@@ -1,3 +1,7 @@
+<?php
+session_name("user_session");
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -22,7 +26,7 @@
       border: 1px solid #ddd;
       border-radius: 5px; 
       padding: 20px; 
-      height: 810px;
+      height: auto;
     }
 
     .container {
@@ -34,9 +38,8 @@
 
     .course-card {
       margin: 10px;
-      min-width: 250px;
-      height: 800px;
-      overflow: hidden;
+      width: 300px;
+      height: auto;
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
@@ -123,114 +126,169 @@
 <body>
 <center><h1>คอร์สที่มี</h1></center>
 <a href='../indexuser.php' class='Backbtn'>ย้อนกลับ</a>
-<form method="GET" action="" style="margin-top: 20px;">
-    <label for="gender" style="font-weight: bold;">เลือกเพศของเทรนเนอร์:</label>
-    <select name="gender" id="gender" style="padding: 5px; border-radius: 5px; margin-right: 10px;">
-      <option value="">ทั้งหมด</option>
-      <option value="ชาย">ชาย</option>
-      <option value="หญิง">หญิง</option>
-    </select>
+<form method="GET" action="" style="margin-top: 20px; margin-left: 20px;">
+    <details style="margin-bottom: 10px;">
+        <summary>แสดงตัวเลือก</summary>
+        <label for="gender" style="font-weight: bold;">เลือกเพศของเทรนเนอร์:</label>
+        <select name="gender" id="gender" style="padding: 5px; border-radius: 5px; margin-right: 10px;">
+            <option value="">ทั้งหมด</option>
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+        </select><br>
+        <label for="activities" style="font-weight: bold;">เลือกกิจกรรม:</label><br>
+        <div style="padding-left: 20px;">
+            <input type="checkbox" name="activities[]" value="" id="all-activities">
+            <label for="all-activities">ทั้งหมด</label><br>
+            <input type="checkbox" name="activities[]" value="เต้นแอโรบิก" id="aerobic">
+            <label for="aerobic">เต้นแอโรบิก</label><br>
+            <input type="checkbox" name="activities[]" value="การฝึกป้องกันตัว" id="self-defense">
+            <label for="self-defense">การฝึกป้องกันตัว</label><br>
+            <input type="checkbox" name="activities[]" value="บอดี้เวท" id="body-weight">
+            <label for="body-weight">บอดี้เวท</label><br>
+            <input type="checkbox" name="activities[]" value="เวทเทรนนิ่ง" id="strength-training">
+            <label for="strength-training">เวทเทรนนิ่ง</label><br>
+            <input type="checkbox" name="activities[]" value="การโยคะ" id="yoga">
+            <label for="yoga">การโยคะ</label><br>
+            <input type="checkbox" name="activities[]" value="คาดิโอ" id="cardio">
+            <label for="cardio">คาดิโอ</label><br>
+            <input type="checkbox" name="activities[]" value="ลดน้ำหนัก" id="weight-loss">
+            <label for="weight-loss">ลดน้ำหนัก</label><br>
+            <input type="checkbox" name="activities[]" value="การสร้างกล้ามเนื้อ" id="muscle-building">
+            <label for="muscle-building">การสร้างกล้ามเนื้อ</label><br>
+            <input type="checkbox" name="activities[]" value="การฝึกกลุ่ม" id="group-training">
+            <label for="group-training">การฝึกกลุ่ม</label><br>
+            <input type="checkbox" name="activities[]" value="การฝึกออนไลน์" id="online-training">
+            <label for="online-training">การฝึกออนไลน์</label><br>
+            <input type="checkbox" name="activities[]" value="เพิ่มน้ำหนัก" id="weight-gain">
+            <label for="weight-gain">เพิ่มน้ำหนัก</label><br>
+            <input type="checkbox" name="activities[]" value="การฝึกออนไซต์" id="site-training">
+            <label for="site-training">การฝึกออนไซต์</label><br>
+        </div>
+    </details>
     <button type="submit" style="padding: 8px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">ค้นหา</button>
 </form>
   <div class="course-wrapper">
     <div class="container">
 
-    <?php
-      session_name("user_session");
-      session_start();
-      $servername = "localhost";
-      $username = "root";
-      $password = "";
-      $database = "trainer";
 
-      $conn = new mysqli($servername, $username, $password, $database);
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "trainer";
 
-      if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-      }
+$conn = new mysqli($servername, $username, $password, $database);
 
-      // ตรวจสอบว่ามีการส่งข้อมูลผ่านเมธอด GET หรือไม่
-      if (isset($_GET['gender']) && $_GET['gender'] !== '') {
-        $gender = $_GET['gender']; // เพศที่ผู้ใช้เลือก
-        // SQL query เพื่อค้นหาคอร์สตามเพศที่ผู้ใช้เลือก
-        $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
-                FROM courses 
-                LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
-                LEFT JOIN activities ON course_activities.activity_id = activities.id
-                WHERE courses.gender = '$gender' 
-                GROUP BY courses.course_id";
-    } else {
-        // ถ้าไม่มีการเลือกเพศ หรือเลือกทั้งหมดให้แสดงคอร์สทั้งหมด
-        $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
-                FROM courses 
-                LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
-                LEFT JOIN activities ON course_activities.activity_id = activities.id
-                GROUP BY courses.course_id";
-    }
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-      $result = $conn->query($sql);
+// ตรวจสอบว่ามีการส่งข้อมูลผ่านเมธอด GET หรือไม่
+if (isset($_GET['gender']) && $_GET['gender'] !== '' && isset($_GET['activities']) && !empty($_GET['activities'])) {
+  // เลือกทั้งเพศและกิจกรรม
+  $gender = $_GET['gender'];
+  $selected_activities = $_GET['activities'];
+  $activities_str = "'" . implode("','", $selected_activities) . "'";
+  $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
+          FROM courses 
+          LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
+          LEFT JOIN activities ON course_activities.activity_id = activities.id
+          WHERE courses.gender = '$gender' AND activities.name IN ($activities_str)
+          GROUP BY courses.course_id";
+} else if (isset($_GET['gender']) && $_GET['gender'] !== '') {
+  // เลือกเพศเท่านั้น
+  $gender = $_GET['gender'];
+  $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
+          FROM courses 
+          LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
+          LEFT JOIN activities ON course_activities.activity_id = activities.id
+          WHERE courses.gender = '$gender'
+          GROUP BY courses.course_id";
+} else if (isset($_GET['activities']) && !empty($_GET['activities'])) {
+  // เลือกกิจกรรมเท่านั้น
+  $selected_activities = $_GET['activities'];
+  $activities_str = "'" . implode("','", $selected_activities) . "'";
+  $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
+          FROM courses 
+          LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
+          LEFT JOIN activities ON course_activities.activity_id = activities.id
+          WHERE activities.name IN ($activities_str)
+          GROUP BY courses.course_id";
+} else {
+  // ไม่เลือกเพศและกิจกรรม
+  $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
+          FROM courses 
+          LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
+          LEFT JOIN activities ON course_activities.activity_id = activities.id
+          GROUP BY courses.course_id";
+}
+
+$result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
-  while ($row = $result->fetch_assoc()) {
-     echo "<div class='course-card'>";
-     echo "<h2>" . $row["title"] . "</h2>";
-     echo "<img src='uploadscourse/" . $row["cover_image"] . "'>";
-     echo "<p>ชื่อเทรนเนอร์: " . $row["name"] . "</p>";
-     echo "<p>อีเมล์: " . $row["email"] . "</p>";
-     echo "<p>เพศของเทรนเนอร์: " . $row["gender"] . "</p>";
-     echo "<p>อายุของเทรนเนอร์: " . $row["age"] . "</p>";
-     echo "<p>เบอร์โทร: " . $row["phone_number"] . "</p>";
-     echo "<p>รายละเอียด: " . $row["description"] . "</p>";
-     echo "<p>฿: " . $row["price"] . "</p>";
-     echo "<p>ระดับ: " . $row["difficulty"] . "</p>";
+    while ($row = $result->fetch_assoc()) {
+        echo "<div class='course-card'>";
+        echo "<h2>" . $row["title"] . "</h2>";
+        echo "<img src='uploadscourse/" . $row["cover_image"] . "'>";
+        echo "<p>ชื่อเทรนเนอร์: " . $row["name"] . "</p>";
+        echo "<p>อีเมล์: " . $row["email"] . "</p>";
+        echo "<p>เพศของเทรนเนอร์: " . $row["gender"] . "</p>";
+        echo "<p>อายุของเทรนเนอร์: " . $row["age"] . "</p>";
+        echo "<p>เบอร์โทร: " . $row["phone_number"] . "</p>";
+        echo "<p>รายละเอียด: " . $row["description"] . "</p>";
+        echo "<p>฿: " . $row["price"] . "</p>";
+        echo "<p>ระดับ: " . $row["difficulty"] . "</p>";
 
-     // แปลงรูปแบบวันที่
-     $start_date_thai = date("j F Y", strtotime($row["start_date"]));
-     $end_date_thai = date("j F Y", strtotime($row["end_date"]));
+        // แปลงรูปแบบวันที่
+        $start_date_thai = date("j F Y", strtotime($row["start_date"]));
+        $end_date_thai = date("j F Y", strtotime($row["end_date"]));
 
-     // แสดงข้อความ
-     echo "<p>วันเริ่ม: $start_date_thai</p>";
-     echo "<p>ถึง: $end_date_thai</p>";
-     echo "<p>เวลา: " . $row["start_time"] . "</p>";
-     echo "<p>ถึง: " . $row["end_time"] . "</p>";
-     echo "<p>แท๊ก: " . $row["activities"] . "</p>";
-     
-     if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
-       echo "<form method='post' action='process_hire.php'>";
-       echo "<input type='hidden' name='username' value='" . $_SESSION["username"] . "'>";
-       echo "<input type='hidden' name='trainerusername' value='" . $row["trainerusername"] . "'>";
-       echo "<input type='hidden' name='course_id' value='" . $row["course_id"] . "'>";
-       $payment_id = uniqid('PAY');
-       echo "<input type='hidden' name='payment_id' value='" . $payment_id . "'>";
-       echo "<input type='hidden' name='trainer_id' value='" . $row["trainer_id"] . "'>";
-       echo "<input type='hidden' name='title' value='" . $row["title"] . "'>";
-       echo "<input type='hidden' name='name' value='" . $row["name"] . "'>";
-       echo "<input type='hidden' name='cover_image' value='" . $row["cover_image"] . "'>";
-       echo "<input type='hidden' name='email' value='" . $row["email"] . "'>";
-       echo "<input type='hidden' name='age' value='" . $row["age"] . "'>";
-       echo "<input type='hidden' name='phone_number' value='" . $row["phone_number"] . "'>";
-       echo "<input type='hidden' name='description' value='" . $row["description"] . "'>";
-       echo "<input type='hidden' name='price' value='" . $row["price"] . "'>";
-       echo "<input type='hidden' name='difficulty' value='" . $row["difficulty"] . "'>";
-       echo "<input type='hidden' name='start_date' value='" . $row["start_date"] . "'>";
-       echo "<input type='hidden' name='end_date' value='" . $row["end_date"] . "'>";
-       echo "<input type='hidden' name='start_time' value='" . $row["start_time"] . "'>";
-       echo "<input type='hidden' name='end_time' value='" . $row["end_time"] . "'>";
-       echo "<input type='hidden' name='status' value='รอเทรนเนอร์ตอบรับ'>";
-       echo "<input type='hidden' name='payment_status' value='ยังไม่ชำระเงิน'>";
-       echo "<button type='submit' class='button'>จ้างเทรนเนอร์</button>";
-       echo "</form>";
-     } else {
-       echo "<a href='login.php' class='button'>เข้าสู่ระบบเพื่อจ้างเทรนเนอร์</a>";
-     }
- 
-     echo "</div>";
- }
- } else {
-   echo "ไม่พบข้อมูลคอร์ส";
- }
-    $conn->close();
-    ?>
+        // แสดงข้อความ
+        echo "<p>วันเริ่ม: $start_date_thai</p>";
+        echo "<p>ถึง: $end_date_thai</p>";
+        echo "<p>เวลา: " . $row["start_time"] . "</p>";
+        echo "<p>ถึง: " . $row["end_time"] . "</p>";
+        echo "<p>แท๊ก: " . $row["activities"] . "</p>";
+
+        if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
+            echo "<form method='post' action='process_hire.php'>";
+            echo "<input type='hidden' name='username' value='" . $_SESSION["username"] . "'>";
+            echo "<input type='hidden' name='trainerusername' value='" . $row["trainerusername"] . "'>";
+            echo "<input type='hidden' name='course_id' value='" . $row["course_id"] . "'>";
+            $course = uniqid('PAY'); 
+            echo "<input type='hidden' name='course' value='" . $course . "'>";
+            $payment_id = uniqid('PAY');
+            echo "<input type='hidden' name='payment_id' value='" . $payment_id . "'>";
+            echo "<input type='hidden' name='trainer_id' value='" . $row["trainer_id"] . "'>";
+            echo "<input type='hidden' name='title' value='" . $row["title"] . "'>";
+            echo "<input type='hidden' name='name' value='" . $row["name"] . "'>";
+            echo "<input type='hidden' name='cover_image' value='" . $row["cover_image"] . "'>";
+            echo "<input type='hidden' name='email' value='" . $row["email"] . "'>";
+            echo "<input type='hidden' name='age' value='" . $row["age"] . "'>";
+            echo "<input type='hidden' name='phone_number' value='" . $row["phone_number"] . "'>";
+            echo "<input type='hidden' name='description' value='" . $row["description"] . "'>";
+            echo "<input type='hidden' name='price' value='" . $row["price"] . "'>";
+            echo "<input type='hidden' name='difficulty' value='" . $row["difficulty"] . "'>";
+            echo "<input type='hidden' name='start_date' value='" . $row["start_date"] . "'>";
+            echo "<input type='hidden' name='end_date' value='" . $row["end_date"] . "'>";
+            echo "<input type='hidden' name='start_time' value='" . $row["start_time"] . "'>";
+            echo "<input type='hidden' name='end_time' value='" . $row["end_time"] . "'>";
+            echo "<input type='hidden' name='status' value='รอเทรนเนอร์ตอบรับ'>";
+            echo "<input type='hidden' name='payment_status' value='ยังไม่ชำระเงิน'>";
+            echo "<button type='submit' class='button' onclick=\"return confirmHire()\">จ้างเทรนเนอร์</button>";
+            echo "</form>";
+        } else {
+            echo "<a href='../Login/login.php' class='button'>เข้าสู่ระบบเพื่อจ้างเทรนเนอร์</a>";
+        }
+
+        echo "</div>";
+    }
+} else {
+    echo "ไม่พบข้อมูลคอร์ส";
+}
+$conn->close();
+?>
+
   </div>
 </div>
 <center>
@@ -257,6 +315,10 @@ if ($result->num_rows > 0) {
             });
         });
     };
+   
+  function confirmHire() {
+    return confirm("คุณต้องการจ้างเทรนเนอร์นี้ใช่หรือไม่?\nโปรดชำระเงิน ถ้าไม่ชำระเงินจะไม่สามารถจ้างเทรนเนอร์ได้\nสามารถชำระได้หน้าจ้างเทรนเนอร์");
+  }
 </script>
 </body>
 </html>

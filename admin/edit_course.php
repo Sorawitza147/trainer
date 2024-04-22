@@ -97,7 +97,7 @@
     if (isset($_GET['id'])) {
         $course_id = $_GET['id'];
 
-        $sql_course = "SELECT * FROM courses WHERE id = $course_id";
+        $sql_course = "SELECT * FROM courses WHERE course_id = $course_id";
         $result_course = $conn->query($sql_course);
 
         if ($result_course->num_rows > 0) {
@@ -105,7 +105,7 @@
     ?>
             <form action="update_course.php" method="POST">
                 <a href='admin_dashboard.php' class='back-button'>ย้อนกลับ</a>
-                <input type="hidden" name="id" value="<?php echo $row_course['id']; ?>">
+                <input type="hidden" name="course_id" value="<?php echo $row_course['course_id']; ?>">
                 <label for="title">ชื่อคอร์ส:</label>
                 <input type="text" id="title" name="title" value="<?php echo $row_course['title']; ?>"><br>
                 <label for="duration">ระยะเวลา (สัปดาห์):</label>

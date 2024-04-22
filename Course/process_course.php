@@ -1,3 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+</style>
+</head>
+<body>
 <?php
 $servername = "localhost";
 $username = "root";
@@ -72,31 +91,17 @@ if (isset($_POST['activity']) && is_array($_POST['activity'])) {
 
 // Display success message and redirect after 3 seconds
 echo "<script>
-    window.onload = function() {
-        var welcomeMessage = 'สร้างคอร์สสำเร็จ';
-        var popup = document.createElement('div');
-        popup.innerHTML = welcomeMessage;
-        popup.style.backgroundColor = '#ffffff';
-        popup.style.border = '1px solid #cccccc';
-        popup.style.padding = '40px'; 
-        popup.style.width = '600px'; 
-        popup.style.height = '500px'; 
-        popup.style.textAlign = 'center'; 
-        popup.style.lineHeight = '1.5'; 
-        popup.style.borderRadius = '20px'; 
-        popup.style.boxShadow = '0px 0px 20px rgba(0, 0, 0, 0.3)'; 
-        popup.style.position = 'fixed';
-        popup.style.top = '50%';
-        popup.style.left = '50%';
-        popup.style.transform = 'translate(-50%, -50%)';
-        popup.style.zIndex = '9999';
-        popup.style.fontSize = '54px'; 
-        document.body.appendChild(popup);
-
-        setTimeout(function() {
-            popup.remove();
-            window.location.href = 'course.php';
-        }, 3000);
-    };
-</script>";
+        function showRegisterSuccess() {
+          Swal.fire({
+              icon: 'success',
+              title: 'สร้างคอร์สสำเร็จ',
+              confirmButtonText: 'ตกลง'
+          }).then(() => {
+              window.location.href = 'course.php';
+          });
+        }
+        showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+      </script>";
 ?>
+</body>
+</html>

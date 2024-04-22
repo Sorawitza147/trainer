@@ -64,7 +64,7 @@ a:hover {
     margin-right: 5px; /* ระยะห่างระหว่างลิงก์ */
 }
 .accept-link {
-    background-color: #28a745;
+    background-color:#00CCFF;
     color: #fff;
 }
 .cancel-link {
@@ -180,10 +180,14 @@ if ($result) {
         echo "<td>" . $row['payment_status'] . "</td>";
         echo "<td>
         <div class='action-links'>
-        <a href='reject_course_trainer.php?reject_course_id=" . $row['id'] . "&course_id=" . $row['course_id']  . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "' class='action-link cancel-link'>ลบ</a>
-        <a href='accept_course.php?accept_course_id=" . $row['id'] . "' class='action-link accept-link'>ยอมรับ</a>
-        </div>
-          </td>";
+            <a href='reject_course_trainer.php?reject_course_id=" . $row['id'] . "&course_id=" . $row['course_id']  . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "' class='action-link cancel-link'>ลบ</a>";
+        if ($row['payment_status'] == 'ชำระเงินสำเร็จ') {
+            echo "<a href='accept_course.php?accept_course_id=" . $row['id'] . "' class='action-link accept-link' '>ยอมรับ</a>";
+        } else {
+            echo "<span class='action-link accept-link' style='color: gray;'>โปรดรอให้ผู้ออกกำลังกายชำระเงินก่อน</span>";
+        }
+        echo "</div>
+            </td>";
         echo "</tr>";
     }
     echo "</table>";

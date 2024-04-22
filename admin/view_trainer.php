@@ -102,6 +102,12 @@ if ($result->num_rows > 0) {
             echo "Trainer Image";
         }
         
+        // เพิ่มปุ่มลบข้อมูล
+        echo "<form action='delete_trainerview.php' method='post'>";
+        echo "<input type='hidden' name='trainer_id' value='" . $row["trainer_id"] . "'>";
+        echo "<input type='submit' value='ลบข้อมูล' onclick='return confirmHire()'>";
+        echo "</form>";
+        
         echo "</div>"; 
     }
 } else {
@@ -110,6 +116,12 @@ if ($result->num_rows > 0) {
     
 $conn->close();
 ?>
+
+<script>
+function confirmHire() {
+    return confirm("ลบเทรนเนอร์นี้ใช่หรือไม่?");
+}
+</script>
 
 </body>
 </html>

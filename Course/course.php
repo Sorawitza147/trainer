@@ -139,7 +139,7 @@ input[readonly], textarea[readonly], select[readonly] {
 </head>
 <body>
 <div class="container">
-  <h1>Create Your Course</h1>
+  <h1>สร้างคอร์ส</h1>
   <a href='../indextrainer.php' class='back-button'>ย้อนกลับ</a>
   <form action="process_course.php" method="POST" enctype="multipart/form-data">
     <form action="process_course.php" method="POST" enctype="multipart/form-data">
@@ -295,8 +295,8 @@ input[readonly], textarea[readonly], select[readonly] {
     <p id="difficulty_description"></p>
     </div>
     <div class="form-group">
-        <label for="description">คำอธิบาย:</label>
-        <textarea id="description" name="description" rows="4" required></textarea>
+    <label for="description">คำอธิบาย:</label>
+    <textarea id="description" name="description" rows="4" maxlength="300" required></textarea>
     </div>
 
     <div class="checkbox-group">
@@ -434,6 +434,17 @@ var endDatePicker = new Pikaday({
                 }
             });
         });
+        document.addEventListener('DOMContentLoaded', function() {
+        var descriptionInput = document.getElementById('description');
+        var characterCount = document.createElement('div');
+        characterCount.textContent = '0/300';
+        descriptionInput.parentNode.appendChild(characterCount);
+
+        descriptionInput.addEventListener('input', function() {
+            var currentLength = descriptionInput.value.length;
+            characterCount.textContent = currentLength + '/300';
+        });
+    });
     </script>
 </body>
 </html>

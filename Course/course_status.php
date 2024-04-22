@@ -48,12 +48,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Course Status</h1>
+        <h1>สถานะคอร์ส</h1>
         <a href="../indextrainer.php" class="edit-button">ย้อนกลับ</a>
     </div>
     <table>
     <tr>
-      <th>ID</th>
+      <th>ไอดี</th>
       <th>ชื่อเทรนเนอร์</th>
       <th>ชื่อผู้ออกกำลังกาย</th>
       <th>ชื่อคอร์ส</th>
@@ -65,6 +65,7 @@
       <th>เวลาที่สิ้นสุด</th>
       <th>สถานะการชำระเงิน</th>
       <th>สถานะ</th>
+      <th>รหัสคอร์ส</th>
       <th>การจัดการ</th>
     </tr>
 
@@ -72,6 +73,7 @@
 session_name("trainer_session");
 session_start();
 
+$payment_id = uniqid('PAY');
 // ดึง username จาก session
 $trainerusername = $_SESSION['trainerusername'];
 
@@ -91,6 +93,7 @@ $sql = "SELECT
   c.end_date,
   c.payment_status,
   c.status,
+  c.course,
   c.start_time,
   c.end_time,
   c.trainerusername,
@@ -121,8 +124,9 @@ if ($result->num_rows > 0) {
     echo "<td>" . $row["end_time"] . "</td>";
     echo "<td>" . $row['payment_status'] . "</td>";
     echo "<td>" . $row['status'] . "</td>";
+    echo "<td>" . $row['course'] . "</td>";
     echo "<td>";
-    echo "<a href='finish_course.php?id=" . $row['id'] . "&name=" . $row['name']  . "&course_id=" . $row['course_id'] . "&username=" . $row['username'] . "&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "&status=เสร็จสิ้นแล้ว&trainerusername=" . $trainerusername . "' class='edit-button'>เสร็จสิ้น</a>";
+    echo "<a href='finish_course.php?id=" . $row['id'] . "&name=" . $row['name']  . "&course_id=" . $row['course_id']  . "&course=" . $row['course'] . "&username=" . $row['username'] . "&title=" . $row['title'] . "&description=" . $row['description'] . "&price=" . $row['price'] . "&end_date=" . $row['end_date'] . "&start_date=" . $row['start_date'] . "&start_time=" . $row['start_time'] . "&end_time=" . $row['end_time'] . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "&status=เสร็จสิ้นแล้ว&status_payment=กำลังทำรายการ&trainerusername=" . $trainerusername . "&payment_id=" . $payment_id . "&course=" . $row['course'] . "' class='edit-button'>เสร็จสิ้น</a>";
     echo "</td>";
     echo "</tr>";
   }

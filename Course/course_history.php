@@ -19,7 +19,7 @@
       background-color: #f2f2f2; /* สีพื้นหลังของหน้าเว็บ */
     }
     .container {
-      width: 80%;
+      width: 100%;
       margin: 20px auto; /* ช่องว่างด้านบนและด้านล่าง 20px, ศูนย์กลางตามแนวนอน */
       padding: 20px;
       background-color: #fff; /* สีพื้นหลังของคอนเทนเนอร์ */
@@ -33,15 +33,27 @@
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 20px; /* เพิ่มช่องว่างด้านบนของตาราง */
     }
-    table, th, td {
+
+    th, td {
       border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
+      padding: 10px; /* เพิ่มพื้นที่ระหว่างข้อมูลและขอบ */
     }
+
     th {
       background-color: #f2f2f2;
+      font-weight: bold; /* ทำให้ตัวหนาข้อความในหัวข้อของตาราง */
     }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2; /* ทำให้พื้นหลังของแถวคู่เป็นสีเทา */
+    }
+
+    tr:hover {
+      background-color: #f0f0f0; /* เปลี่ยนสีพื้นหลังเมื่อโฮเวอร์ไปชี้ที่แถว */
+    }
+
     .back-button {
       display: block;
       width: 120px;
@@ -56,10 +68,11 @@
       cursor: pointer;
       transition: background-color 0.3s; /* เพิ่มเอฟเฟคการเปลี่ยนสีเมื่อโฮเวอร์ */
     }
+
     .back-button:hover {
       background-color: #45a049;
     }
-  </style>
+      </style>
 </head>
 <body>
 
@@ -67,19 +80,24 @@
   <h1>ประวัติ</h1>
   <a href="../indextrainer.php" class="back-button">ย้อนกลับ</a>
   <table>
-    <tr>
+  <tr>
       <th>ID</th>
       <th>ชื่อเทรนเนอร์</th>
       <th>อีเมล์เทรนเนอร์</th>
       <th>อายุเทรนเนอร์</th>
+      <th>เพศ</th>
+      <th>เบอร์</th>
       <th>ชื่อคอร์ส</th>
-      <th>รายละเอียด</th>
       <th>ราคา</th>
+      <th>ระดับ</th>
+      <th>รายละเอียด</th>
       <th>วันที่เริ่ม</th>
       <th>วันที่สิ้นสุด</th>
       <th>เวลาที่เริ่ม</th>
       <th>เวลาที่สิ้นสุด</th>
-      <th>การจัดการ</th>
+      <th>ภาพปก</th>
+      <th>วันที่สร้าง</th>
+      <th>สถานะ</th>
     </tr>
 
     <?php
@@ -105,7 +123,6 @@ $sql = "SELECT
   c.age,
   c.gender,
   c.phone_number,
-  c.trainer_id,
   c.title,
   c.price,
   c.difficulty,
@@ -139,7 +156,6 @@ if ($result === false) {
         echo "<td>" . $row['age'] . "</td>";
         echo "<td>" . $row['gender'] . "</td>";
         echo "<td>" . $row['phone_number'] . "</td>";
-        echo "<td>" . $row['trainer_id'] . "</td>";
         echo "<td>" . $row['title'] . "</td>";
         echo "<td>" . $row['price'] . "</td>";
         echo "<td>" . $row['difficulty'] . "</td>";

@@ -72,7 +72,7 @@
             $id = $_GET['id'];
 
             // สร้างคำสั่ง SQL เพื่อดึงข้อมูล
-            $sql = "SELECT name, price, title, bank, account_number,trainerusername FROM finish_course WHERE id = $id";
+            $sql = "SELECT name, price, title, bank, account_number,trainerusername, id_payment FROM finish_course WHERE id = $id";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -85,23 +85,24 @@
                     echo "<tr><td>ธนาคาร:</td><td>". $row["bank"]. "</td></tr>";
                     echo "<tr><td>เลขบัญชี:</td><td>". $row["account_number"]. "</td></tr>";
 
+                    // Hidden input field for id_payment
+                    echo "<input type='hidden' name='id_payment' value='". $row["id_payment"]. "'>";
+
                     // ฟิลด์ title และ price
                     echo "<input type='hidden' name='title' value='". $row["title"]. "'>";
                     echo "<input type='hidden' name='price' value='". $row["price"]. "'>";
 
                     // ส่ง trainerusername ไปยังหน้า upload_payment.php ผ่าน URL parameters
                     echo "<input type='hidden' name='trainerusername' value='". $row["trainerusername"]. "'>";
-
+                    echo "<input type='hidden' name='status_payment' value='โอนเงินสำเร็จ'>";                    
                     echo "</table>";
                 }
             } else {
                 echo "0 results";
             }
-
-            $conn->close();
+            $conn->close(); // ปิดการเชื่อมต่อกับฐานข้อมูล
             ?>
 
-            <!-- ปุ่มสำหรับอัพโหลด -->
             <input type="submit" value="Upload" name="submit">
         </form>
     </div>

@@ -29,27 +29,30 @@ if(isset($_GET['id'])) {
     }
 
     if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
-        // อัปโหลดรูปภาพ
-        $filename = $_FILES['image']['name'];
-        $tmp_name = $_FILES['image']['tmp_name'];
-        $upload_dir = 'picrefund/';
-        move_uploaded_file($tmp_name, $upload_dir . $filename);
-
-        // บันทึกข้อมูลการคืนเงิน
-        $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username, bank, account_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ssisssss", $title, $price, $id, $timestamp, $filename, $username, $bank, $account_number);
-        mysqli_stmt_execute($stmt);
-
-        // ลบข้อมูล payment_refund โดยใช้ id
-        $sql_delete = "DELETE FROM payment_refund WHERE id = ?";
-        $stmt_delete = mysqli_prepare($conn, $sql_delete);
-        mysqli_stmt_bind_param($stmt_delete, "i", $id);
-        mysqli_stmt_execute($stmt_delete);
-
-        // แสดงข้อความแจ้งเตือน
-        echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
-    }
+      // อัปโหลดรูปภาพ
+      $filename = $_FILES['image']['name'];
+      $tmp_name = $_FILES['image']['tmp_name'];
+      $upload_dir = 'picrefund/';
+      move_uploaded_file($tmp_name, $upload_dir . $filename);
+  
+      // กำหนดค่า timestamp ให้เป็นปัจจุบัน
+      $timestamp = date('Y-m-d H:i:s');
+  
+      // บันทึกข้อมูลการคืนเงิน
+      $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username) VALUES (?, ?, ?, ?, ?, ?)";
+      $stmt = mysqli_prepare($conn, $sql);
+      mysqli_stmt_bind_param($stmt, "ssisss", $title, $price, $id, $timestamp, $filename, $username);
+      mysqli_stmt_execute($stmt);
+  
+      // ลบข้อมูล payment_refund โดยใช้ id
+      $sql_delete = "DELETE FROM payment_refund WHERE id = ?";
+      $stmt_delete = mysqli_prepare($conn, $sql_delete);
+      mysqli_stmt_bind_param($stmt_delete, "i", $id);
+      mysqli_stmt_execute($stmt_delete);
+  
+      // แสดงข้อความแจ้งเตือน
+      echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
+  }
 } else {
     // ถ้าไม่มีการส่งค่า id มา
     echo "ไม่พบค่า ID ที่ถูกส่งมา";

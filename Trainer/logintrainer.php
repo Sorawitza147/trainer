@@ -313,7 +313,7 @@ $conn->close();
                 </div>
             </div>
             <div class="form-content">
-                <i class='bx bxs-x-square' style='color:rgba(216,13,49,0.93)' ></i>
+            <i id="backToIndexIcon" class='bx bxs-x-square' style='color:rgba(216,13,49,0.93); cursor: pointer'></i>
                 <h2>เข้าสู่ระบบเทรนเนอร์</h2>
                 <form action="#">
                     <div class="input-box">
@@ -337,6 +337,7 @@ $conn->close();
     </div>
 
     <script>
+
         const passwordInput = document.getElementById('password');
         const passwordToggleIcon = document.getElementById('passwordToggleIcon');
 
@@ -345,9 +346,12 @@ $conn->close();
             passwordInput.setAttribute('type', type);
             passwordToggleIcon.className = type === 'password' ? 'bx bxs-show' : 'bx bxs-hide';
         });
-        document.getElementById('trainer-login-btn').addEventListener('click', function() {
-        window.location.href = '../Login/login.php'; 
+         document.getElementById('backToIndexIcon').addEventListener('click', function() {
+        window.location.href = '../index.php';
     });
+    document.getElementById('trainer-login-btn').addEventListener('click', function() {
+    window.location.href = '../Login/login.php';
+});
     </script>
 </body>
 </html>

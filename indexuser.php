@@ -24,7 +24,7 @@ session_start();
             overflow-x: hidden;
         }
 
-       /* #up {
+        #up {
             position: fixed;
             height: 800px;
             width: 800px;
@@ -99,7 +99,7 @@ session_start();
             70%{
                 right: 1300px;
             }
-        } */
+        } 
 
         header {
             position: absolute;

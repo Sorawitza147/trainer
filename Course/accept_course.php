@@ -51,6 +51,8 @@ if (isset($_GET['accept_course_id'])) {
       // เพิ่มข้อมูลใหม่ในตาราง accepted_course
       $insert_accepted_course_sql = "INSERT INTO accepted_course (
           course_id, 
+          payment_id,
+          course,
           name,
           username, 
           trainerusername, 
@@ -76,6 +78,8 @@ if (isset($_GET['accept_course_id'])) {
         ) 
         SELECT 
           h.course_id, 
+          h.payment_id,
+          h.course, 
           c.name,
           h.username, 
           h.trainerusername,

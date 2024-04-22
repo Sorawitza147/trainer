@@ -156,6 +156,8 @@ INSERT INTO activities (name) VALUES
 CREATE TABLE hired_trainers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     course_id INT,
+    course VARCHAR(255),
+    payment_id VARCHAR(255),
     username VARCHAR(50),
     trainerusername VARCHAR(100) NOT NULL,
     trainer_id INT,
@@ -170,6 +172,8 @@ CREATE TABLE course_history_trainer (
     username VARCHAR(255) NOT NULL,
     trainerusername VARCHAR(255) NOT NULL,
     course_id INT NOT NULL,
+    course VARCHAR(255),
+    payment_id VARCHAR(255),
     trainer_id INT NOT NULL,
     status VARCHAR(50) NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -191,9 +195,12 @@ CREATE TABLE course_history_trainer (
     image_payment VARCHAR(255) NOT NULL,
     payment_status VARCHAR(50) DEFAULT NULL
 );
+
+
 CREATE TABLE IF NOT EXISTS payment (
     id INT AUTO_INCREMENT PRIMARY KEY,
     course_id INT NOT NULL,
+    payment_id VARCHAR(255),
     course_title VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
@@ -204,6 +211,8 @@ CREATE TABLE IF NOT EXISTS payment (
 CREATE TABLE accepted_course (
     id INT AUTO_INCREMENT PRIMARY KEY,
     course_id INT ,
+    payment_id VARCHAR(255),
+    course VARCHAR(255),
     name VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     trainerusername VARCHAR(255) NOT NULL,
@@ -226,7 +235,8 @@ CREATE TABLE accepted_course (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50) DEFAULT NULL,
     payment_status VARCHAR(50) DEFAULT NULL
-    );
+);
+
 
  CREATE TABLE payment_refund (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -262,6 +272,7 @@ CREATE TABLE accepted_course (
 CREATE TABLE finish_course (
     id INT AUTO_INCREMENT PRIMARY KEY, 
     course_id INT,
+    id_payment VARCHAR(255) NOT NULL,
     name VARCHAR(255),
     username VARCHAR(255),
     trainerusername VARCHAR(255) NOT NULL,
@@ -294,4 +305,23 @@ CREATE TABLE reviews (
     rating INT NOT NULL,
     review TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS payment_trainer (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    trainerusername VARCHAR(255) NOT NULL,
+    id_payment VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status_payment VARCHAR(50) NOT NULL,
+    reason TEXT
+);
+
+CREATE TABLE reports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    history_id INT,
+    reporter_username VARCHAR(255),
+    report_text TEXT,
+    report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

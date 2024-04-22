@@ -108,7 +108,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Payment Information</h2>
+        <h2>หลักฐานการโอนเงิน</h2>
         <?php
         // Connect to the database
         $servername = "localhost";
@@ -139,7 +139,7 @@
                 echo "</div>";
             }
         } else {
-            echo "ไม่พบหลักฐานเงินคืน";
+            echo "ไม่พบหลักฐานการโอนเงิน";
         }
         $conn->close();
         ?>

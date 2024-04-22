@@ -40,6 +40,20 @@
         .transfer-btn:hover {
             background-color: #45a049;
         }
+        .reject-btn {
+        display: block;
+        width: 120px;
+        padding: 10px;
+        margin: 10px auto;
+        background-color: #CC0000; /* เปลี่ยนสีเป็น #CC0000 */
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+    .reject-btn:hover {
+        background-color: #a70000; /* เปลี่ยนสีเมื่อโฮเวอร์ไปที่ปุ่ม */
+    }
     </style>
 </head>
 <body>
@@ -73,7 +87,10 @@
             echo "<td>" . $row["start_date"] . "</td>";
             echo "<td>" . $row["start_time"] . "</td>";
             echo "<td>" . $row["end_time"] . "</td>";
-            echo "<td><a href='payment_trainer.php?id=" . $row['id'] . "' class='transfer-btn'>โอนเงิน</a></td>";
+            echo "<td>";
+            echo "<a href='payment_trainer.php?id=" . $row['id'] . "' class='transfer-btn'>โอนเงิน</a>";
+            echo "<a href='reject_payment.php?id=" . $row['id'] . "' class='reject-btn' style='background-color: #CC0000;'>ปฏิเสธ</a>";
+            echo "</td>"; 
             echo "</tr>";
         }
         echo "</table>";

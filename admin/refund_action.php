@@ -28,10 +28,12 @@ if(isset($_GET['id'])) {
         $upload_dir = 'picrefund/';
         move_uploaded_file($tmp_name, $upload_dir . $filename);
 
-        $sql = "INSERT INTO payment_refund_admin (title, price, course_id, image_path, username) VALUES (?, ?, ?, ?, ?)";
+        $timestamp = date('Y-m-d H:i:s');
+
+        // เตรียมและ execute คำสั่ง SQL สำหรับเพิ่มข้อมูลใน payment_refund_admin
+        $sql = "INSERT INTO payment_refund_admin (title, price, course_id, image_path, username, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
-        $timestamp = time(); // Assuming you want to use the current timestamp
-        mysqli_stmt_bind_param($stmt, "siiss", $title, $price, $id, $filename, $username);
+        mysqli_stmt_bind_param($stmt, "siisss", $title, $price, $id, $filename, $username, $timestamp);
         mysqli_stmt_execute($stmt);
 
         $sql_delete = "DELETE FROM payment_refund_trainer WHERE id = ?";

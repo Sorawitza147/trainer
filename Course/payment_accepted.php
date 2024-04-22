@@ -90,7 +90,7 @@ if(isset($_SESSION['username'])) {
 if(isset($_GET["course_id"])) {
     $course_id = $_GET["course_id"];
 
-    $sql = "SELECT accepted_course.username, accepted_course.status, accepted_course.course_id, courses.title, courses.cover_image, courses.description, courses.price, courses.difficulty, courses.name, courses.email, courses.age, courses.gender, courses.phone_number, courses.start_date, courses.end_date, courses.start_time, courses.end_time, accepted_course.payment_status
+    $sql = "SELECT accepted_course.username, accepted_course.status, accepted_course.payment_id, accepted_course.course_id, courses.title, courses.cover_image, courses.description, courses.price, courses.difficulty, courses.name, courses.email, courses.age, courses.gender, courses.phone_number, courses.start_date, courses.end_date, courses.start_time, courses.end_time, accepted_course.payment_status
             FROM accepted_course 
             INNER JOIN courses ON accepted_course.course_id = courses.course_id
             WHERE courses.course_id = '$course_id'";
@@ -115,6 +115,7 @@ if(isset($_GET["course_id"])) {
         echo "<input type='hidden' name='payment_status' value='รอตรวจสอบการชำระเงิน'>";
         echo "<input type='hidden' name='username' value='" . $username. "'>";
         echo "<input type='hidden' name='course_id' value='" . $course_id . "'>";
+        echo "<input type='hidden' name='payment_id' value='" . $row["payment_id"] . "'>";
         echo "</form>";
     } else {
         echo "ไม่พบข้อมูลสำหรับคอร์สนี้";

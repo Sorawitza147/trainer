@@ -1,0 +1,37 @@
+echo "<script>
+        function showRegisterSuccess() {
+          Swal.fire({
+              icon: 'success',
+              title: 'โอนเงินแล้วรอตัวสอบ',
+              confirmButtonText: 'ตกลง'
+          }).then(() => {
+              window.location.href = 'userhire.php';
+          });
+        }
+        showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+      </script>";
+
+
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+</style>
+</head>
+<body>
+
+
+</body>
+</html>

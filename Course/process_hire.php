@@ -1,4 +1,22 @@
-<?php
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+</style>
+</head>
+<body><?php
 session_name("user_session");
 session_start();
 
@@ -27,51 +45,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // เพิ่มข้อมูลลงในตาราง hired_trainers
             $payment_id = $_POST["payment_id"];
+            $course = $_POST["course"];
 
-            $hired_trainers_sql = "INSERT INTO hired_trainers (username, trainerusername, course_id, trainer_id, status, payment_status, payment_id) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $hired_trainers_sql = "INSERT INTO hired_trainers (username, trainerusername, course_id, trainer_id, status, payment_status, payment_id, course) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt1 = $conn->prepare($hired_trainers_sql);
-            $stmt1->bind_param("sssssss", $username, $trainerusername, $course_id, $trainer_id, $status, $payment_status, $payment_id);
+            $stmt1->bind_param("ssssssss", $username, $trainerusername, $course_id, $trainer_id, $status, $payment_status, $payment_id, $course);
         
 
             if ($stmt1->execute()) {
                 // เพิ่มข้อมูลลงในตาราง course_history_trainer
-                $course_history_sql = "INSERT INTO course_history_trainer (username, trainerusername, course_id, trainer_id, status, payment_status, payment_id, title, cover_image, name, email, age, phone_number, description, price, difficulty, start_date, end_date, start_time, end_time) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $course_history_sql = "INSERT INTO course_history_trainer (username, course, trainerusername, course_id, trainer_id, status, payment_status, payment_id, title, cover_image, name, email, age, phone_number, description, price, difficulty, start_date, end_date, start_time, end_time) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt2 = $conn->prepare($course_history_sql);
-            $stmt2->bind_param("ssssssssssssssssssss", $username, $trainerusername, $course_id, $trainer_id, $status, $payment_status, $payment_id, $_POST["title"], $_POST["cover_image"], $_POST["name"], $_POST["email"], $_POST["age"], $_POST["phone_number"], $_POST["description"], $_POST["price"], $_POST["difficulty"], $_POST["start_date"], $_POST["end_date"], $_POST["start_time"], $_POST["end_time"]);
+            $stmt2->bind_param("sssssssssssssssssssss", $username, $course, $trainerusername, $course_id, $trainer_id, $status, $payment_status, $payment_id, $_POST["title"], $_POST["cover_image"], $_POST["name"], $_POST["email"], $_POST["age"], $_POST["phone_number"], $_POST["description"], $_POST["price"], $_POST["difficulty"], $_POST["start_date"], $_POST["end_date"], $_POST["start_time"], $_POST["end_time"]);
 
 
 
                 if ($stmt2->execute()) {
                     // แสดงข้อความแจ้งเตือน
                     echo "<script>
-                        window.onload = function() {
-                            var welcomeMessage = 'บันทึกการจ้างสำเร็จ';
-                            var popup = document.createElement('div');
-                            popup.innerHTML = welcomeMessage;
-                            popup.style.backgroundColor = '#ffffff';
-                            popup.style.border = '1px solid #cccccc';
-                            popup.style.padding = '40px';
-                            popup.style.width = '600px';
-                            popup.style.height = '500px';
-                            popup.style.textAlign = 'center';
-                            popup.style.lineHeight = '1.5';
-                            popup.style.borderRadius = '20px';
-                            popup.style.boxShadow = '0px 0px 20px rgba(0, 0, 0, 0.3)';
-                            popup.style.position = 'fixed';
-                            popup.style.top = '50%';
-                            popup.style.left = '50%';
-                            popup.style.transform = 'translate(-50%, -50%)';
-                            popup.style.zIndex = '9999';
-                            popup.style.fontSize = '54px';
-                            document.body.appendChild(popup);
-
-                            setTimeout(function() {
-                                popup.remove();
-                                window.location.href = 'usercourse.php';
-                            }, 3000);
-                        };
+                        function showRegisterSuccess() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'จ้างสำเร็จรอเทรนเนอร์ตอบรับและโปรดชำระเงิน',
+                            confirmButtonText: 'ตกลง'
+                        }).then(() => {
+                            window.location.href = 'usercourse.php';
+                        });
+                        }
+                        showRegisterSuccess(); 
                     </script>";
                 } else {
                     echo "Error: " . $stmt2->error;
@@ -93,3 +96,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "ไม่มีการส่งข้อมูลแบบ POST";
 }
 ?>
+</body>
+</html>

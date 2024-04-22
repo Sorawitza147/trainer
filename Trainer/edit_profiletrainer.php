@@ -168,10 +168,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if(isset($_SESSION['username'])) {
-    $username = $_SESSION['username'];
+if(isset($_SESSION['trainerusername'])) {
+    $trainerusername = $_SESSION['trainerusername'];
 
-    $sql = "SELECT * FROM accepted_trainers WHERE username = '$username'";
+    $sql = "SELECT * FROM accepted_trainers WHERE trainerusername = '$trainerusername'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {

@@ -326,6 +326,7 @@ session_start();
       <a href="Course/course_status.php">สถานะ</a>
       <a href="Trainer/trainer.php">ประวัติส่วน</a>
       <a href="Trainer/viewcourse.php">ดูคอร์ส</a> 
+      <a href="Trainer/pay_ment.php">สถานะการเงิน</a>
       <a href="Trainer/paymenttrainer.php">รายได้</a> 
       <?php
       if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {

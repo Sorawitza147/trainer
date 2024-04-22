@@ -79,7 +79,6 @@
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-
    
     if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
     
@@ -198,6 +197,10 @@
                             echo "<td><a href='review.php?id=" . $row["id"] . "' class='btn btn-primary'>รีวิว</a></td>";
                             echo "</tr>";
                         }
+                        echo "<tr>";
+                        echo "<th>รายงาน</th>";
+                        echo "<td><button class='btn btn-danger' onclick='showReportForm(" . $row["id"] . ")'>รายงาน</button></td>";
+                        echo "</tr>";
                     } else {
                         // ถ้า status ไม่ใช่ "เสร็จสิ้นแล้ว" แสดงสถานะและสถานะการชำระเงินอย่างเดียว
                         echo "<tr>";
@@ -218,5 +221,34 @@
         ?>
     </div>
     </div>
+    <script>
+        function showReportForm(historyId) {
+            var reportText = prompt("กรุณาใส่ข้อความรายงาน:");
+            if (reportText != null) {
+                // เรียกใช้ฟังก์ชั่น reportToServer เพื่อส่งข้อมูลรายงานไปยังเซิร์ฟเวอร์
+                reportToServer(historyId, reportText);
+            }
+        }
+
+        function reportToServer(historyId, reportText) {
+            // ส่งข้อมูลรายงานไปยังเซิร์ฟเวอร์โดยใช้ AJAX หรือ fetch
+            // โดยจะส่ง historyId และ reportText ไปยังไฟล์ PHP เพื่อทำการบันทึกข้อมูล
+            var formData = new FormData();
+            formData.append('history_id', historyId);
+            formData.append('report_text', reportText);
+
+            fetch('report.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data); // แสดงผลลัพธ์ที่ได้จากการบันทึก
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
 </body>
 </html>

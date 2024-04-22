@@ -48,10 +48,20 @@ if (isset($_GET['reject_course_id'])) {
                             VALUES ('$course_id', '{$row_course['username']}', '{$row_course['title']}', '{$row_course['price']}', '$bank', '$account_number')";
                 
                 if ($conn->query($insert_sql) === TRUE) {
-                    echo "บันทึกการคืนเงินเรียบร้อยแล้ว";
                     $delete_sql = "DELETE FROM hired_trainers WHERE id='$trainer_id'";
                     if ($conn->query($delete_sql) === TRUE) {
-                        echo " และลบข้อมูลผู้สอนที่ถูก reject เรียบร้อยแล้ว";
+                        echo "<script>
+                        function showRegisterSuccess() {
+                          Swal.fire({
+                              icon: 'success',
+                              title: 'ปฏิเสธสำเร็จ',
+                              confirmButtonText: 'ตกลง'
+                          }).then(() => {
+                              window.location.href = 'Hire.php';
+                          });
+                        }
+                        showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+                      </script>";
                     } else {
                         echo " แต่มีข้อผิดพลาดในการลบข้อมูลผู้สอนที่ถูก reject: " . $conn->error;
                     }
@@ -61,18 +71,6 @@ if (isset($_GET['reject_course_id'])) {
             } else {
                 $delete_sql = "DELETE FROM hired_trainers WHERE id='$trainer_id'";
                 if ($conn->query($delete_sql) === TRUE) {
-                    echo "<script>
-              function showRegisterSuccess() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'ปฏิเสธสำเร็จ',
-                    confirmButtonText: 'ตกลง'
-                }).then(() => {
-                    window.location.href = 'Hire.php';
-                });
-              }
-              showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
-            </script>";
                 } else {
                     echo "มีข้อผิดพลาดในการลบข้อมูล: " . $conn->error;
                 }
