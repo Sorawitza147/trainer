@@ -1,3 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+</style>
+</head>
+<body>
 <?php
 if(isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -29,8 +48,6 @@ if(isset($_GET['id'])) {
         move_uploaded_file($tmp_name, $upload_dir . $filename);
 
         $timestamp = date('Y-m-d H:i:s');
-
-        // เตรียมและ execute คำสั่ง SQL สำหรับเพิ่มข้อมูลใน payment_refund_admin
         $sql = "INSERT INTO payment_refund_admin (title, price, course_id, image_path, username, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "siisss", $title, $price, $id, $filename, $username, $timestamp);
@@ -41,12 +58,25 @@ if(isset($_GET['id'])) {
         mysqli_stmt_bind_param($stmt_delete, "i", $id);
         mysqli_stmt_execute($stmt_delete);
 
-        echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว'); window.location.href = 'admin_dashboard.php';</script>";
+        echo "<script>
+        function showRegisterSuccess() {
+          Swal.fire({
+              icon: 'success',
+              title: 'ทำการคืนเงินแล้ว',
+              confirmButtonText: 'ตกลง'
+          }).then(() => {
+              window.location.href = 'admin_dashboard.php';
+          });
+        }
+        showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+      </script>";
     }
 } else {
     echo "ไม่พบค่า ID ที่ถูกส่งมา";
 }
 ?>
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -109,17 +139,12 @@ if(isset($_GET['id'])) {
 
 
     <form method="post" enctype="multipart/form-data">
-
-        
-        <!-- แสดงข้อมูล title และ price -->
         <label for="title">ชื่อคอร์ส:</label>
         <input type="text" id="title" name="title" value="<?php echo isset($title) ? $title : ''; ?>" readonly>
         <br>
         <label for="price">ราคา:</label>
         <input type="text" id="price" name="price" value="<?php echo isset($price) ? $price : ''; ?>" readonly>
         <br>
-
-        <!-- แสดงข้อมูล username, bank, และ account_number -->
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" value="<?php echo $username; ?>" readonly>
         <br>

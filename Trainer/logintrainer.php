@@ -24,11 +24,9 @@ if (isset($_POST['login'])) {
         if ($result) {
             if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
-                // ตรวจสอบรหัสผ่านที่ถูกเข้ารหัส
                 if (password_verify($password, $row['password'])) {
                     $_SESSION["logged_in"] = true;
                     $_SESSION["trainerusername"] = $row['trainerusername'];
-                    // เข้าสู่ระบบสำเร็จ
                     echo "<script>
                         window.onload = function() {
                             var welcomeMessage = 'ยินดีต้อนรับคุณเทรนเนอร์ " . $_SESSION["trainerusername"] . "';
@@ -58,7 +56,6 @@ if (isset($_POST['login'])) {
                         };
                     </script>";
                 } else {
-                    // รหัสผ่านไม่ถูกต้อง
                     echo "<script>
                         window.onload = function() {
                             var popup = document.createElement('div');
@@ -83,7 +80,6 @@ if (isset($_POST['login'])) {
                 }
 
             } else {
-                // ไม่พบชื่อผู้ใช้
                 echo "<script>
                     window.onload = function() {
                         var popup = document.createElement('div');

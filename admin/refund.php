@@ -1,11 +1,8 @@
 <?php
-// เชื่อมต่อกับฐานข้อมูล
 $conn = mysqli_connect('localhost', 'root', '', 'trainer');
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-
-// สร้างคำสั่ง SQL เพื่อดึงข้อมูลจากตาราง payment_refund
 $sql = "SELECT * FROM payment_refund";
 $result = mysqli_query($conn, $sql);
 
@@ -55,15 +52,13 @@ $result = mysqli_query($conn, $sql);
     </thead>
     <tbody>
         <?php
-        // ตรวจสอบว่ามีข้อมูลในผลลัพธ์หรือไม่
         if (mysqli_num_rows($result) > 0) {
-            // วนลูปเพื่อแสดงข้อมูลที่ได้จากการคืนเงิน
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<tr>";
                 echo "<td>" . $row["course_id"] . "</td>";
                 echo "<td>" . $row["username"] . "</td>";
                 echo "<td>" . $row["title"] . "</td>";
-                echo "<td>" . number_format($row["price"], 2) . "</td>"; // แสดงราคาในรูปแบบทศนิยม 2 ตำแหน่ง
+                echo "<td>" . number_format($row["price"], 2) . "</td>"; 
                 echo "<td><a href='refund_action_user.php?id=" . $row["id"] . "'>Refund</a></td>";
                 echo "</tr>";
             }
@@ -77,6 +72,5 @@ $result = mysqli_query($conn, $sql);
 </html>
 
 <?php
-// ปิดการเชื่อมต่อฐานข้อมูล
 mysqli_close($conn);
 ?>

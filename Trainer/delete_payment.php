@@ -23,37 +23,29 @@ $username = "root";
 $password = "";
 $dbname = "trainer";
 
-// เชื่อมต่อฐานข้อมูล
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// ตรวจสอบการเชื่อมต่อ
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+if(isset($_GET['id'])) {
+    $id = $_GET['id'];
 
-// เรียกข้อมูลเฉพาะผู้ใช้ที่เข้าสู่ระบบ
-session_name("trainer_session");
-session_start();
-$trainerusername = $_SESSION['trainerusername'];
+    $sql = "DELETE FROM payment_info WHERE id='$id'";
 
-// ลบข้อมูลจากตาราง payment_refund_admin โดยใช้ trainerusername เป็นเงื่อนไข
-$sql = "DELETE FROM payment_info WHERE trainerusername='$trainerusername'";
-
-if ($conn->query($sql) === TRUE) {
-    echo "<script>
-              function showRegisterSuccess() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'สำเร็จ',
-                    confirmButtonText: 'ตกลง'
-                }).then(() => {
-                    window.location.href = 'course_status.php';
-                });
-              }
-              showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
-            </script>";
+    if ($conn->query($sql) === TRUE) {
+        echo "<script>
+                  function showDeleteSuccess() {
+                    alert('ลบข้อมูลสำเร็จ');
+                    window.location.href = 'indextrainer.php';
+                  }
+                  showDeleteSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงการลบข้อมูลสำเร็จ
+                </script>";
+    } else {
+        echo "Error deleting record: " . $conn->error;
+    }
 } else {
-    echo "Error deleting record: " . $conn->error;
+    echo "ไม่ได้รับค่า 'id' ที่ต้องการลบ";
 }
 
 $conn->close();

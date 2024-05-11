@@ -71,17 +71,12 @@
     <h2>Accepted Payments</h2>
     <div class="container">
         <?php
-        // Connect to the database
         $conn = mysqli_connect('localhost', 'root', '', 'trainer');
         if (!$conn) {
             die("Connection failed: " . mysqli_connect_error());
         }
-
-        // Retrieve data from the payment table
         $sql = "SELECT * FROM payment";
         $result = mysqli_query($conn, $sql);
-
-        // Check if there are any payments
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<div class='trainer-info'>";
@@ -97,21 +92,25 @@
                 echo "<div class='button-container'>";
                 echo "<form id='acceptForm' action='accept_payment_action.php' method='post' onsubmit='return confirmAccept()'>";
                 echo "<input type='hidden' name='payment_id' value='" . $row["id"] . "'>";
+                echo "<input type='hidden' name='course_id' value='" . $row["course_id"] . "'>"; 
+                echo "<input type='hidden' name='course_status' value='ชำระเงินสำเร็จรอเทรนเนอร์ตอบรับ'>";
+                echo "<input type='hidden' name='payment_status' value='ชำระเงินสำเร็จ'>";
                 echo "<button type='submit'>ยอมรับ</button>"; 
                 echo "</form>";
                 echo "<form id='rejectForm' action='reject_payment_action.php' method='post' onsubmit='return confirmReject()'>";
-                echo "<input type='hidden' name='payment_id' value='" . $row["payment_id"] . "'>";
+                echo "<input type='hidden' name='payment_id' value='" . $row["id"] . "'>";
+                echo "<input type='hidden' name='payment_id' value='" . $row["payment_id"] . "'>"; // เพิ่มฟิลด์ course_id ซ่อนไว้ในฟอร์ม
+                echo "<input type='hidden' name='course_status' value='ชำระเงินไม่สำเร็จโปรดชำระเงินใหม่'>";
                 echo "<input type='hidden' name='payment_status' value='ชำระเงินไม่สำเร็จโปรดชำระเงินใหม่'>";
                 echo "<button type='submit' class='reject'>ปฏิเสธ</button>"; 
                 echo "</form>";
                 echo "</div>";
                 echo "</div>";
             }
-        } else {
+        }        
+            else {
             echo "<p>No accepted payments</p>";
         }
-
-        // Close the database connection
         mysqli_close($conn);
         ?>
 

@@ -39,17 +39,13 @@
         .table-responsive {
             overflow-x: auto;
         }
-
-        /* ปรับสไตล์ของ container เพื่อให้มีกรอบ */
         .container {
-            border: 1px solid #ddd; /* เปลี่ยนสีเส้นขอบตามต้องการ */
+            border: 1px solid #ddd; 
             padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
-            background-color: #00CCFF;
+            background-color: #99FFFF;
         }
-
-        /* เพิ่มสไตล์สำหรับตารางที่มีกรอบ */
         .table-bordered {
             border: 1px solid #dee2e6;
             border-collapse: collapse;
@@ -67,8 +63,6 @@
     <?php
     session_name("user_session");
     session_start();
-
-    // เชื่อมต่อฐานข้อมูล
     $servername = "localhost";
     $username = "root";
     $password = "";
@@ -185,8 +179,6 @@
                         echo "<th>สถานะการชำระเงิน</th>";
                         echo "<td>" . $row["payment_status"] . "</td>";
                         echo "</tr>";
-                    
-                        // ตรวจสอบว่ามีรีวิวสำหรับประวัติการใช้บริการนี้หรือไม่
                         $history_id = $row["id"];
                         $sql_review_check = "SELECT * FROM reviews WHERE history_id = '$history_id'";
                         $result_review_check = $conn->query($sql_review_check);
@@ -202,7 +194,6 @@
                         echo "<td><button class='btn btn-danger' onclick='showReportForm(" . $row["id"] . ")'>รายงาน</button></td>";
                         echo "</tr>";
                     } else {
-                        // ถ้า status ไม่ใช่ "เสร็จสิ้นแล้ว" แสดงสถานะและสถานะการชำระเงินอย่างเดียว
                         echo "<tr>";
                         echo "<th>สถานะ</th>";
                         echo "<td>" . $row["status"] . "</td>";
@@ -225,14 +216,11 @@
         function showReportForm(historyId) {
             var reportText = prompt("กรุณาใส่ข้อความรายงาน:");
             if (reportText != null) {
-                // เรียกใช้ฟังก์ชั่น reportToServer เพื่อส่งข้อมูลรายงานไปยังเซิร์ฟเวอร์
                 reportToServer(historyId, reportText);
             }
         }
 
         function reportToServer(historyId, reportText) {
-            // ส่งข้อมูลรายงานไปยังเซิร์ฟเวอร์โดยใช้ AJAX หรือ fetch
-            // โดยจะส่ง historyId และ reportText ไปยังไฟล์ PHP เพื่อทำการบันทึกข้อมูล
             var formData = new FormData();
             formData.append('history_id', historyId);
             formData.append('report_text', reportText);
@@ -243,7 +231,7 @@
             })
             .then(response => response.text())
             .then(data => {
-                alert(data); // แสดงผลลัพธ์ที่ได้จากการบันทึก
+                alert(data); 
             })
             .catch(error => {
                 console.error('Error:', error);

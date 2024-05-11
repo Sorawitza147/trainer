@@ -83,8 +83,6 @@ p {
     <?php
     $start_date_thai = date("j F Y", strtotime($row["start_date"]));
     $end_date_thai = date("j F Y", strtotime($row["end_date"]));
-
-    // แสดงข้อความในภาษาไทย
     echo "<p>วันเริ่ม: $start_date_thai</p>";
     echo "<p>ถึง: $end_date_thai</p>";
     echo "<p>เวลา: " . $row["start_time"] . "</p>";

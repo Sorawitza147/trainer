@@ -16,19 +16,13 @@ if (isset($_GET['reject_course_id'])) {
   if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
   }
-
-  // ดึงข้อมูลเกี่ยวกับวันที่คอร์สถูกปฏิเสธ
   $sql = "SELECT reject_date FROM reject_info WHERE course_id = $course_id";
   $result = mysqli_query($conn, $sql);
   if ($result) {
     $row = mysqli_fetch_assoc($result);
     $reject_date = $row['reject_date'];
-    
-    // คำนวณจำนวนวันที่ผ่านไปตั้งแต่วันที่คอร์สถูกปฏิเสธ
     $today = date('Y-m-d');
     $days_diff = floor((strtotime($today) - strtotime($reject_date)) / (60 * 60 * 24));
-
-    // ถ้าผ่านไปไม่เกิน 5 วันให้ยกเลิกการปฏิเสธ
     if ($days_diff <= 5) {
       $cancel_sql = "DELETE FROM reject_info WHERE course_id = $course_id";
       if (mysqli_query($conn, $cancel_sql)) {

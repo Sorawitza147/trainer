@@ -16,42 +16,42 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #f2f2f2; /* สีพื้นหลังของหน้าเว็บ */
+      background-color: #f2f2f2; 
     }
     .container {
       width: 100%;
-      margin: 20px auto; /* ช่องว่างด้านบนและด้านล่าง 20px, ศูนย์กลางตามแนวนอน */
+      margin: 20px auto; 
       padding: 20px;
-      background-color: #fff; /* สีพื้นหลังของคอนเทนเนอร์ */
-      border-radius: 8px; /* เพิ่มเส้นรอบขอบสำหรับมุมคอนเทนเนอร์ */
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้คอนเทนเนอร์ */
+      background-color: #fff; 
+      border-radius: 8px; 
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
     }
     h1 {
       text-align: center;
-      margin-bottom: 20px; /* ช่องว่างด้านล่างของส่วนหัว */
+      margin-bottom: 20px; 
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px; /* เพิ่มช่องว่างด้านบนของตาราง */
+      margin-top: 20px;
     }
 
     th, td {
       border: 1px solid #ddd;
-      padding: 10px; /* เพิ่มพื้นที่ระหว่างข้อมูลและขอบ */
+      padding: 10px; 
     }
 
     th {
       background-color: #f2f2f2;
-      font-weight: bold; /* ทำให้ตัวหนาข้อความในหัวข้อของตาราง */
+      font-weight: bold;
     }
 
     tr:nth-child(even) {
-      background-color: #f2f2f2; /* ทำให้พื้นหลังของแถวคู่เป็นสีเทา */
+      background-color: #f2f2f2; 
     }
 
     tr:hover {
-      background-color: #f0f0f0; /* เปลี่ยนสีพื้นหลังเมื่อโฮเวอร์ไปชี้ที่แถว */
+      background-color: #f0f0f0; 
     }
 
     .back-button {
@@ -66,7 +66,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.3s; /* เพิ่มเอฟเฟคการเปลี่ยนสีเมื่อโฮเวอร์ */
+      transition: background-color 0.3s;
     }
 
     .back-button:hover {
@@ -103,19 +103,13 @@
     <?php
 session_name("trainer_session");
 session_start();
-
-// Retrieve username from session
 $trainerusername = $_SESSION['trainerusername'];
 
-// Establish database connection
 $conn = new mysqli("localhost", "root", "", "trainer");
 
-// Check connection
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
-
-// Fetch course data
 $sql = "SELECT
   c.course_id,
   c.name,
@@ -139,16 +133,11 @@ INNER JOIN accepted_trainers AS at ON c.trainer_id = at.trainer_id
 WHERE at.trainerusername = '$trainerusername'";
 
 $result = $conn->query($sql);
-
-// Check if the query executed successfully
 if ($result === false) {
   echo "Error executing SQL query: " . $conn->error;
 } else {
-  // Check if there are rows returned
   if ($result->num_rows > 0) {
-    // Output data of each row
     while ($row = $result->fetch_assoc()) {
-      // Output course information
         echo "<tr>";
         echo "<td>" . $row['course_id'] . "</td>";
         echo "<td>" . $row['name'] . "</td>";
@@ -173,8 +162,6 @@ if ($result === false) {
     echo "<tr><td colspan='13'>ไม่พบข้อมูลคอร์ส</td></tr>";
   }
 }
-
-// Close database connection
 $conn->close();
 ?>
 

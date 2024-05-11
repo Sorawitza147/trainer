@@ -33,47 +33,34 @@ if (isset($_POST['signup'])) {
     $phone = $_POST['phone']; 
     $bank = $_POST['bank'];
     $account_number = $_POST['account_number']; 
-    
-    
-    // File upload handling
     $targetDir = "uppic/";
     $targetFile = $targetDir . basename($_FILES["image"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
-    // Check if image file is a actual image
     $check = getimagesize($_FILES["image"]["tmp_name"]);
     if($check === false) {
         echo "File is not an image.";
         $uploadOk = 0;
     }
-
-    // Check file size
     if ($_FILES["image"]["size"] > 500000) {
         echo "Sorry, your file is too large.";
         $uploadOk = 0;
     }
-
-    // Allow only certain file formats
     $allowedExtensions = ["jpg", "jpeg", "png", "gif"];
     if (!in_array($imageFileType, $allowedExtensions)) {
         echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
         $uploadOk = 0;
     }
-
-    // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
         echo "Sorry, your file was not uploaded.";
     } else {
-        // If everything is ok, try to upload file
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile)) {
             echo "";
         } else {
             echo "Sorry, there was an error uploading your file.";
         }
     }
-
-    // Check if username already exists
     $sql_check_username = "SELECT * FROM user WHERE username='$username'";
     $result_check_username = $conn->query($sql_check_username);
     if ($result_check_username->num_rows > 0) {
@@ -87,7 +74,7 @@ if (isset($_POST['signup'])) {
         } else {
 
     $sql_check_phone_number = "SELECT * FROM user WHERE phone='$phone'";
-    $result_check_phone_number = $conn->query($sql_check_phone_number); // เปลี่ยน $phone_number เป็น $phone
+    $result_check_phone_number = $conn->query($sql_check_phone_number);
     if ($result_check_phone_number->num_rows > 0) {
         echo "<script>
                     Swal.fire({
@@ -97,7 +84,6 @@ if (isset($_POST['signup'])) {
                       });
             </script>";
         } else {
-    // Check if email already exists
     $sql_check_email = "SELECT * FROM user WHERE email='$email'";
     $result_check_email = $conn->query($sql_check_email);
     if ($result_check_email->num_rows > 0) {
@@ -109,8 +95,6 @@ if (isset($_POST['signup'])) {
                       });
             </script>";
         } else {
-
-    // Check if username and lastname combination already exists
     $sql_check_combination = "SELECT * FROM user WHERE Firstname='$firstname' AND Lastname='$lastname'";
     $result_check_combination = $conn->query($sql_check_combination);
     if ($result_check_combination->num_rows > 0) {
@@ -122,10 +106,7 @@ if (isset($_POST['signup'])) {
                       });
             </script>";
         } else {
-    // Insert into database
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-    // เตรียมคำสั่ง SQL สำหรับการเพิ่มข้อมูล
     $sql = "INSERT INTO user (Firstname, Lastname, username, Password, Email, Gender, Age, Height, Weight, Phone, bank, account_number, image) 
             VALUES ('$firstname', '$lastname', '$username','$hashedPassword', '$email', '$gender', '$age', '$height', '$weight', '$phone', '$bank', '$account_number', '$targetFile')";
 

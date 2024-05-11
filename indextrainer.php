@@ -320,20 +320,21 @@ session_start();
     <h2 class="logo"></h2>
     <nav class="navigation">
       <a href="indextrainer.php" class="active">หน้าหลัก</a>
-      <a href="Course/Hire.php">คนจ้าง</a>
       <a href="Course/course.php">สร้างคอร์ส</a>
+      <a href="Course/Hire.php">คนจ้าง</a>
+      <a href="Course/course_status.php">สถานะ</a>
       <a href="Course/course_history.php">ประวัติ</a>
       <a href="Course/course_status.php">สถานะ</a>
-      <a href="Trainer/trainer.php">ประวัติส่วน</a>
-      <a href="Trainer/viewcourse.php">ดูคอร์ส</a> 
       <a href="Trainer/pay_ment.php">สถานะการเงิน</a>
       <a href="Trainer/paymenttrainer.php">รายได้</a> 
+      <a href="Trainer/viewcourse.php">ดูคอร์ส</a> 
+      <a href="Trainer/trainer.php">ประวัติส่วนตัว</a>
       <?php
       if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
         $profile_image = isset($_SESSION["profile_image"]) ? $_SESSION["profile_image"] : "user.png";
         echo "<a href='#'><img src='$profile_image' class='profile-logo'></a>";
         echo "<span class='text-white'>ยินดีต้อนรับเทรนเนอร์: " . $_SESSION["trainerusername"] . "</span>";
-        echo "<a button type='button' href='Login/logout.php' class='btn btn-outline-light me-2'>Logout</a></button>";
+        echo "<a button type='button' href='Login/logout.php' class='btn btn-outline-light me-2'>ออกจากระบบ</a></button>";
       } else {
         echo "<a button type='button' href='Login/login.php' class='btn btn-outline-light me-2'>ล๊อคอิน</a></button>";
         echo "<a button type='button' href='Login/signuptrainer.php' class='btn btn-warning'>สมัคร</a></button>";
@@ -345,7 +346,7 @@ session_start();
     <div class="glitch" data-glitch="เว็บไซต์จ้างผู้ฝึกสอน">เว็บไซต์จ้างผู้ฝึกสอน</div>
     </div>
     <div class="glitch-wrapper1">
-    <div class="glitch1" data-glitch="เว็บไซต์ทีของเราจะเป็นจ้างเทรนเนอร์ได้ตามต้องการ">เว็บไซต์ทีของเราจะเป็นจ้างเทรนเนอร์ได้ตามต้องการ</div>
+    <div class="glitch1" data-glitch="เว็บไซต์ของเราจะเป็นการจ้างเทรนเนอร์">เว็บไซต์ของเราจะเป็นการจ้างเทรนเนอร์</div>
     </div>
       
   </div>

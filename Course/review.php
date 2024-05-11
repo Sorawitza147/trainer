@@ -18,18 +18,18 @@
         cursor: pointer;
         display: inline-block;
         padding: 0 1px;
-        font-size: 50px; /* ปรับขนาดของดาว */
-        color: #DCDCDC; /* สีของดาวเริ่มต้น (สีขาว) */
+        font-size: 50px;
+        color: #DCDCDC; 
     }
     .rating label:before {
-        content: '\2605'; /* รหัส Unicode ของรูปทรงดาว */
+        content: '\2605'; 
     }
     .rating input:checked ~ label:before {
-        color: #00CCFF; /* สีของดาวเมื่อถูกเลือก (สีฟ้า) */
+        color: #00CCFF; 
     }
     .rating label:hover:before,
     .rating label:hover ~ label:before {
-        color: #00CCFF; /* สีของดาวเมื่อเมาส์ชี้ไปที่ดาว */
+        color: #00CCFF; 
     }
     .btn{
         margin-top: 10px;
@@ -63,10 +63,8 @@
 
                 if ($result_course->num_rows > 0) {
                     $row = $result_course->fetch_assoc();
-                    // แสดงรายละเอียดคอร์ส
                     echo "<p><strong>ชื่อคอร์ส:</strong> " . $row["title"] . "</p>";
                     echo "<p><strong>รายละเอียด:</strong> " . $row["description"] . "</p>";
-                    // แบบฟอร์มรีวิว
                     echo "<form action='submit_review.php' method='POST'>";
                     echo "<input type='hidden' name='course_id' value='" . $row["course_id"] . "'>";
                     echo "<input type='hidden' name='username' value='" . $_SESSION["username"] . "'>";

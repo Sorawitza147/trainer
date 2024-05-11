@@ -1,24 +1,13 @@
-CREATE TABLE hired_trainers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    course_id INT,
-    payment_id VARCHAR(255),
-    username VARCHAR(50),
-    trainerusername VARCHAR(100) NOT NULL,
-    trainer_id INT,
-    hired_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) DEFAULT NULL,
-    image_payment VARCHAR(255) NOT NULL,
-    payment_status VARCHAR(50) DEFAULT NULL
-);
-
 CREATE TABLE course_history_trainer (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     trainerusername VARCHAR(255) NOT NULL,
     course_id INT NOT NULL,
-     payment_id VARCHAR(255),
+    course VARCHAR(255),
+    payment_id VARCHAR(255),
     trainer_id INT NOT NULL,
     status VARCHAR(50) NOT NULL,
+    course_status VARCHAR(50) DEFAULT NULL,
     title VARCHAR(255) NOT NULL,
     cover_image VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -34,26 +23,30 @@ CREATE TABLE course_history_trainer (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     activities TEXT NOT NULL,
+    duration VARCHAR(50) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     image_payment VARCHAR(255) NOT NULL,
     payment_status VARCHAR(50) DEFAULT NULL
 );
-
-CREATE TABLE IF NOT EXISTS payment (
+CREATE TABLE hired_trainers (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    course_id INT NOT NULL,
+    course_id INT,
+    course VARCHAR(255),
     payment_id VARCHAR(255),
-    course_title VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    image_path VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    username VARCHAR(50),
+    trainerusername VARCHAR(100) NOT NULL,
+    trainer_id INT,
+    hired_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT NULL,
+    duration VARCHAR(50) DEFAULT NULL,
+    image_payment VARCHAR(255) NOT NULL,
+    payment_status VARCHAR(50) DEFAULT NULL
 );
-    
 CREATE TABLE accepted_course (
     id INT AUTO_INCREMENT PRIMARY KEY,
     course_id INT ,
     payment_id VARCHAR(255),
+    course VARCHAR(255),
     name VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     trainerusername VARCHAR(255) NOT NULL,

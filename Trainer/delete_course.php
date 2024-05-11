@@ -7,18 +7,13 @@ if (!$conn) {
 
 if (isset($_GET['delete_course_id'])) {
   $delete_course_id = $_GET['delete_course_id'];
-
-  // เช็คว่ามีกิจกรรมที่เกี่ยวข้องกับคอร์สหรือไม่
   $sql_check_activities = "SELECT * FROM course_activities WHERE course_id = ?";
   if ($stmt_check_activities = $conn->prepare($sql_check_activities)) {
     $stmt_check_activities->bind_param("i", $delete_course_id);
     $stmt_check_activities->execute();
     $result_check_activities = $stmt_check_activities->get_result();
     $stmt_check_activities->close();
-
-    // หากมีกิจกรรมที่เกี่ยวข้อง
     if ($result_check_activities->num_rows > 0) {
-      // ลบกิจกรรมที่เกี่ยวข้องก่อน
       $sql_delete_activities = "DELETE FROM course_activities WHERE course_id = ?";
       if ($stmt_delete_activities = $conn->prepare($sql_delete_activities)) {
         $stmt_delete_activities->bind_param("i", $delete_course_id);
@@ -26,11 +21,11 @@ if (isset($_GET['delete_course_id'])) {
           $stmt_delete_activities->close();
         } else {
           echo "เกิดข้อผิดพลาดในการลบกิจกรรมที่เกี่ยวข้องกับคอร์ส: " . $stmt_delete_activities->error;
-          exit; // ยกเลิกการทำงานหากเกิดข้อผิดพลาด
+          exit; 
         }
       } else {
         echo "เกิดข้อผิดพลาดในการเตรียมคำสั่ง SQL สำหรับการลบกิจกรรมที่เกี่ยวข้องกับคอร์ส: " . $conn->error;
-        exit; // ยกเลิกการทำงานหากเกิดข้อผิดพลาด
+        exit; 
       }
     }
 
@@ -41,8 +36,8 @@ if (isset($_GET['delete_course_id'])) {
       if ($stmt_delete_course->execute()) {
         echo "ลบคอร์สเรียบร้อยแล้ว";
         mysqli_close($conn);
-        echo "<script>window.location.href = 'viewcourse.php';</script>"; // ส่งกลับไปยังหน้าที่คุณต้องการหลังจากลบคอร์ส
-        exit; // ปิดการทำงานของสคริปต์หลังจากลบคอร์ส
+        echo "<script>window.location.href = 'viewcourse.php';</script>"; 
+        exit; 
       } else {
         echo "เกิดข้อผิดพลาดในการลบข้อมูลคอร์ส: " . $stmt_delete_course->error;
       }

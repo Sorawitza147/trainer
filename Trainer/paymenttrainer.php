@@ -76,26 +76,24 @@
             background-color: #45a049;
         }
         .modal {
-            display: none; /* ซ่อน Modal เริ่มต้น */
-            position: fixed; /* จัดตำแหน่งเป็น fixed */
-            z-index: 1; /* ตั้งค่าความสูงที่สูงที่สุด */
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto; /* เพิ่ม scroll ถ้า content ยาวกว่าหน้าจอ */
-            background-color: rgba(0,0,0,0.4); /* สีพื้นหลัง (โปร่งแสง) */
-            padding-top: 60px; /* ระยะห่างด้านบน */
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px; 
         }
-        
-        /* สไตล์ Modal Content */
         .modal-content {
             background-color: #fefefe;
-            margin: 5% auto; /* ส่วนที่ต้องการจะให้กล่องอยู่ตรงกลางหน้าจอ */
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%; /* กว้างของ Modal */
-            border-radius: 10px; /* ขอบมน */
+            width: 80%; 
+            border-radius: 10px; 
         }
         .close {
             color: #aaa;
@@ -110,7 +108,6 @@
     <div class="container">
         <h2>หลักฐานการโอนเงิน</h2>
         <?php
-        // Connect to the database
         $servername = "localhost";
         $username = "root";
         $password = "";
@@ -125,17 +122,16 @@
         session_name("trainer_session");
         session_start();
         $trainerusername = $_SESSION['trainerusername'];
-        $sql = "SELECT title, price, image_path FROM payment_info WHERE trainerusername = '$trainerusername'";
+        $sql = "SELECT title, price, image_path,id FROM payment_info WHERE trainerusername = '$trainerusername'";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
-            // Display payment information
             while($row = $result->fetch_assoc()) {
                 echo "<div class='info'>";
                 echo "<img src='../admin/" . $row["image_path"] . "' alt='" . $row["title"] . "'>";
                 echo "<p><h2>" . $row["title"] . "</h2></p>";
                 echo "<p><strong>Price:</strong> $" . $row["price"] . "</p>";
-                echo "<button class='accept-btn' onclick='openConfirmationPage()'>ยืนยัน</button>";
+                echo "<button class='accept-btn' onclick='openConfirmationPage(" . $row["id"] . ")'>ยืนยัน</button>";
                 echo "</div>";
             }
         } else {
@@ -147,35 +143,39 @@
     
     </div>
     <div id="confirmationModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <p>คุณต้องการยืนยันการดำเนินการหรือไม่?</p>
-        <p>โปรดตรวจสอบยอดเงินคืน โดยทางเราจะหัก5% เป็นค่าทำรายการ</p>
-        <button class='btn-confirm' onclick='confirmAndClose()'>ยืนยัน</button>
-        <button onclick="closeModal()">ยกเลิก</button>
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>คุณต้องการยืนยันการดำเนินการหรือไม่?</p>
+            <p>โปรดตรวจสอบยอดเงินคืน โดยทางเราจะหัก5% เป็นค่าทำรายการ</p>
+            <button class='btn-confirm' id='confirmBtn' onclick='confirmAndClose()'>ยืนยัน</button>
+            <button onclick="closeModal()">ยกเลิก</button>
+        </div>
     </div>
-</div>
-<script>
-    function openConfirmationPage() {
-        var modal = document.getElementById('confirmationModal');
-        modal.style.display = 'block';
-    }
-    function closeModal() {
-        var modal = document.getElementById('confirmationModal');
-        modal.style.display = 'none';
-    }
-    function confirmAndClose() {
-    closeModal();
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            window.close();
-            window.location.reload();
+    <script>
+        function openConfirmationPage(id) {
+            var modal = document.getElementById('confirmationModal');
+            modal.style.display = 'block';
+            document.getElementById('confirmBtn').onclick = function() {
+                confirmAndClose(id);
+            };
         }
-    };
-    xhr.open("GET", "delete_payment.php", true);
-    xhr.send();
-}
-</script>
+
+        function closeModal() {
+            var modal = document.getElementById('confirmationModal');
+            modal.style.display = 'none';
+        }
+
+        function confirmAndClose(id) {
+            closeModal();
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    window.location.reload();
+                }
+            };
+            xhr.open("GET", "delete_payment.php?id=" + id, true); 
+            xhr.send();
+        }
+    </script>
 </body>
 </html>

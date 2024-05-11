@@ -1,7 +1,6 @@
 <?php
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Database connection
+    // เชื่อมต่อฐานข้อมูล
     $servername = "localhost";
     $username = "root";
     $password = "";
@@ -13,48 +12,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Prepare and bind the SQL statement
-    $stmt = $conn->prepare("INSERT INTO courses (title, description, price, duration, cover_image) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssids", $title, $description, $price, $duration, $cover_image);
+    // เตรียมและทำการผูกพารามิเตอร์
+    $stmt = $conn->prepare("INSERT INTO courses (title, description, price, duration, cover_image, course_status) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssids", $title, $description, $price, $duration, $cover_image, $course_status);
 
-    // Get form data
+    // รับค่าจากฟอร์ม
     $title = $_POST["title"];
     $description = $_POST["description"];
     $price = $_POST["price"];
     $duration = $_POST["duration"];
+    $course_status = isset($_POST["course_status"]) ? $_POST["course_status"] : 'ไม่มีคนจ้าง'; // เพิ่มบรรทัดนี้
 
-    // File upload handling
+    // ตรวจสอบและอัปโหลดไฟล์ภาพ
     $target_dir = "uploadscourse/";
     $target_file = $target_dir . basename($_FILES["cover_image"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    // Check if image file is a actual image or fake image
     $check = getimagesize($_FILES["cover_image"]["tmp_name"]);
+
+    // ตรวจสอบไฟล์ภาพ
     if($check !== false) {
         $uploadOk = 1;
     } else {
         echo "File is not an image.";
         $uploadOk = 0;
     }
-
-    // Check file size
     if ($_FILES["cover_image"]["size"] > 500000) {
         echo "Sorry, your file is too large.";
         $uploadOk = 0;
     }
-
-    // Allow certain file formats
     if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
     && $imageFileType != "gif" ) {
         echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
         $uploadOk = 0;
     }
 
-    // Check if $uploadOk is set to 0 by an error
+    // อัปโหลดไฟล์ภาพ
     if ($uploadOk == 0) {
         echo "Sorry, your file was not uploaded.";
-    // if everything is ok, try to upload file
     } else {
         if (move_uploaded_file($_FILES["cover_image"]["tmp_name"], $target_file)) {
             echo "The file ". basename( $_FILES["cover_image"]["name"]). " has been uploaded.";
@@ -64,15 +59,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Execute the SQL statement
+    // ทำการ execute คำสั่ง SQL
     if ($stmt->execute() === TRUE) {
         echo "New record created successfully";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;  
+        echo "Error: " . $stmt->error;  // เปลี่ยน $conn เป็น $stmt
     }
 
-    // Close statement and connection
+    // ปิดคำสั่ง prepare
     $stmt->close();
+
+    // ปิดการเชื่อมต่อฐานข้อมูล
     $conn->close();
 }
 ?>

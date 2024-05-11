@@ -1,26 +1,36 @@
-<?php
-// ตรวจสอบว่ามีการส่งค่า id มาหรือไม่
-if(isset($_GET['id'])) {
-    // ดึงข้อมูลจาก URL
-    $id = $_GET['id'];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
 
-    // เชื่อมต่อฐานข้อมูล
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Mitr", sans-serif;
+        }
+</style>
+</head>
+<body>
+<?php
+if(isset($_GET['id'])) {
+    $id = $_GET['id'];
     $conn = mysqli_connect('localhost', 'root', '', 'trainer');
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }
-
-    // ดึงข้อมูล username, bank, และ account_number จากตาราง payment_refund โดยใช้ id
     $sql_refund = "SELECT username, title, price, bank, account_number FROM payment_refund WHERE id = ?";
     $stmt_refund = mysqli_prepare($conn, $sql_refund);
-    mysqli_stmt_bind_param($stmt_refund, "i", $id); // แก้ "s" เป็น "i"
+    mysqli_stmt_bind_param($stmt_refund, "i", $id); 
     mysqli_stmt_execute($stmt_refund);
     $result_refund = mysqli_stmt_get_result($stmt_refund);
     $row_refund = mysqli_fetch_assoc($result_refund);
-
-    // ตรวจสอบว่ามีข้อมูลที่คาดหวังอยู่หรือไม่ก่อนที่จะใช้งาน
     if ($row_refund !== null) {   
-        // ดึงข้อมูลจากตาราง payment_refund
         $username = $row_refund['username'];
         $title = $row_refund['title'];
         $price = $row_refund['price'];
@@ -29,35 +39,38 @@ if(isset($_GET['id'])) {
     }
 
     if (isset($_POST['submit']) && isset($_FILES['image']['name'])) {
-      // อัปโหลดรูปภาพ
       $filename = $_FILES['image']['name'];
       $tmp_name = $_FILES['image']['tmp_name'];
       $upload_dir = 'picrefund/';
       move_uploaded_file($tmp_name, $upload_dir . $filename);
-  
-      // กำหนดค่า timestamp ให้เป็นปัจจุบัน
       $timestamp = date('Y-m-d H:i:s');
-  
-      // บันทึกข้อมูลการคืนเงิน
       $sql = "INSERT INTO payment_refund_admin (title, price, course_id, timestamp, image_path, username) VALUES (?, ?, ?, ?, ?, ?)";
       $stmt = mysqli_prepare($conn, $sql);
       mysqli_stmt_bind_param($stmt, "ssisss", $title, $price, $id, $timestamp, $filename, $username);
       mysqli_stmt_execute($stmt);
-  
-      // ลบข้อมูล payment_refund โดยใช้ id
       $sql_delete = "DELETE FROM payment_refund WHERE id = ?";
       $stmt_delete = mysqli_prepare($conn, $sql_delete);
       mysqli_stmt_bind_param($stmt_delete, "i", $id);
       mysqli_stmt_execute($stmt_delete);
-  
-      // แสดงข้อความแจ้งเตือน
-      echo "<script>alert('บันทึกข้อมูลการคืนเงินเรียบร้อยแล้ว');</script>";
+      echo "<script>
+      function showRegisterSuccess() {
+        Swal.fire({
+            icon: 'success',
+            title: 'โอนเงินแล้ว',
+            confirmButtonText: 'ตกลง'
+        }).then(() => {
+            window.location.href = 'admin_dashboard.php';
+        });
+      }
+      showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+    </script>";
   }
 } else {
-    // ถ้าไม่มีการส่งค่า id มา
     echo "ไม่พบค่า ID ที่ถูกส่งมา";
 }
 ?>
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -120,17 +133,12 @@ if(isset($_GET['id'])) {
 
 
     <form method="post" enctype="multipart/form-data">
-
-        
-        <!-- แสดงข้อมูล title และ price -->
         <label for="title">ชื่อคอร์ส:</label>
         <input type="text" id="title" name="title" value="<?php echo isset($title) ? $title : ''; ?>" readonly>
         <br>
         <label for="price">ราคา:</label>
         <input type="text" id="price" name="price" value="<?php echo isset($price) ? $price * 0.95 : ''; ?>" readonly>
         <br>
-
-        <!-- แสดงข้อมูล username, bank, และ account_number -->
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" value="<?php echo $username; ?>" readonly>
         <br>

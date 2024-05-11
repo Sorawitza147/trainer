@@ -8,13 +8,13 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Mitr", sans-serif;
-        }
-</style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Mitr", sans-serif;
+    }
+  </style>
 </head>
 <body>
 <?php
@@ -55,9 +55,11 @@ if ($cover_image) {
     $cover_image = 'default.jpg';
 }
 
-// Insert data into 'courses' table
-$sql = "INSERT INTO courses (name, email, gender, age, phone_number, trainer_id, trainerusername, title, price, duration, difficulty, description, start_date, end_date, start_time, end_time, cover_image)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// เพิ่มการรับค่า course_status จากฟอร์ม
+$course_status = isset($_POST['course_status']) ? $_POST['course_status'] : 'ว่าง';
+
+$sql = "INSERT INTO courses (name, email, gender, age, phone_number, trainer_id, trainerusername, title, price, duration, difficulty, description, start_date, end_date, start_time, end_time, cover_image, course_status)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
 
 if (!$stmt) {
@@ -65,15 +67,12 @@ if (!$stmt) {
     exit();
 }
 
-$stmt->bind_param('sssissssissssssss', $name, $email, $gender, $age, $phone_number, $trainer_id, $trainerusername, $title, $price, $duration, $difficulty, $description, $start_date, $end_date, $start_time, $end_time, $cover_image);
+$stmt->bind_param('sssissssisssssssss', $name, $email, $gender, $age, $phone_number, $trainer_id, $trainerusername, $title, $price, $duration, $difficulty, $description, $start_date, $end_date, $start_time, $end_time, $cover_image, $course_status);
 $stmt->execute();
 
 $course_id = $stmt->insert_id;
-
-// Check if any activities are selected
 if (isset($_POST['activity']) && is_array($_POST['activity'])) {
     foreach ($_POST['activity'] as $activity_id) {
-        // Insert selected activities into 'course_activities' table
         $sql3 = "INSERT INTO course_activities (course_id, activity_id) VALUES (?, ?)";
         $stmt3 = $conn->prepare($sql3);
 
@@ -89,7 +88,7 @@ if (isset($_POST['activity']) && is_array($_POST['activity'])) {
     echo "<script>alert('กรุณาเลือกกิจกรรมที่เกี่ยวข้องกับคอร์ส');</script>";
 }
 
-// Display success message and redirect after 3 seconds
+// แสดงหน้าต่างแจ้งเตือนหลังจากทำการสร้างคอร์สเสร็จสมบูรณ์
 echo "<script>
         function showRegisterSuccess() {
           Swal.fire({

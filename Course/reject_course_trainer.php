@@ -28,63 +28,54 @@ if (isset($_GET['reject_course_id'])) {
     $trainer_id = $_GET['reject_course_id']; 
     $course_id = $_GET['course_id']; 
 
-
-    if (isset($_GET['bank']) && isset($_GET['account_number'])) {
+    if (isset($_GET['bank']) && isset($_GET['account_number']) && isset($_GET['course_status'])) {
         $bank = $_GET['bank'];
         $account_number = $_GET['account_number'];
-        $sql = "SELECT courses.*, hired_trainers.username, hired_trainers.payment_status
-            FROM courses
-            INNER JOIN hired_trainers ON courses.course_id = hired_trainers.course_id
-            WHERE hired_trainers.id = '$trainer_id'"; 
+        $course_status = $_GET['course_status'];
 
-        $result_course = $conn->query($sql);
-
-        if ($result_course->num_rows > 0) {
-            $row_course = $result_course->fetch_assoc();
-
-            if ($row_course['payment_status'] == 'ชำระเงินสำเร็จ') {
-                
-                $insert_sql = "INSERT INTO payment_refund_trainer (course_id, username, title, price, bank, account_number) 
-                            VALUES ('$course_id', '{$row_course['username']}', '{$row_course['title']}', '{$row_course['price']}', '$bank', '$account_number')";
-                
-                if ($conn->query($insert_sql) === TRUE) {
-                    $delete_sql = "DELETE FROM hired_trainers WHERE id='$trainer_id'";
-                    if ($conn->query($delete_sql) === TRUE) {
-                        echo "<script>
-                        function showRegisterSuccess() {
-                          Swal.fire({
-                              icon: 'success',
-                              title: 'ปฏิเสธสำเร็จ',
-                              confirmButtonText: 'ตกลง'
-                          }).then(() => {
-                              window.location.href = 'Hire.php';
-                          });
-                        }
-                        showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
-                      </script>";
-                    } else {
-                        echo " แต่มีข้อผิดพลาดในการลบข้อมูลผู้สอนที่ถูก reject: " . $conn->error;
-                    }
-                } else {
-                    echo "มีข้อผิดพลาดในการบันทึกข้อมูลการคืนเงิน: " . $conn->error;
-                }
-            } else {
+        // อัปเดตค่า course_status ในตาราง courses
+        $update_sql = "UPDATE courses SET course_status = 'ว่าง' WHERE course_id = '$course_id'";
+        if ($conn->query($update_sql) === TRUE) {
+            // เพิ่มข้อมูลการคืนเงินลงในตาราง payment_refund_trainer
+            $insert_sql = "INSERT INTO payment_refund_trainer (course_id, username, title, price, bank, account_number) 
+                            SELECT courses.course_id, hired_trainers.username, courses.title, courses.price, '$bank', '$account_number'
+                            FROM courses
+                            INNER JOIN hired_trainers ON courses.course_id = hired_trainers.course_id
+                            WHERE hired_trainers.id = '$trainer_id'";
+            
+            if ($conn->query($insert_sql) === TRUE) {
+                // ลบข้อมูลของผู้สอนที่ถูก reject ออกจากตาราง hired_trainers
                 $delete_sql = "DELETE FROM hired_trainers WHERE id='$trainer_id'";
                 if ($conn->query($delete_sql) === TRUE) {
+                    echo "<script>
+                        function showRegisterSuccess() {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'ปฏิเสธสำเร็จ',
+                                confirmButtonText: 'ตกลง'
+                            }).then(() => {
+                                window.location.href = 'Hire.php';
+                            });
+                        }
+                        showRegisterSuccess();
+                    </script>";
                 } else {
-                    echo "มีข้อผิดพลาดในการลบข้อมูล: " . $conn->error;
+                    echo "แต่มีข้อผิดพลาดในการลบข้อมูลผู้สอนที่ถูก reject: " . $conn->error;
                 }
+            } else {
+                echo "มีข้อผิดพลาดในการบันทึกข้อมูลการคืนเงิน: " . $conn->error;
             }
         } else {
-            echo "ไม่พบข้อมูลคอร์สที่ต้องการ reject";
+            echo "มีข้อผิดพลาดในการอัปเดตข้อมูล: " . $conn->error;
         }
     } else {
-        echo "ข้อมูล 'bank' หรือ 'account_number' ไม่ถูกส่งมา";
+        echo "ข้อมูล 'bank', 'account_number', หรือ 'course_status' ไม่ถูกส่งมา";
     }
 } else {
     echo "ไม่พบข้อมูลที่ต้องการ";
 }
 $conn->close();
 ?> 
+
 </body>
 </html>

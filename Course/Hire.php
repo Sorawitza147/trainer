@@ -28,7 +28,7 @@ th, td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-    vertical-align: middle; /* จัดเนื้อหาในแนวตั้งตรงกลาง */
+    vertical-align: middle; 
 }
 th {
     background-color: #f2f2f2;
@@ -52,16 +52,16 @@ a:hover {
     border-radius: 5px;
     text-decoration: none;
     display: block;
-    float: right; /* จัดปุ่มไปด้านขวา */
+    float: right; 
 }
 .action-links {
-    display: flex; /* จัดเรียงลิงก์ในแนวนอน */
+    display: flex;
 }
 .action-link {
     padding: 5px 10px;
     border-radius: 3px;
     text-decoration: none;
-    margin-right: 5px; /* ระยะห่างระหว่างลิงก์ */
+    margin-right: 5px; 
 }
 .accept-link {
     background-color:#00CCFF;
@@ -180,9 +180,9 @@ if ($result) {
         echo "<td>" . $row['payment_status'] . "</td>";
         echo "<td>
         <div class='action-links'>
-            <a href='reject_course_trainer.php?reject_course_id=" . $row['id'] . "&course_id=" . $row['course_id']  . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "' class='action-link cancel-link'>ลบ</a>";
+        <a href='reject_course_trainer.php?reject_course_id=" . $row['id'] . "&course_id=" . $row['course_id']  . "&bank=" . $row['bank'] . "&account_number=" . $row['account_number'] . "&course_status=ว่าง' class='action-link cancel-link'>ลบ</a>";
         if ($row['payment_status'] == 'ชำระเงินสำเร็จ') {
-            echo "<a href='accept_course.php?accept_course_id=" . $row['id'] . "' class='action-link accept-link' '>ยอมรับ</a>";
+            echo "<a href='accept_course.php?accept_course_id=" . $row['id'] . "&course_status=กำลังดำเนินการสอน' class='action-link accept-link'>ยอมรับ</a>";
         } else {
             echo "<span class='action-link accept-link' style='color: gray;'>โปรดรอให้ผู้ออกกำลังกายชำระเงินก่อน</span>";
         }

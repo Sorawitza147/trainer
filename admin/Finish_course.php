@@ -45,35 +45,27 @@
         width: 120px;
         padding: 10px;
         margin: 10px auto;
-        background-color: #CC0000; /* เปลี่ยนสีเป็น #CC0000 */
+        background-color: #CC0000; 
         color: white;
         text-align: center;
         text-decoration: none;
         border-radius: 4px;
     }
     .reject-btn:hover {
-        background-color: #a70000; /* เปลี่ยนสีเมื่อโฮเวอร์ไปที่ปุ่ม */
+        background-color: #a70000;
     }
     </style>
 </head>
 <body>
 <div class="container">
     <?php
-    // เชื่อมต่อกับฐานข้อมูล
     $conn = new mysqli("localhost", "root", "", "trainer");
-
-    // ตรวจสอบการเชื่อมต่อ
     if ($conn->connect_error) {
         die("การเชื่อมต่อฐานข้อมูลล้มเหลว: " . $conn->connect_error);
     }
-
-    // สร้างคำสั่ง SQL เพื่อดึงข้อมูลจากตาราง finish_course
     $sql = "SELECT * FROM finish_course";
     $result = $conn->query($sql);
-
-    // ตรวจสอบว่ามีข้อมูลในตารางหรือไม่
     if ($result->num_rows > 0) {
-        // แสดงข้อมูลในตาราง
         echo "<table>";
         echo "<tr><th>Course ID</th><th>Name</th><th>Username</th><th>Title</th><th>Price</th><th>End Date</th><th>Start Date</th><th>Start Time</th><th>End Time</th><th>Action</th></tr>";
         while($row = $result->fetch_assoc()) {
@@ -97,8 +89,6 @@
     } else {
         echo "ไม่พบข้อมูลในตาราง";
     }
-
-    // ปิดการเชื่อมต่อฐานข้อมูล
     $conn->close();
     ?>
 </div>

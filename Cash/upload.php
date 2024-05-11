@@ -66,26 +66,17 @@ if(isset($_POST["submit"])) {
 
 function checkPaymentSlip($slipImage)
 {
-    // ตรวจสอบว่าไฟล์รูปภาพถูกอัพโหลดหรือไม่
     if (!isset($slipImage['tmp_name']) || !is_uploaded_file($slipImage['tmp_name'])) {
         return "กรุณาเลือกไฟล์รูปภาพของสลิปการโอนเงิน";
     }
-
-    // ตรวจสอบประเภทของไฟล์รูปภาพ
     $allowedTypes = array('image/jpeg', 'image/png', 'image/gif');
     if (!in_array($slipImage['type'], $allowedTypes)) {
         return "รูปแบบไฟล์ไม่ถูกต้อง โปรดอัพโหลดเฉพาะไฟล์รูปภาพ JPEG, PNG, หรือ GIF";
     }
-
-    // ตรวจสอบขนาดของไฟล์รูปภาพ
     if ($slipImage['size'] > 5000000) { // 5 MB
         return "ขนาดไฟล์รูปภาพมากเกินไป โปรดอัพโหลดรูปภาพขนาดไม่เกิน 5 MB";
     }
-
-    // อ่านเนื้อหาของไฟล์รูปภาพ
     $imageContents = file_get_contents($slipImage['tmp_name']);
-    
-    // ตรวจสอบว่าเนื้อหาของภาพมีลักษณะเฉพาะของสลิปการโอนเงินหรือไม่
     if (strpos($imageContents, 'โอนเงินสำเร็จ') !== false) {
         return "สลิปการโอนเงินถูกต้อง";
     } else {

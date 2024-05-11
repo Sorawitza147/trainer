@@ -29,27 +29,21 @@ if (!isset($_SESSION['trainerusername'])) {
 $trainerusername = $_SESSION['trainerusername'];
 
 if (isset($_GET['accept_course_id'])) {
-  $id = $_GET['accept_course_id']; // เปลี่ยนตัวแปรจาก course_id เป็น id
+  $id = $_GET['accept_course_id']; 
 
   $conn = mysqli_connect('localhost', 'root', '', 'trainer');
   if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
   }
 
-  // ดึงข้อมูลคอร์สที่มี id เดียวกันจากตาราง hired_trainers
-  $select_hired_course_sql = "SELECT * FROM hired_trainers WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
+  $select_hired_course_sql = "SELECT * FROM hired_trainers WHERE id = $id"; 
 
   $result = mysqli_query($conn, $select_hired_course_sql);
   if ($result && mysqli_num_rows($result) > 0) {
-    // ดึงข้อมูลคอร์ส
     $row = mysqli_fetch_assoc($result);
-
-    // ลบข้อมูลในตาราง accepted_course ที่มีคอร์ส ID เดิม
-    $delete_accepted_course_sql = "DELETE FROM accepted_course WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
-
-    if (mysqli_query($conn, $delete_accepted_course_sql)) {
-      // เพิ่มข้อมูลใหม่ในตาราง accepted_course
-      $insert_accepted_course_sql = "INSERT INTO accepted_course (
+    
+    // เพิ่มข้อมูลลงในตาราง accepted_course
+    $insert_accepted_course_sql = "INSERT INTO accepted_course (
           course_id, 
           payment_id,
           course,
@@ -106,44 +100,50 @@ if (isset($_GET['accept_course_id'])) {
           hired_trainers h 
           INNER JOIN courses c ON h.course_id = c.course_id 
         WHERE 
-          h.id = $id"; // เปลี่ยนจาก course_id เป็น id
+          h.id = $id"; 
 
-      if (mysqli_query($conn, $insert_accepted_course_sql)) {
-        // เมื่อเพิ่มข้อมูลใหม่ใน accepted_course เรียบร้อยแล้ว ให้ลบข้อมูลใน hired_trainers
-        $delete_hired_trainers_sql = "DELETE FROM hired_trainers WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
+    if (mysqli_query($conn, $insert_accepted_course_sql)) {
+      // ลบข้อมูลจากตาราง course_activities
+      $delete_course_activities_sql = "DELETE FROM course_activities WHERE course_id=?";
+      $stmt_delete_course_activities = $conn->prepare($delete_course_activities_sql);
+      $stmt_delete_course_activities->bind_param("s", $row['course_id']);
+      $stmt_delete_course_activities->execute();
+      $stmt_delete_course_activities->close();
 
-        if (mysqli_query($conn, $delete_hired_trainers_sql)) {
-          $update_course_history_sql = "UPDATE course_history_trainer SET status = 'ยอมรับ' WHERE id = $id"; // เปลี่ยนจาก course_id เป็น id
+      // ลบข้อมูลจากตาราง courses
+      $delete_courses_sql = "DELETE FROM courses WHERE course_id=?";
+      $stmt_delete_courses = $conn->prepare($delete_courses_sql);
+      $stmt_delete_courses->bind_param("s", $row['course_id']);
+      $stmt_delete_courses->execute();
+      $stmt_delete_courses->close();
 
-          if (mysqli_query($conn, $update_course_history_sql)) {
-            echo "<script>
-              function showRegisterSuccess() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'ยอมรับสำเร็จ',
-                    confirmButtonText: 'ตกลง'
-                }).then(() => {
-                    window.location.href = 'Hire.php';
-                });
-              }
-              showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
-            </script>";
-          } else {
-            echo "เกิดข้อผิดพลาดในการอัปเดตสถานะในตาราง course_history_trainer: " . mysqli_error($conn);
-          }
-        } else {
-          echo "เกิดข้อผิดพลาดในการลบข้อมูลจากตาราง hired_trainers: " . mysqli_error($conn);
+      // ลบข้อมูลจากตาราง hired_trainers
+      $delete_hired_trainers_sql = "DELETE FROM hired_trainers WHERE id = $id"; 
+      mysqli_query($conn, $delete_hired_trainers_sql);
+
+      // อัปเดตสถานะในตาราง course_history_trainer
+      $update_course_history_sql = "UPDATE course_history_trainer SET status = 'ยอมรับ' WHERE id = $id"; 
+      mysqli_query($conn, $update_course_history_sql);
+
+      // เรียกใช้ฟังก์ชัน JavaScript แสดงการยอมรับสำเร็จ
+      echo "<script>
+        function showRegisterSuccess() {
+          Swal.fire({
+              icon: 'success',
+              title: 'ยอมรับสำเร็จ',
+              confirmButtonText: 'ตกลง'
+          }).then(() => {
+              window.location.href = 'Hire.php';
+          });
         }
-      } else {
-        echo "เกิดข้อผิดพลาดในการเพิ่มข้อมูลใหม่ในตาราง accepted_course: " . mysqli_error($conn);
-      }
+        showRegisterSuccess(); // เรียกใช้ฟังก์ชันเพื่อแสดงหน้าต่างแจ้งเตือน
+      </script>";
     } else {
-      echo "เกิดข้อผิดพลาดในการลบข้อมูลในตาราง accepted_course: " . mysqli_error($conn);
+      echo "เกิดข้อผิดพลาดในการเพิ่มข้อมูลลงในตาราง accepted_course: " . mysqli_error($conn);
     }
   } else {
     echo "ไม่พบข้อมูลคอร์สที่มี ID เดียวกันในตาราง hired_trainers";
   }
-
   mysqli_close($conn);
 }
 ?>

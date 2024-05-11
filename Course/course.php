@@ -244,6 +244,7 @@ input[readonly], textarea[readonly], select[readonly] {
     </div>
     <input type="hidden" name="trainer_id" value="<?php echo $row['trainer_id']; ?>" required readonly >
     <input type="hidden" name="trainerusername" value="<?php echo $row['trainerusername']; ?>" required readonly >
+    <input type="hidden" id="course_status_hidden" name="course_status" value="<?php echo isset($_POST['course_status']) ? $_POST['course_status'] : 'ว่าง'; ?>">
     <?php
     } else {
     ?>
@@ -275,12 +276,28 @@ input[readonly], textarea[readonly], select[readonly] {
     </div>
     <div class="wtf">
     <div class="start">
-        <label for="time_start">เวลาเริ่ม:</label>
-        <input type="time" id="start_time" name="start_time" required>
+        <label for="start_time">เวลาเริ่ม:</label>
+        <select id="start_time" name="start_time" required>
+            <?php
+            for ($hour = 0; $hour < 24; $hour++) {
+                for ($minute = 0; $minute < 60; $minute += 30) {
+                    printf('<option value="%02d:%02d">%02d:%02d</option>', $hour, $minute, $hour, $minute);
+                }
+            }
+            ?>
+        </select>
     </div>
     <div class="last">
-        <label for="time_end">ถึง:</label>
-        <input type="time" id="end_time" name="end_time" required>
+        <label for="end_time">ถึง:</label>
+        <select id="end_time" name="end_time" required>
+            <?php
+            for ($hour = 0; $hour < 24; $hour++) {
+                for ($minute = 0; $minute < 60; $minute += 30) {
+                    printf('<option value="%02d:%02d">%02d:%02d</option>', $hour, $minute, $hour, $minute);
+                }
+            }
+            ?>
+        </select>
     </div>
 </div>
     <div class="form-group">

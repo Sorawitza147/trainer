@@ -90,6 +90,7 @@ button[type="submit"]:hover {
             <label for="cover_image">Cover Image:</label>
             <input type="file" id="cover_image" name="cover_image" accept="image/*" required>
         </div>
+        <input type="hidden" id="course_status_hidden" name="course_status" value="<?php echo isset($_POST['course_status']) ? $_POST['course_status'] : 'ไม่มีคนจ้าง'; ?>">
         <button type="submit">Create Course</button>
     </form>
 </div>

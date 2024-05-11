@@ -90,12 +90,11 @@
     <?php
 session_name("user_session");
 session_start();
-
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "trainer";
-$conn = new mysqli($servername, $username, $password, $database);
+$dbname = "trainer";
+$conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -103,7 +102,7 @@ if ($conn->connect_error) {
 if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
     $username = $_SESSION["username"];
 
-    $sql = "SELECT hired_trainers.username, hired_trainers.status, hired_trainers.course_id, courses.title, courses.cover_image, courses.description, courses.price, courses.difficulty, courses.name, courses.email, courses.age, courses.gender, courses.phone_number, courses.start_date, courses.end_date, courses.start_time, courses.end_time, hired_trainers.payment_status
+    $sql = "SELECT hired_trainers.username, hired_trainers.status, hired_trainers.course_id, courses.title, courses.cover_image, courses.description, courses.price, courses.difficulty, courses.name, courses.email, courses.age, courses.gender, courses.phone_number,courses.duration, courses.start_date, courses.end_date, courses.start_time, courses.end_time, hired_trainers.payment_status
             FROM hired_trainers 
             INNER JOIN courses ON hired_trainers.course_id = courses.course_id
             WHERE hired_trainers.username = '$username'";
@@ -116,6 +115,7 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
           echo "<img src='uploadscourse/" . $row["cover_image"] . "'>";
           echo "<p>ชื่อเทรนเนอร์: " . $row["name"] . "</p>";
           echo "<p>อีเมล์: " . $row["email"] . "</p>";
+          echo "<p>ระยะเวลา: " . $row["duration"] . " ชั่วโมง</p>";
           echo "<p>เพศของเทรนเนอร์: " . $row["gender"] . "</p>";
           echo "<p>อายุของเทรนเนอร์: " . $row["age"] . "</p>";
           echo "<p>เบอร์โทร: " . $row["phone_number"] . "</p>";
@@ -131,7 +131,10 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
           echo "<p>เวลา: " . $row["start_time"] . "</p>";
           echo "<p>ถึง: " . $row["end_time"] . "</p>";
           echo "<p>สถานะการชำระเงิน: " . $row["payment_status"] . "</p>";
-          echo "<p><a href='payment.php?course_id=" . $row["course_id"] . "'>ชำระเงิน</a></p>";
+          if ($row["payment_status"] === "ชำระเงินสำเร็จ") {
+        } else {
+            echo "<p><a href='payment.php?course_id=" . $row["course_id"] . "'>ชำระเงิน</a></p>";
+        }
           
           $start_date = strtotime($row["start_date"]);
           $today = strtotime(date("Y-m-d"));
@@ -148,6 +151,7 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
               }
               echo "<input type='hidden' name='title' value='" . $row["title"] . "'>";
               echo "<input type='hidden' name='price' value='" . $row["price"] . "'>";
+              echo "<input type='hidden' name='course_status' value='ว่าง'>";
               echo "<button type='submit'>ยกเลิกการจ้าง</button>";
               echo "</form>";
           }
@@ -188,15 +192,33 @@ if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
             echo "<p>สถานะ: ได้รับการยืนยัน</p>";
             echo "</div>";
             }
-            } else {
+          } else {
             echo "<li>คุณยังไม่มีข้อมูลคอร์สที่ได้รับการยืนยัน</li>";
             }
-            } else {
-                echo "<li>คุณต้องเข้าสู่ระบบเพื่อดูข้อมูลการจ้างเทรนเนอร์ของคุณ</li>";
+        } else {
+            echo "<li>คุณต้องเข้าสู่ระบบเพื่อดูข้อมูลการจ้างเทรนเนอร์ของคุณ</li>";
         }
         $conn->close();
       ?>
     </ul>
   </div>
+  <script>
+    var countdownTime = 10 * 60 * 1000; // 10 นาที * 60 วินาที * 1000 (เป็นมิลลิวินาที)
+
+    // นับเวลาถอยหลังและส่งคำขอยกเลิกหาเซิร์ฟเวอร์เมื่อหมดเวลา
+    setTimeout(function() {
+        // ส่งคำขอยกเลิกไปยังเซิร์ฟเวอร์ (โดยใช้ AJAX หรือ Fetch API)
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "cancel_hiring.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // กระทำตามที่ต้องการหลังจากยกเลิกเสร็จสิ้น
+                console.log(xhr.responseText); // สามารถเปลี่ยนแปลงการประมวลผลตามที่ต้องการ
+            }
+        };
+        xhr.send(); // ส่งคำขอ
+    }, countdownTime);
+</script>
 </body>
 </html>

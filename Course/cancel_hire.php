@@ -2,16 +2,10 @@
 session_name("trainer_session");
 session_start();
 
-// เชื่อมต่อฐานข้อมูล
 $conn = mysqli_connect('localhost', 'root', '', 'trainer');
-
-// ดึงข้อมูล hired_trainers ที่มี course_id ตรงกับ course_id ที่ส่งมา
 $course_id = $_POST['course_id'];
-
 $sql = "SELECT * FROM hired_trainers WHERE course_id = $course_id";
-
 $result = mysqli_query($conn, $sql);
-
 if ($result) {
   $row = mysqli_fetch_assoc($result);
   

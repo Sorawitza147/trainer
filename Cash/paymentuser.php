@@ -65,29 +65,25 @@
         .btn:hover {
             background-color: #45a049;
         }
-
-        /* CSS สำหรับ Modal ...*/
         .modal {
-            display: none; /* ซ่อน Modal เริ่มต้น */
-            position: fixed; /* จัดตำแหน่งเป็น fixed */
-            z-index: 1; /* ตั้งค่าความสูงที่สูงที่สุด */
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto; /* เพิ่ม scroll ถ้า content ยาวกว่าหน้าจอ */
-            background-color: rgba(0,0,0,0.4); /* สีพื้นหลัง (โปร่งแสง) */
-            padding-top: 60px; /* ระยะห่างด้านบน */
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
         }
-        
-        /* สไตล์ Modal Content */
         .modal-content {
             background-color: #fefefe;
-            margin: 5% auto; /* ส่วนที่ต้องการจะให้กล่องอยู่ตรงกลางหน้าจอ */
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%; /* กว้างของ Modal */
-            border-radius: 10px; /* ขอบมน */
+            width: 80%;
+            border-radius: 10px; 
         }
 
         /* ปุ่มปิด Modal */
@@ -112,32 +108,25 @@
     <h1>หลักฐานเงินคืน</h1>
 
     <?php
-    // เชื่อมต่อกับฐานข้อมูล
     $servername = "localhost";
     $username = "root";
     $password = "";
     $dbname = "trainer";
 
     $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // ตรวจสอบการเชื่อมต่อ
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-
-    // เรียกข้อมูลเฉพาะผู้ใช้ที่เข้าสู่ระบบ
     session_name("user_session");
     session_start();
     if (!isset($_SESSION['username'])) {
-        // If not logged in, redirect to the login page or display a message
-        echo "ไม่ได้ล๊อคอิน"; // Display message indicating not logged in
-        exit; // Stop further execution
+        echo "ไม่ได้ล๊อคอิน";
+        exit;
     }
     $sql = "SELECT * FROM payment_refund_admin WHERE username='{$_SESSION['username']}'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
-        // แสดงข้อมูลแต่ละแถว
         while($row = $result->fetch_assoc()) {
             echo "<div class='info'>";
             echo "<img src='../admin/picrefund/".$row["image_path"]."' alt='Image'>";
@@ -146,7 +135,7 @@
             echo "<p>ชื่อคอร์ส: ".$row["title"]."</p>";
             echo "<p>จำนวน: ".$row["price"]."</p>";
             echo "<p>โอนเมื่อ: ".$row["timestamp"]."</p>";
-            echo "<button class='btn-confirm' onclick='openConfirmationPage()'>ยืนยัน</button>";
+            echo "<button class='accept-btn' onclick='openConfirmationPage(" . $row["id"] . ")'>ยืนยัน</button>";
             echo "</div>";
         }
     } else {
@@ -156,37 +145,41 @@
     ?>
     <a href="../indexuser.php" class="btn">ย้อนกลับ</a>
 
-</div>
-<div id="confirmationModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <p>คุณต้องการยืนยันการดำเนินการหรือไม่?</p>
-        <p>โปรดตรวจสอบยอดเงินคืน โดยทางเราจะหัก5% เป็นค่าทำรายการ</p>
-        <button class='btn-confirm' onclick='confirmAndClose()'>ยืนยัน</button>
-        <button onclick="closeModal()">ยกเลิก</button>
     </div>
-</div>
-<script>
-    function openConfirmationPage() {
-        var modal = document.getElementById('confirmationModal');
-        modal.style.display = 'block';
-    }
-    function closeModal() {
-        var modal = document.getElementById('confirmationModal');
-        modal.style.display = 'none';
-    }
-    function confirmAndClose() {
-    closeModal();
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            window.close();
-            window.location.reload();
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>คุณต้องการยืนยันการดำเนินการหรือไม่?</p>
+            <p>โปรดตรวจสอบยอดเงินคืน โดยทางเราจะหัก5% เป็นค่าทำรายการ</p>
+            <button class='btn-confirm' id='confirmBtn' onclick='confirmAndClose()'>ยืนยัน</button>
+            <button onclick="closeModal()">ยกเลิก</button>
+        </div>
+    </div>
+    <script>
+        function openConfirmationPage(id) {
+            var modal = document.getElementById('confirmationModal');
+            modal.style.display = 'block';
+            document.getElementById('confirmBtn').onclick = function() {
+                confirmAndClose(id);
+            };
         }
-    };
-    xhr.open("GET", "delete_payment.php", true);
-    xhr.send();
-}
-</script>
+
+        function closeModal() {
+            var modal = document.getElementById('confirmationModal');
+            modal.style.display = 'none';
+        }
+
+        function confirmAndClose(id) {
+            closeModal();
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    window.location.reload();
+                }
+            };
+            xhr.open("GET", "delete_payment.php?id=" + id, true); 
+            xhr.send();
+        }
+    </script>
 </body>
 </html>

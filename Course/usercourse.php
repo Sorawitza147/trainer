@@ -137,8 +137,6 @@ session_start();
         </select><br>
         <label for="activities" style="font-weight: bold;">เลือกกิจกรรม:</label><br>
         <div style="padding-left: 20px;">
-            <input type="checkbox" name="activities[]" value="" id="all-activities">
-            <label for="all-activities">ทั้งหมด</label><br>
             <input type="checkbox" name="activities[]" value="เต้นแอโรบิก" id="aerobic">
             <label for="aerobic">เต้นแอโรบิก</label><br>
             <input type="checkbox" name="activities[]" value="การฝึกป้องกันตัว" id="self-defense">
@@ -182,10 +180,7 @@ $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
-// ตรวจสอบว่ามีการส่งข้อมูลผ่านเมธอด GET หรือไม่
 if (isset($_GET['gender']) && $_GET['gender'] !== '' && isset($_GET['activities']) && !empty($_GET['activities'])) {
-  // เลือกทั้งเพศและกิจกรรม
   $gender = $_GET['gender'];
   $selected_activities = $_GET['activities'];
   $activities_str = "'" . implode("','", $selected_activities) . "'";
@@ -196,7 +191,6 @@ if (isset($_GET['gender']) && $_GET['gender'] !== '' && isset($_GET['activities'
           WHERE courses.gender = '$gender' AND activities.name IN ($activities_str)
           GROUP BY courses.course_id";
 } else if (isset($_GET['gender']) && $_GET['gender'] !== '') {
-  // เลือกเพศเท่านั้น
   $gender = $_GET['gender'];
   $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
           FROM courses 
@@ -205,7 +199,6 @@ if (isset($_GET['gender']) && $_GET['gender'] !== '' && isset($_GET['activities'
           WHERE courses.gender = '$gender'
           GROUP BY courses.course_id";
 } else if (isset($_GET['activities']) && !empty($_GET['activities'])) {
-  // เลือกกิจกรรมเท่านั้น
   $selected_activities = $_GET['activities'];
   $activities_str = "'" . implode("','", $selected_activities) . "'";
   $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
@@ -215,7 +208,6 @@ if (isset($_GET['gender']) && $_GET['gender'] !== '' && isset($_GET['activities'
           WHERE activities.name IN ($activities_str)
           GROUP BY courses.course_id";
 } else {
-  // ไม่เลือกเพศและกิจกรรม
   $sql = "SELECT courses.*, GROUP_CONCAT(activities.name) AS activities 
           FROM courses 
           LEFT JOIN course_activities ON courses.course_id = course_activities.course_id
@@ -235,15 +227,13 @@ if ($result->num_rows > 0) {
         echo "<p>เพศของเทรนเนอร์: " . $row["gender"] . "</p>";
         echo "<p>อายุของเทรนเนอร์: " . $row["age"] . "</p>";
         echo "<p>เบอร์โทร: " . $row["phone_number"] . "</p>";
+        echo "<p><a href='trainer_details.php?trainer_id=" . $row["trainer_id"] . "'>ดูข้อมูลเทรนเนอร์</a></p>";
         echo "<p>รายละเอียด: " . $row["description"] . "</p>";
-        echo "<p>฿: " . $row["price"] . "</p>";
+        echo "<p>ระยะเวลา: " . $row["duration"] . " ชั่วโมง</p>";
+        echo "<p>฿: " . $row["price"] . " บาท</p>";
         echo "<p>ระดับ: " . $row["difficulty"] . "</p>";
-
-        // แปลงรูปแบบวันที่
         $start_date_thai = date("j F Y", strtotime($row["start_date"]));
         $end_date_thai = date("j F Y", strtotime($row["end_date"]));
-
-        // แสดงข้อความ
         echo "<p>วันเริ่ม: $start_date_thai</p>";
         echo "<p>ถึง: $end_date_thai</p>";
         echo "<p>เวลา: " . $row["start_time"] . "</p>";
@@ -264,6 +254,7 @@ if ($result->num_rows > 0) {
             echo "<input type='hidden' name='name' value='" . $row["name"] . "'>";
             echo "<input type='hidden' name='cover_image' value='" . $row["cover_image"] . "'>";
             echo "<input type='hidden' name='email' value='" . $row["email"] . "'>";
+            echo "<input type='hidden' name='duration' value='" . $row["duration"] . "'>";
             echo "<input type='hidden' name='age' value='" . $row["age"] . "'>";
             echo "<input type='hidden' name='phone_number' value='" . $row["phone_number"] . "'>";
             echo "<input type='hidden' name='description' value='" . $row["description"] . "'>";
@@ -274,8 +265,31 @@ if ($result->num_rows > 0) {
             echo "<input type='hidden' name='start_time' value='" . $row["start_time"] . "'>";
             echo "<input type='hidden' name='end_time' value='" . $row["end_time"] . "'>";
             echo "<input type='hidden' name='status' value='รอเทรนเนอร์ตอบรับ'>";
+            echo "<input type='hidden' name='course_status' value='ติดจ้าง'>";
             echo "<input type='hidden' name='payment_status' value='ยังไม่ชำระเงิน'>";
-            echo "<button type='submit' class='button' onclick=\"return confirmHire()\">จ้างเทรนเนอร์</button>";
+            $course_status_query = "SELECT course_status FROM courses WHERE course_id = ?";
+          $stmt = $conn->prepare($course_status_query);
+          $stmt->bind_param("i", $row["course_id"]); 
+          $stmt->execute();
+          $stmt->store_result();
+
+          if ($stmt->num_rows > 0) {
+              $stmt->bind_result($course_status);
+              $stmt->fetch();
+              
+              // เช็คสถานะของคอร์ส
+              if ($course_status == "ว่าง") {
+                // แสดงปุ่ม "จ้างเทรนเนอร์"
+                echo "<button type='submit' class='button' onclick=\"confirmHire() && setCancelTime()\">จ้างเทรนเนอร์</button>";
+              } else {
+                // แสดงสถานะตามข้อมูลใน course_status
+                echo "<button type='submit' class='button' disabled>$course_status</button>";
+            }
+          } else {
+              // หากไม่พบข้อมูลในตาราง courses
+              echo "<button type='submit' class='button' disabled>ไม่สามารถจ้างได้</button>";
+          }
+          $stmt->close();
             echo "</form>";
         } else {
             echo "<a href='../Login/login.php' class='button'>เข้าสู่ระบบเพื่อจ้างเทรนเนอร์</a>";
@@ -288,7 +302,6 @@ if ($result->num_rows > 0) {
 }
 $conn->close();
 ?>
-
   </div>
 </div>
 <center>
@@ -296,6 +309,30 @@ $conn->close();
   <button id="nextBtn">ถัดไป</button>
 </center>
 <script>
+  function setCancelTime() {
+    const cancelTime = document.getElementById("cancelTime").value;
+    if (cancelTime) {
+        sendCancelTime(cancelTime);
+    } else {
+        alert("โปรดเลือกเวลาที่ต้องการยกเลิก");
+    }
+}
+
+function sendCancelTime(cancelTime) {
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                alert(xhr.responseText); // แสดงข้อความที่ได้จากเซิร์ฟเวอร์
+            } else {
+                console.error('มีข้อผิดพลาด: ' + xhr.status);
+            }
+        }
+    };
+    xhr.open('POST', 'process_cancel_time.php', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.send('cancelTime=' + cancelTime);
+}
     window.onload = function() {
         const container = document.querySelector('.container');
         const prevBtn = document.getElementById('prevBtn');

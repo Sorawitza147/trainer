@@ -38,7 +38,6 @@
             <select id="trainerSelect">
                 <option value="">ทั้งหมด</option>
                 <?php
-                // Connect to the database
                 $servername = "localhost";
                 $username = "root";
                 $password = "";
@@ -47,8 +46,6 @@
                 if ($conn->connect_error) {
                     die("Connection failed: " . $conn->connect_error);
                 }
-
-                // Populate dropdown with trainer names from the database
                 $sqlTrainers = "SELECT * FROM accepted_trainers";
                 $resultTrainers = $conn->query($sqlTrainers);
                 while($rowTrainer = $resultTrainers->fetch_assoc()) {
@@ -59,7 +56,6 @@
             <button onclick="getReviews()">ค้นหา</button>
         </div>
         <div class="row" id="reviewContainer">
-            <!-- Reviews will be loaded here -->
         </div>
         <a href="../indexuser.php" class="btn btn-primary mt-3">ย้อนกลับ</a>
     </div>
@@ -67,7 +63,6 @@
     <script>
         function getReviews() {
             var trainerId = document.getElementById("trainerSelect").value;
-            // Send AJAX request to fetch reviews for the selected trainer
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
